@@ -82,18 +82,18 @@ const slot = (parent, id, name, topRem, leftRem) => {
 };
 
 fragment('#empty', '#table');
-const slotDeck = slot('#table', 'slot-deck', 'Deck', 1, 15.2);
-const slotDrop = slot('#table', 'slot-drop', 'Drop', 1, 15.2 + 13);
+const slotDeck = slot('#table', 'slot-deck', 'Deck', 1, 15);
+const slotDrop = slot('#table', 'slot-drop', 'Drop', 1, 15 + 13.5);
 
-const slotLine1 = slot('#incoming', 'slot-line-1', 'Line 1', 19, 1);
-const slotLine2 = slot('#incoming', 'slot-line-1', 'Line 2', 19, 15.2);
-const slotLine3 = slot('#incoming', 'slot-line-1', 'Line 3', 19, 15.2 + 13);
-const slotLine4 = slot('#incoming', 'slot-line-1', 'Line 4', 19, 15.2 + 26);
+const slotLine1 = slot('#incoming', 'slot-line-1', 'Line 1', 19.5, 1);
+const slotLine2 = slot('#incoming', 'slot-line-1', 'Line 2', 19.5, 15);
+const slotLine3 = slot('#incoming', 'slot-line-1', 'Line 3', 19.5, 15 + 13.5);
+const slotLine4 = slot('#incoming', 'slot-line-1', 'Line 4', 19.5, 15 + 27);
 
 const slotHero = slot('#player', 'slot-hero', 'Hero', 19 + 19, 1);
-const slotAction1 = slot('#player', 'slot-Action1', 'Action1', 19 + 19, 15.2);
-const slotAction2 = slot('#player', 'slot-Action1', 'Action1', 19 + 19, 15.2 + 13);
-const slotStore1 = slot('#player', 'slot-Store1', 'Store1', 19 + 19, 15.2 + 26);
+const slotAction1 = slot('#player', 'slot-Action1', 'Action1', 19 + 19, 15);
+const slotAction2 = slot('#player', 'slot-Action1', 'Action1', 19 + 19, 15 + 13.5);
+const slotStore1 = slot('#player', 'slot-Store1', 'Store1', 19 + 19, 15 + 27);
 
 const pick = arr => arr[Math.random() * arr.length | 0];
 
