@@ -5,9 +5,11 @@
 
 import { cardCollection } from "./alien.js"
 
-const verticalSection = [4, 36, 69, 103];
-const spriteSheet = [4, 26, 50, 74, 96].map((horizontal) =>
-  verticalSection.map((vertical) => `${horizontal}% ${vertical}%`)
+const spriteSheet = 
+  [4, 26, 50, 74, 96]
+    .map((horizontal) =>
+    [4, 36, 69, 103]
+      .map((vertical) => `${horizontal}% ${vertical}%`)
 ).flat();
 
 const monitorView = document.getElementById('monitor')
@@ -21,18 +23,22 @@ const monitor = state => {
   }
 };
 
-/**  @type {<T>(state:T) => T} */
-const signal = (state) => {
-  monitor(state);
-  return new Proxy({ count: 0 }, {
+/**
+ * Reactive State aka Signal
+ * 
+ * @type {<T>(state:T) => T} 
+ */
+const signal = (state) => Proxy.revocable(
+  { count: 0 }, 
+  {
     get: (obj, prop) => obj[prop],
     set: (obj, prop, value) => {
       obj[prop] = value;
       monitor(obj);
       return true;
     }
-  });
-}
+  })
+.proxy;
 
 const state = signal(/** @type {{count:number}} */{ count: 0 });
 
@@ -65,17 +71,13 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.left = `${leftRem}rem`;
   }
   slot.onclick = () => {
-    if (false && state.focus) {
-      moveCardTo(state.focus);
-      state.count += 1;
-    }
     const draw = pick(cardList.filter(({ style }) =>
-      state.focus.style.top != style.top &&
-      state.focus.style.left != style.left
+      slot.style.top != style.top &&
+      slot.style.left != style.left
     ));
     if (!draw) return;
     state.draw = draw.id;
-    draw.style.zIndex = ++state.count;
+    draw.style.zIndex = ++ state.count;
     moveCardTo(draw);
   }
   return { slot, moveCardTo };
@@ -108,7 +110,7 @@ const cardList = cardCollection
   });
 
 state.count = cardList.length;
-state.focus = cardList.at(-1);
+// state.focus = cardList.at(-1);
 // state.collection = cardCollection;
 
 /** @type {(ms:number) => Promise<void>} */
@@ -116,15 +118,16 @@ const delay = (ms) => new Promise((release) => setTimeout(release, ms));
 
 const dealCards = async () => {
   await delay(200);
-  slotHero.moveCardTo(cardList.at(-1))
+  const captain = cardList.shift();
+  slotHero.moveCardTo(captain)
   await delay(600);
-  slotLine4.moveCardTo(cardList.at(-2))
+  slotLine4.moveCardTo(cardList.at(-1))
   await delay(200);
-  slotLine3.moveCardTo(cardList.at(-3))
+  slotLine3.moveCardTo(cardList.at(-2))
   await delay(200);
-  slotLine2.moveCardTo(cardList.at(-4))
+  slotLine2.moveCardTo(cardList.at(-3))
   await delay(200);
-  slotLine1.moveCardTo(cardList.at(-5))
+  slotLine1.moveCardTo(cardList.at(-4))
 }
 
 dealCards();
