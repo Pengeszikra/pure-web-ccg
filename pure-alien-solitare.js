@@ -1,3 +1,5 @@
+// @ts-check
+
 // A single step to move this code out from file
 // which means easy to modularize javascript 
 // even without building.
@@ -40,7 +42,12 @@ const signal = (state) => Proxy.revocable(
   })
 .proxy;
 
-const state = signal(/** @type {{count:number}} */{ count: 0 });
+// a perfect type importing and reuse as composed type
+
+/** @typedef {import('./alien').State & {counter:number, draw:object | null}} State */
+
+/** @type {State} */
+const state = signal();
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
 const fragment = (templateId, parent, id) => {
@@ -70,14 +77,16 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
   }
-  slot.onclick = () => {
+  slot.onclick = async () => {
     const draw = pick(cardList.filter(({ style }) =>
-      slot.style.top != style.top &&
-      slot.style.left != style.left
+      slot.style.top + ':' + slot.style.left 
+      !==
+      style.top + ':' + style.left 
     ));
     if (!draw) return;
-    state.draw = draw.id;
     draw.style.zIndex = ++ state.count;
+    await delay(100);
+    state.draw = draw.id;
     moveCardTo(draw);
   }
   return { slot, moveCardTo };
@@ -117,8 +126,9 @@ state.count = cardList.length;
 const delay = (ms) => new Promise((release) => setTimeout(release, ms));
 
 const dealCards = async () => {
-  await delay(200);
   const captain = cardList.shift();
+  captain.style.zIndex = ++ state.count;
+  await delay(200);
   slotHero.moveCardTo(captain)
   await delay(600);
   slotLine4.moveCardTo(cardList.at(-1))
@@ -132,7 +142,7 @@ const dealCards = async () => {
 
 dealCards();
 
-/** @type {import('./alien').Card} */
+/** @type {import('./alien.js').Card} */
 
 // https://www.lambdatest.com/blog/best-javascript-frameworks/
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
