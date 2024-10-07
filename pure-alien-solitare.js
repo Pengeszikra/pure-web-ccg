@@ -31,7 +31,7 @@ const monitor = state => {
  *
  * @type {<T>(middleware?:function) => (state?:T | object) => T}
  */
-const signal = (middleware = () => {}) => (state={}) => Proxy.revocable(
+export const signal = (middleware = () => {}) => (state={}) => Proxy.revocable(
   state,
   {
     get: (obj, prop) => obj[prop],
@@ -202,3 +202,4 @@ globalThis.cardList = cardList;
 // https://www.lambdatest.com/blog/best-javascript-frameworks/
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
 // https://dtm.uk/wasm/
+// https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
