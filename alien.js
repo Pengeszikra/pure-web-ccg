@@ -89,6 +89,28 @@
 * } Actions
 */
 
+/** @type {State} */
+export const setup = {
+  deck: [],
+  lost: [],
+  fly: null,
+  table: {
+    L1: { id: "L1", card: null, slot: "LINE" },
+    L2: { id: "L2", card: null, slot: "LINE" },
+    L3: { id: "L3", card: null, slot: "LINE" },
+    L4: { id: "L4", card: null, slot: "LINE" },
+    HERO: { id: "HERO", card: null, slot: "HERO" },
+    A1: { id: "A1", card: null, slot: "ACTIVE" },
+    A2: { id: "A2", card: null, slot: "ACTIVE" },
+    S1: { id: "S1", card: null, slot: "STORE" },
+    DROP: { id: "DROP", slot: "DROP", card: null },
+    DECK: { id: "DECK", slot: "DECK", card: null },
+  },
+  phases: "BEGIN",
+  score: 0,
+  help: false,
+}
+
 /** @type {Card[]} */
 export const cardCollection = [
  {

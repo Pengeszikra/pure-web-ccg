@@ -1,11 +1,11 @@
-// @ts-check
+// @ts-check - don't work at least need for linting
 
 // A single step to move this code out from file
 // which means easy to modularize javascript 
 // even without building.
 // this is help to using jsDoc in code a proper way.
 
-import { cardCollection } from "./alien.js"
+import { cardCollection, setup } from "./alien.js"
 
 const spriteSheet = 
   [4, 26, 50, 74, 96]
@@ -30,13 +30,14 @@ const monitor = state => {
  * 
  * @type {<T>(state:T) => T} 
  */
-const signal = (state) => Proxy.revocable(
-  { count: 0 }, 
+const signal = (state={}) => Proxy.revocable(
+  state, 
   {
     get: (obj, prop) => obj[prop],
     set: (obj, prop, value) => {
       obj[prop] = value;
       monitor(obj);
+
       return true;
     }
   })
@@ -44,10 +45,11 @@ const signal = (state) => Proxy.revocable(
 
 // a perfect type importing and reuse as composed type
 
-/** @typedef {import('./alien').State & {counter:number, draw:object | null}} State */
+/** @typedef {import('./alien').State & {count:number, draw:object | null}} State */
 
 /** @type {State} */
 const state = signal();
+state.count = 0;
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
 const fragment = (templateId, parent, id) => {
@@ -71,6 +73,8 @@ const fragment = (templateId, parent, id) => {
  *  moveCardTo:(card:Card) => void
  * }} */
 const slot = (parent, id, name, topRem, leftRem) => {
+  // state.deck ??= [];
+  // state.deck.push({parent, id, name, topRem, leftRem})
   const slot = fragment('#slot', parent, id);
   slot.querySelector('#name').innerText = name;
   const moveCardTo = (card) => {
@@ -141,8 +145,6 @@ const dealCards = async () => {
 }
 
 dealCards();
-
-/** @type {import('./alien.js').Card} */
 
 // https://www.lambdatest.com/blog/best-javascript-frameworks/
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
