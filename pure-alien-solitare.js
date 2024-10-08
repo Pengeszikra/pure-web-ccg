@@ -88,6 +88,8 @@ const slot = (parent, id, name, topRem, leftRem) => {
   // @ts-ignore
   slot.querySelector('#name').innerText = name;
   const moveCardTo = (card) => {
+    // card.style.zIndex = (state.count += 10).toString();
+    // await delay(20);
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
   }
@@ -98,7 +100,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
       style.top + ':' + style.left
     ));
     if (!draw) return;
-    draw.style.zIndex = ++ state.count;
+    draw.style.zIndex = (state.count += 10).toString();
     await delay(100);
     state.draw = draw.id;
     // moveCardTo(draw);
@@ -140,7 +142,7 @@ const pick = arr => arr[Math.random() * arr.length | 0];
 const cardMiddleware = (obj, prop, value) => {
   // console.log(obj, prop, value)
   if (prop === 'mov') {
-    obj.card.style.zIndex = (++state.count).toString();
+    obj.card.style.zIndex = (state.count += 10).toString();
     value.moveCardTo(obj.card);
     return {...obj, [prop]: [value.slot.id, value.topRem, value.leftRem]};
   }
@@ -176,7 +178,7 @@ const delay = (ms) => new Promise((release) => setTimeout(release, ms));
 const dealCards = async () => {
   const captain = cardList.shift();
   if (captain) {
-    captain.style.zIndex = (++ state.count).toString();
+    captain.style.zIndex = (state.count += 10).toString();
     await delay(200);
     slotHero.moveCardTo(captain)
   }
@@ -203,3 +205,13 @@ globalThis.cardList = cardList;
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
 // https://dtm.uk/wasm/
 // https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
+// https://openart.ai/create?ai_model=OpenArt_DnD&prompt=Character+design+sheet+woman+blue-pink+ponytail+black+leather+vest+with+yellow+accents%2Ctattoos
+// https://stabledifffusion.com/tools/ai-image-generator
+
+const image_prompt = `
+sprite sheets of cards, composition: 5 x 4 grid, aspect ratio of each cards is same: 4/6 
+
+style: detailed crafted cut fantasy art
+
+Theme: alien invasion and space adventure moody Haroshi nagai inspired line art comic art with Syd Mead and Keith Parkinson, images on card in list: spaceship, alien, planet, gadget, scene, species, inner place of space ship, blast, scientic stuff, humanoid hero
+`
