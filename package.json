@@ -4,9 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "better-serve . 8080"
+    "start": "vite --port 8080"
   },
   "devDependencies": {
-    "better-serve": "^1.0.4"
+    "vite": "^5.4.8"
   }
 }

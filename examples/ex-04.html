@@ -34,7 +34,7 @@
     <section class="
       --pointer-events-none
       w-[11rem] roundeoranged-2xl aspect-[4/6] lg 
-      px-1 py-3 bg-neutral-800 absolute top-0 left-0
+      px-1 py-3 bg-orange-800 absolute top-0 left-0
       transition-all duration-500
       pointer-events-none
       --hover:-translate-x-[1rem]
@@ -64,22 +64,37 @@
   <template id="empty">
     <section></section>
   </template>
-  <template id="test-dialog">
+  <template>
     <section>
       <dialog class="
-      top-0 left-0
     absolute z-[10000] bg-neutral-900 text-zinc-400 p-8 text-3xl 
     rounded-2xl min-w-[40rem] min-h-[20rem] mt-[20rem]
     grid outline outline-dashed outline-gray-600 -outline-offset-8
   ">
         <p>Try this really interesting pure web development with this complec game.</p>
         <p>So this is need to be work as perfect modal window</p>
-        <button class="bg-sky-900 p-8 rounded-3xl w-min h-min self-end justify-self-end" onclick="document.querySelector('dialog').close()">close</button>
+        <button class="bg-sky-900 p-8 rounded-3xl w-min h-min self-end justify-self-end
+    pointer-events-auto" onclick="document.querySelector('dialog').close()">close</button>
       </dialog>
     </section>
   </template>
   <pre id="monitor" class="select-none pointer-events-none z-[10000] p-4 absolute text-emerald-300 text-[1.3rem]"></pre>
   <main id="desk" class="relative max-h-screen aspect-[4/4] mx-auto">
+    <dialog open class="
+    absolute 
+    top-[3rem]
+    -left-[30rem] 
+    z-[20000]
+    w-[20rem] 
+    h-[13rem] 
+    bg-[url(sprites/ui-spritesheet-01.png)] 
+    bg-[length:300%]
+    bg-[position:0%_4%]
+    bg-no-repeat
+    bg-transparent
+    "
+    onclick="document.querySelector('dialog').close()"
+    ></dialog>
     <section id="table" class="grid gap-4 grid-cols-4 p-4"></section>
     <section id="incoming" class="grid gap-4 grid-cols-4 p-4"></section>
     <section id="player" class="grid gap-4 grid-cols-4 p-4"></section>

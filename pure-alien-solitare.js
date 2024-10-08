@@ -87,11 +87,13 @@ const slot = (parent, id, name, topRem, leftRem) => {
   const slot = fragment('#slot', parent, id);
   // @ts-ignore
   slot.querySelector('#name').innerText = name;
-  const moveCardTo = (card) => {
+  const moveCardTo = async (card) => {
     // card.style.zIndex = (state.count += 10).toString();
+    // document.querySelector('#desk').appendChild(card);
     // await delay(20);
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
+    // console.log(card.style.zIndex)
   }
   slot.onclick = async () => {
     const draw = pick(cardList.filter(({ style }) =>
@@ -100,9 +102,10 @@ const slot = (parent, id, name, topRem, leftRem) => {
       style.top + ':' + style.left
     ));
     if (!draw) return;
+    state.draw = draw.id;
+    document.querySelector('#desk').appendChild(draw);
     draw.style.zIndex = (state.count += 10).toString();
     await delay(100);
-    state.draw = draw.id;
     // moveCardTo(draw);
     // instead a wrong reactive way
     view.deck[draw.id].mov = view.slotList[id]
@@ -168,7 +171,6 @@ const cardList = cardCollection
     return card;
   });
 
-state.count = cardList.length;
 // state.focus = cardList.at(-1);
 // state.collection = cardCollection;
 
@@ -215,3 +217,5 @@ style: detailed crafted cut fantasy art
 
 Theme: alien invasion and space adventure moody Haroshi nagai inspired line art comic art with Syd Mead and Keith Parkinson, images on card in list: spaceship, alien, planet, gadget, scene, species, inner place of space ship, blast, scientic stuff, humanoid hero
 `
+
+// fragment('#test-dialog', 'main')
