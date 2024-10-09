@@ -31,7 +31,7 @@ const monitor = state => {
  *
  * @type {<T>(middleware?:function) => (state?:T | object) => T}
  */
-export const signal = (middleware = () => {}) => (state={}) => Proxy.revocable(
+export const simpleSignal = (middleware = () => {}) => (state={}) => Proxy.revocable(
   state,
   {
     get: (obj, prop) => obj[prop],
@@ -43,19 +43,50 @@ export const signal = (middleware = () => {}) => (state={}) => Proxy.revocable(
   })
 .proxy;
 
+/**
+ * Reactive State aka Signal
+ * 
+ * @type {<T>(middleware?: function) => (state?: T | object) => T}
+ */
+export const signal = (middleware = () => {}) => (state = {}) => {
+  return new Proxy(state, {
+    get(target, prop) {
+      return target[prop];
+    },
+    set(target, prop, value) {
+      const result = middleware(target, prop, value);
+      if (result === false) {
+        // Prevent assignment if middleware returns false
+        return false;
+      }
+
+      const finalValue = result !== undefined ? result : value;
+
+      if (finalValue !== null && typeof finalValue === 'object') {
+        // Wrap the object with signal to make it reactive
+        target[prop] = signal(middleware)(finalValue);
+      } else {
+        target[prop] = finalValue;
+      }
+      return true;
+    },
+  });
+};
+
+
 const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // a perfect type importing and reuse as composed type
 
 /** @typedef {import('./alien').State & {count:number, draw:object | null}} State */
+// import { simpleSignal } from './pure-alien-solitare';
 
 /** @type {State} */
 const state = signal(monitor)();
 state.count = 0;
 
 
-const view = signal()();
-view.deck = signal()()
-view.slotList = {}
+const view = signal();
+// view.slotList = {}
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
 const fragment = (templateId, parent, id) => {
@@ -158,7 +189,7 @@ const cardList = cardCollection
     const card = fragment('#card', "#desk", id)
 
     view.deck ??= {};
-    view.deck[card.id] = signal(cardMiddleware)({card})
+    view.deck[card.id] = simpleSignal(cardMiddleware)({card})
 
     // slotDeck.moveCardTo(card);
     view.deck[card.id].mov = view.slotList.slotDeck;
@@ -202,6 +233,8 @@ globalThis.view = view;
 globalThis.slash = slash;
 globalThis.state = state;
 globalThis.cardList = cardList;
+globalThis.signal = signal;
+globalThis.simpleSignal = simpleSignal;
 
 // https://www.lambdatest.com/blog/best-javascript-frameworks/
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
