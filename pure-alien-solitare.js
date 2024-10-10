@@ -81,12 +81,12 @@ const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // import { simpleSignal } from './pure-alien-solitare';
 
 /** @type {State} */
-const state = signal(monitor)();
+const state = signal()();
 state.count = 0;
 
 
-const view = signal();
-// view.slotList = {}
+const view = signal(monitor)();
+view.deck = {};
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
 const fragment = (templateId, parent, id) => {
@@ -188,8 +188,8 @@ const cardList = cardCollection
   .map(({ name: id, power }, index) => {
     const card = fragment('#card', "#desk", id)
 
-    view.deck ??= {};
-    view.deck[card.id] = simpleSignal(cardMiddleware)({card})
+    // view.deck ??= {};
+    view.deck[card.id] = signal(cardMiddleware)({card})
 
     // slotDeck.moveCardTo(card);
     view.deck[card.id].mov = view.slotList.slotDeck;
