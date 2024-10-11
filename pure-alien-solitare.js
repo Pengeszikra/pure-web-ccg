@@ -6,6 +6,7 @@
 // this is help to using jsDoc in code a proper way.
 
 import { cardCollection, setup } from "./alien.js"
+import { signal, monitor } from './old-bird-soft';
 
 const spriteSheet =
   [4, 26, 50, 74, 96]
@@ -14,71 +15,10 @@ const spriteSheet =
       .map((vertical) => `${horizontal}% ${vertical}%`)
 ).flat();
 
-const monitorView = document.getElementById('monitor')
-const monitor = state => {
-  if (!monitorView) return;
-  try {
-    monitorView.innerText = JSON.stringify(state, null, 2);
-  } catch (error) {
-    console.error(console.error());
-    monitorView.innerText = error;
-  }
-};
-
-/**
- * Reactive State aka Signal
- * with this type declaration it will be working as expected.
- *
- * @type {<T>(middleware?:function) => (state?:T | object) => T}
- */
-export const simpleSignal = (middleware = () => {}) => (state={}) => Proxy.revocable(
-  state,
-  {
-    get: (obj, prop) => obj[prop],
-    set: (obj, prop, value) => {
-      const middle = middleware(obj, prop, value);
-      obj[prop] = middle ?? value;
-      return true;
-    }
-  })
-.proxy;
-
-/**
- * Reactive State aka Signal
- * 
- * @type {<T>(middleware?: function) => (state?: T | object) => T}
- */
-export const signal = (middleware = () => {}) => (state = {}) => {
-  return new Proxy(state, {
-    get(target, prop) {
-      return target[prop];
-    },
-    set(target, prop, value) {
-      const result = middleware(target, prop, value);
-      if (result === false) {
-        // Prevent assignment if middleware returns false
-        return false;
-      }
-
-      const finalValue = result !== undefined ? result : value;
-
-      if (finalValue !== null && typeof finalValue === 'object') {
-        // Wrap the object with signal to make it reactive
-        target[prop] = signal(middleware)(finalValue);
-      } else {
-        target[prop] = finalValue;
-      }
-      return true;
-    },
-  });
-};
-
-
 const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // a perfect type importing and reuse as composed type
 
 /** @typedef {import('./alien').State & {count:number, draw:object | null}} State */
-// import { simpleSignal } from './pure-alien-solitare';
 
 /** @type {State} */
 const state = signal()();
@@ -95,8 +35,7 @@ const fragment = (templateId, parent, id) => {
   /** @type HTMLElement */
   const result = frag.querySelector('section');
   if (id) { result.id = id; }
-  // @ts-ignore
-  document.querySelector(parent).appendChild(frag);
+  document.querySelector(parent)?.appendChild(frag);
   return result;
 };
 
@@ -134,7 +73,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
     ));
     if (!draw) return;
     state.draw = draw.id;
-    document.querySelector('#desk').appendChild(draw);
+    document.querySelector('#desk')?.appendChild(draw);
     draw.style.zIndex = (state.count += 10).toString();
     await delay(100);
     // moveCardTo(draw);
@@ -234,7 +173,8 @@ globalThis.slash = slash;
 globalThis.state = state;
 globalThis.cardList = cardList;
 globalThis.signal = signal;
-globalThis.simpleSignal = simpleSignal;
+globalThis.cardCollection = cardCollection;
+globalThis.monitor = monitor;
 
 // https://www.lambdatest.com/blog/best-javascript-frameworks/
 // https://www.charlievuong.com/demystifing-tailwind-borders-outlines-and-rings
@@ -242,13 +182,17 @@ globalThis.simpleSignal = simpleSignal;
 // https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html
 // https://openart.ai/create?ai_model=OpenArt_DnD&prompt=Character+design+sheet+woman+blue-pink+ponytail+black+leather+vest+with+yellow+accents%2Ctattoos
 // https://stabledifffusion.com/tools/ai-image-generator
+// https://playcode.io/2039875
 
 const image_prompt = `
-sprite sheets of cards, composition: 5 x 4 grid, aspect ratio of each cards is same: 4/6 
+sprite sheets of cards, composition: 5 x 4 grid, aspect ratio of each cards is same: 4/6
 
 style: detailed crafted cut fantasy art
 
 Theme: alien invasion and space adventure moody Haroshi nagai inspired line art comic art with Syd Mead and Keith Parkinson, images on card in list: spaceship, alien, planet, gadget, scene, species, inner place of space ship, blast, scientic stuff, humanoid hero
 `
 
-// fragment('#test-dialog', 'main')
+// const alien = signal(monitor)();
+// alien.cards = Object.values(cardCollection).map(({name, power, type, id, side}) => ({name, power, type, id, side}));
+// alien.slots = {...view.slotList};
+// globalThis.alien = alien;
