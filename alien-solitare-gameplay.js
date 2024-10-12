@@ -5,7 +5,7 @@
 // @ts-check
 
 import { setup, cardCollection } from './alien';
-import { deepSignal, monitor } from './old-bird-soft';
+import { zignal, monitor } from './old-bird-soft';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -19,9 +19,12 @@ import { deepSignal, monitor } from './old-bird-soft';
  * }} AlienState
  */
 
+globalThis.setup = structuredClone(setup);
+
+const alien = zignal(monitor)(structuredClone(setup));
+
 /** @type {AlienState} */
-const alien = deepSignal(monitor)(setup);
-// Object.entries(setup).map(([target, value]) => alien[target] = value);
+const bill = signal(monitor)(structuredClone(setup));
 
 const shuffleCards = (deck) => deck;
 const hero = (slot) => slot;
@@ -44,16 +47,6 @@ const gameRule = async () => {
     : "BURN_OUT"
     ;
 };
-
-alien.addHandler = (handler) => ({
-  effect: (handler) => ({
-    match: (state, matchObject) => ({
-      calculateOutcome: (state) => ({
-        effect: (state) => ({ effect: (p) => ({ effect: (p) => 42 }) })
-      })
-    })
-  })
-});
 
 const selectCardInteraction = () => { };
 const selectCardDemo = () => { };
@@ -100,6 +93,7 @@ const playerMove = (alien) => {
 // alien.deck = Object.values(cardCollection).map(({name, power, maxPower, type, id, side}) => ({name, power, maxPower, type, id, side}));
 // alien.slots = {...view.slotList};
 globalThis.alien = alien;
+globalThis.bill = bill;
 
 /**
  * I love how this playcode.io are working

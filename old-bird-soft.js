@@ -14,43 +14,54 @@ export const monitor = state => {
 };
 
 /**
- * Reactive State aka Signal
- * even work on node.js also
- * core of reactive framwork
+ * I just think it is so easy,
+ * but under the hood this is a bit complicated stuff,
+ * need to be figurated how complex really is.
+ * problem are started with a multi level reactive state 
+ * with a different level watcher :: globalWatcher, prop:watcher
  *
- * React killer code: LOC 14
- *
+ * KIHAL : the problem of array are solved.
  */
-/** @type {<T>(handler?: function) => (state?: T | object) => T} */
-export const signal = (handler = () => { }) => (state = {}) => {
+/** @type {<T>(watcher?: function) => (state?: T | object) => T} */
+export const signal = (watcher = () => { }) => (state = {}) => {
   return new Proxy(state, {
     get: (target, prop) => target[prop],
     set: (target, prop, value) => {
       target[prop] = (value !== null && typeof value === 'object')
-        ? signal(handler)(value)
+        ? signal(watcher)(value)
         : value
         ;
-      handler(target, prop, value);
+      watcher(target, prop, value);
       return true;
     },
   });
 };
 
-/** @type {<T>(handler?: function) => (state?: T | object) => T} */
-export const deepSignal = (handler = () => { }) => (state = {}) => {
-  const proxy = new Proxy({}, {
-    get: (target, prop) => target[prop],
-    set: (target, prop, value) => {
-      target[prop] = value;
-      handler(target, prop, value);
-      return true;
-    }
-  });
-  // Object.entries(state).map(([target, value]) => proxy[target] = value);
-  Object.entries(state).map(([target, value]) => proxy[target] =
-    (value !== null && typeof value === 'object')
-      ? signal(console.log)(value)
-      : value
-  );
-  return proxy;
+/** @type {<T>(watcher?: function) => (state?: T | object) => T} */
+export const zignal = (watcher = () => { }) => (state = {}) => {
+  let root;
+  /** @type {<T>(state?: T | object) => T} */
+  const innerSignal = (state) => { 
+    const proxy = new Proxy(
+      Array.isArray(state) ? [] : {}, 
+      {
+        get: (target, prop) => target[prop],
+        set: (target, prop, value) => {
+          target[prop] = (value !== null && typeof value === 'object') 
+            ? innerSignal(value)
+            : value
+            ;
+          watcher(root, target, prop, value);
+          return true;
+      }
+    });
+    Object.entries(state).map(([key, val]) => proxy[key] = val);
+    return proxy;
+  } 
+  const end = innerSignal(state); 
+  root = end;
+  watcher(end);
+  return root;
 };
+
+globalThis.zignal = zignal;
