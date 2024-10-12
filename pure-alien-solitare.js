@@ -145,7 +145,7 @@ const cardList = cardCollection
 // state.collection = cardCollection;
 
 /** @type {(ms:number) => Promise<void>} */
-const delay = (ms) => new Promise((release) => setTimeout(release, ms));
+export const delay = (ms) => new Promise((release) => setTimeout(release, ms));
 
 const dealCards = async () => {
   const captain = cardList.shift();

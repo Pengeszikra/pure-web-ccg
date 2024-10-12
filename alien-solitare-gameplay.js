@@ -6,6 +6,7 @@
 
 import { setup, cardCollection } from './alien.js';
 import { zignal, monitor } from './old-bird-soft.js';
+import {saga} from './async-saga';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -94,7 +95,7 @@ const playerMove = (alien) => {
 // alien.slots = {...view.slotList};
 globalThis.alien = alien;
 globalThis.bill = bill;
-
+globalThis.saga = saga
 /**
  * I love how this playcode.io are working
  * and this is a great place to show
