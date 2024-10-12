@@ -4,8 +4,8 @@
 
 // @ts-check
 
-import { setup, cardCollection } from './alien';
-import { zignal, monitor } from './old-bird-soft';
+import { setup, cardCollection } from './alien.js';
+import { zignal, monitor } from './old-bird-soft.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */

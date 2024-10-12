@@ -6,7 +6,7 @@
 // this is help to using jsDoc in code a proper way.
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor } from './old-bird-soft';
+import { signal, monitor } from './old-bird-soft.js';
 
 const spriteSheet =
   [4, 26, 50, 74, 96]
