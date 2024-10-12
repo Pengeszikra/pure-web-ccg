@@ -196,3 +196,5 @@ Theme: alien invasion and space adventure moody Haroshi nagai inspired line art 
 // alien.cards = Object.values(cardCollection).map(({name, power, type, id, side}) => ({name, power, type, id, side}));
 // alien.slots = {...view.slotList};
 // globalThis.alien = alien;
+
+// THE NAME IS: Z I G N A L
