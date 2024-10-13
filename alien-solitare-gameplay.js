@@ -6,7 +6,7 @@
 
 import { setup, cardCollection } from './alien.js';
 import { zignal, monitor } from './old-bird-soft.js';
-import { gameFlow } from './async-saga';
+import { gameFlow } from './async-saga.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -46,6 +46,25 @@ const thisIsTheEnd = () =>
   && !forntline.find(slot => !!alien.table[slot]);
 
 const isSurvive = () => alien.table.HERO?.power > 0;
+
+const conflict = (engage, guard) => {
+  const [ePow, ...eRest] = engage.split('|');
+  const [gPow, ...gRest] = guard.split('|');
+  const [problem, solution] = [+ePow, +gPow];
+
+  const gHealth = Math.max(solution - problem, 0);
+  const eHealth = Math.max(problem - solution, 0);
+  const eResult = `${eHealth}|${eRest.join('|')}`;
+  const gResult = `${gHealth}|${gRest.join('|')}`;
+
+  return {
+    gHealth, eHealth,
+    eResult, gResult,
+  };
+};
+
+/** @type {(card:string) => number} */
+const getPower = (card) => + card.split('|')?.[0];
 
 const gameRule = () => {
   alien.phases = "BEGIN";
