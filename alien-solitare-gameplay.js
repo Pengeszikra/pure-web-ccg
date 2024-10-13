@@ -6,7 +6,7 @@
 
 import { setup, cardCollection } from './alien.js';
 import { zignal, monitor } from './old-bird-soft.js';
-import {saga} from './async-saga';
+import { gameFlow } from './async-saga';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -22,36 +22,59 @@ import {saga} from './async-saga';
 
 globalThis.setup = structuredClone(setup);
 
+/** @type {State} */
 const alien = zignal(monitor)(structuredClone(setup));
+alien.foo = 'bizz-bazz'
+globalThis.alien = alien;
 
-/** @type {AlienState} */
-const bill = signal(monitor)(structuredClone(setup));
 
-const shuffleCards = (deck) => deck;
-const hero = (slot) => slot;
-const dealCards = (solts) => solts;
-const surviveOrBurnOut = (state) => state;
-const isSurvive = (state) => state;
+// alien.deck=structuredClone(cardCollection)
 
-const gameRule = async () => {
+
+const forntline = ["L1", "L2", "L3", "L4"];
+
+const zipcard = ({name,power,maxPower,type,side}) => [power,maxPower,name,type,side].join('|');
+const createDeck = () => alien.deck = cardCollection.map(zipcard).slice(0,11);
+const shuffleCards = () => alien.deck.sort(() => Math.random() > .5 ? -1 : 1);
+const hero = () => alien.table.HERO = alien.deck.shift();
+const dealCards = () => forntline
+  .filter(slot => !alien.table[slot])
+  .map(slot => alien.table[slot] = alien.deck.shift())
+
+const thisIsTheEnd = () =>
+  alien.deck.length === 0
+  && !forntline.find(slot => !!alien.table[slot]);
+
+const isSurvive = () => alien.table.HERO?.power > 0;
+
+const gameRule = () => {
   alien.phases = "BEGIN";
-  await shuffleCards(alien.deck);
-  await hero(alien.table.HERO);
+  const start = performance.now()
+  createDeck();
+  hero();
+  shuffleCards();
   alien.phases = "STORY_GOES_ON"
-  await dealCards(alien.table);
-  while (surviveOrBurnOut(alien)) {
-    alien.phases = "SOLITARE"
-    await playerMove(alien);
-  };
+  dealCards();
+  console.log ('zipped card  helps:',performance.now()-start)
+  // while (!thisIsTheEnd(alien)) {
+  //   alien.phases = "SOLITARE"
+  //   playerMove(alien);
+  // };
   alien.phases = (isSurvive(alien))
     ? "SURVIVE"
     : "BURN_OUT"
     ;
 };
 
-const selectCardInteraction = () => { };
+gameRule()
+
+setTimeout(() => globalThis.saga(), 1000)
+
+const showPossibleMoves = () => {
+  return Object.keys(alien.table).join(',');
+ };
+const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
 const selectCardDemo = () => { };
-const showPossibleMoves = () => { };
 const playCardInteraction = () => { };
 const renderAnimation = () => { };
 const informPlayer = () => { };
@@ -67,48 +90,27 @@ const storeSomething = (p) => p;
 const dropSomething = (p) => p;
 const prepare = (p) => p;
 
-/** @type {<T>(alien:AlienState) => void} */
-const playerMove = (alien) => {
-  alien.addHandler = selectCardInteraction; // | selectCardDemo)
-  alien.effect = showPossibleMoves;
-
-  alien.addHandler = playCardInteraction; // | playCardDemo)
-  alien.match = [
-    engageCaptain`LINE`,
-    engageGuard`LINE`,
-    engageEmptyActive`LINE`,
-    engageStrange`ACT`,
-    fixCaptain`LINE, STORE | FIX`,
-    useSkill`ACTIVE, STORE`,
-    gainScore`LINE, STORE | WORTH`,
-    storeSomething`LINE`,
-    dropSomething`LINE, STORE`,
-    prepare`LINE, STORE`,
-  ];
-  alien.calculateOutcome(state)
-  alien.effect(renderAnimation)
-  alien.effect(informPlayer);
-
+const playerMove = () => {
+  const move = selectCardInteraction(showPossibleMoves());
+  // alien.effect = showPossibleMoves;
+  // alien.addHandler = playCardInteraction; // | playCardDemo)
+  // alien.match = [
+  //   engageCaptain`LINE`,
+  //   engageGuard`LINE`,
+  //   engageEmptyActive`LINE`,
+  //   engageStrange`ACT`,
+  //   fixCaptain`LINE, STORE | FIX`,
+  //   useSkill`ACTIVE, STORE`,
+  //   gainScore`LINE, STORE | WORTH`,
+  //   storeSomething`LINE`,
+  //   dropSomething`LINE, STORE`,
+  //   prepare`LINE, STORE`,
+  // ];
+  // alien.calculateOutcome(state)
+  // alien.effect(renderAnimation)
+  // alien.effect(informPlayer);
+  // return new Promise(move)
 };
 
-// alien.deck = Object.values(cardCollection).map(({name, power, maxPower, type, id, side}) => ({name, power, maxPower, type, id, side}));
-// alien.slots = {...view.slotList};
-globalThis.alien = alien;
-globalThis.bill = bill;
-globalThis.saga = saga
-/**
- * I love how this playcode.io are working
- * and this is a great place to show
- * how woking the jsDoc so into my post
- * I can insert a playcode link for a
- * better understanding
- * also good for a pure-web showplace
- * even fine for a teaching stuff.
- * 
- * bomud: this is also working on my TCS laptop
- * at least one unbloced online IDE !!!
- * which is capable to pair working.
- */ 
-
- 
- 
+globalThis.saga = gameFlow
+globalThis.gameRule = gameRule

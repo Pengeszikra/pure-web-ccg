@@ -131,5 +131,22 @@ saga = async (ms = 200) => {
 }
 ```
 
+## playcode.io
+I love how this playcode.io are working
+and this is a great place to show
+how woking the jsDoc so into my post
+I can insert a playcode link for a
+better understanding
+also good for a pure-web showplace
+even fine for a teaching stuff.
+
+bonus: this is also working on my TCS laptop
+at least one unbloced online IDE !!!
+which is capable to pair working.
+
+ 
+ 
+
 _grug no able see complexity demon, but grug sense presence in code base_
 (https://grugbrain.dev/)
+
