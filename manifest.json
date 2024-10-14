@@ -1,6 +1,6 @@
 {
-  "name": "Zignal the no-build JS framework alpha version",
-  "short_name": "Zignal",
+  "name": "Pure Web CCG powered by: zignal-js",
+  "short_name": "PURE CCG",
   "icons": [
     {
       "src": "/icons/zignal-icon-192x192.png",
