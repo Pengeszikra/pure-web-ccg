@@ -6,7 +6,7 @@
 // this is help to using jsDoc in code a proper way.
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor } from './old-bird-soft.js';
+import { signal, monitor, delay } from './old-bird-soft.js';
 
 const spriteSheet =
   [4, 26, 50, 74, 96]
@@ -143,9 +143,6 @@ const cardList = cardCollection
 
 // state.focus = cardList.at(-1);
 // state.collection = cardCollection;
-
-/** @type {(ms:number) => Promise<void>} */
-export const delay = (ms) => new Promise((release) => setTimeout(release, ms));
 
 const dealCards = async () => {
   const captain = cardList.shift();

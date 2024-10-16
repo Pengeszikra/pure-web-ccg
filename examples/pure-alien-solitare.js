@@ -6,7 +6,7 @@
 // this is help to using jsDoc in code a proper way.
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor } from './old-bird-soft.js';
+import { signal, monitor, delay } from './old-bird-soft.js';
 
 const spriteSheet =
   [4, 26, 50, 74, 96]
@@ -19,6 +19,7 @@ const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // a perfect type importing and reuse as composed type
 
 /** @typedef {import('./alien').State & {count:number, draw:object | null}} State */
+import { delay } from './pure-alien-solitare';
 
 /** @type {State} */
 const state = signal()();

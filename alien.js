@@ -50,7 +50,7 @@
 */
 
 /**
-* @typedef { Record<SlotId, TableSpot } Table
+* @typedef { Record<SlotId, TableSpot> } Table
 */
 
 /**

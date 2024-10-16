@@ -1,6 +1,5 @@
-import { delay } from "./pure-alien-solitare.js"
 import { setup , cardCollection } from './alien.js';
-import { zignal } from './old-bird-soft.js';
+import { zignal, delay } from './old-bird-soft.js';
 
 export const gameFlow = async (ms = 200) => {
   const game = zignal(monitor)(structuredClone(setup))
