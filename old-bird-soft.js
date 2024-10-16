@@ -13,6 +13,9 @@ export const monitor = state => {
   }
 };
 
+/** @type {(ms:number) => Promise<void>} */
+export const delay = (ms) => new Promise((release) => setTimeout(release, ms));
+
 /**
  * I just think it is so easy,
  * but under the hood this is a bit complicated stuff,
@@ -37,6 +40,8 @@ export const signal = (watcher = () => { }) => (state = {}) => {
   });
 };
 
+export const STATIC = Symbol('static');
+
 /** @type {<T>(watcher?: function) => (state?: T | object) => T} */
 export const zignal = (watcher = () => { }) => (state = {}) => {
   let root;
@@ -47,7 +52,7 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
       {
         get: (target, prop) => target[prop],
         set: (target, prop, value) => {
-          target[prop] = (value !== null && typeof value === 'object') 
+          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC]) 
             ? innerSignal(value)
             : value
             ;
@@ -65,3 +70,4 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
 };
 
 globalThis.zignal = zignal;
+globalThis.STATIC = STATIC;
