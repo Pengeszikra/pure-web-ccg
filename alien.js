@@ -23,9 +23,9 @@
 * Keys of Slots or Spots I was mixing this a bit.
 * TODO: L5, L6, A3, S2 :: Space-ship / Location dynamic table size feature
 * 
-*  @typedef { 'DECK' | 'DROP' | 
+*  @typedef { 'DK' | 'DR' | 
 *     'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6' | 
-*   'HERO' | 'A1' | 'A2' | 'A3' | 'S1' | 'S2'
+*     'HE' | 'A1' | 'A2' | 'A3' | 'S1' | 'S2'
 * } SlotId
 */
 
@@ -74,12 +74,12 @@ export const setup = {
     L2: null,
     L3: null,
     L4: null,
-    HERO: null,
+    HE: null,
     A1: null,
     A2: null,
     S1: null,
-    DROP: null,
-    DECK: null,
+    DR: null,
+    DK: null,
   },
   phases: "BEGIN",
   score: 0,
