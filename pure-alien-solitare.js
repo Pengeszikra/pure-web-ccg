@@ -80,22 +80,29 @@ const slot = (parent, id, name, topRem, leftRem) => {
     // instead a wrong reactive way
     view.deck[draw.id].mov = view.slotList[id]
   }
+  slot.onmouseover = async () => {
+    try {
+      alien._over_ = moveMap(alien.table[id])
+    } catch (error) {
+      alien._over_ = error
+    }
+  }
   return { slot, moveCardTo, topRem, leftRem };
 };
 
 fragment('#empty', '#table');
-const slotDeck = slot('#table', 'slotDeck', 'Deck', 1, 15);
-const slotDrop = slot('#table', 'slotDrop', 'Drop', 1, 15 + 13.5);
+const slotDeck = slot('#table', 'DK', 'Deck', 1, 15);
+const slotDrop = slot('#table', 'DR', 'Drop', 1, 15 + 13.5);
 
-const slotLine1 = slot('#incoming', 'slotLine1', 'Line 1', 19.5, 1);
-const slotLine2 = slot('#incoming', 'slotLine2', 'Line 2', 19.5, 15);
-const slotLine3 = slot('#incoming', 'slotLine3', 'Line 3', 19.5, 15 + 13.5);
-const slotLine4 = slot('#incoming', 'slotLine4', 'Line 4', 19.5, 15 + 27);
+const slotLine1 = slot('#incoming', 'L1', 'Line 1', 19.5, 1);
+const slotLine2 = slot('#incoming', 'L2', 'Line 2', 19.5, 15);
+const slotLine3 = slot('#incoming', 'L3', 'Line 3', 19.5, 15 + 13.5);
+const slotLine4 = slot('#incoming', 'L4', 'Line 4', 19.5, 15 + 27);
 
-const slotHero = slot('#player', 'slotHero', 'Hero', 19 + 19, 1);
-const slotAction1 = slot('#player', 'slotAction1', 'Action 1', 19 + 19, 15);
-const slotAction2 = slot('#player', 'slotAction2', 'Action 2', 19 + 19, 15 + 13.5);
-const slotStore1 = slot('#player', 'slotStore1', 'Store 1', 19 + 19, 15 + 27);
+const slotHero = slot('#player', 'HE', 'Hero', 19 + 19, 1);
+const slotAction1 = slot('#player', 'A1', 'Action 1', 19 + 19, 15);
+const slotAction2 = slot('#player', 'A2', 'Action 2', 19 + 19, 15 + 13.5);
+const slotStore1 = slot('#player', 'S1', 'Store 1', 19 + 19, 15 + 27);
 
 view.slotList = {
   slotDeck,

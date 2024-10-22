@@ -33,13 +33,12 @@ import { gameFlow } from './async-saga.js';
 globalThis.setup = structuredClone(setup);
 
 /** @type {State} */
-const alien = zignal(monitor)(structuredClone(setup));
+const alien = zignal(monitor)(structuredClone({_over_:42,...setup}));
 globalThis.alien = alien;
 
 import { STATIC } from './old-bird-soft.js';
-const fastDeck = structuredClone(cardCollection)
-fastDeck[STATIC] = true;
-/// alien.fastDeck = fastDeck;
+// const fastDeck = structuredClone(cardCollection)
+// fastDeck[STATIC] = true;
 
 /** @type {SlotId[]} */
 const forntline = ["L1", "L2", "L3", "L4"];
@@ -163,6 +162,7 @@ globalThis.moveByRule = moveByRule;
 const moveMap = (slot) => Object.keys(alien.table).map(
   key => moveByRule(slot, alien.table[key])
 ).filter(p => p)
+.map(([fun,from,to]) => [fun?.name, from, to])
 globalThis.moveMap = moveMap;
 
 const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
