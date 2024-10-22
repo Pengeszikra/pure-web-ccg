@@ -20,34 +20,50 @@ import { gameFlow } from './async-saga.js';
  * }} AlienState
  */
 
+/** @typedef {'L1' | 'L2' | 'L3' | 'L4' | 'HE' | 'A1' | 'A2' | 'S1' | 'DR' | 'DK' } SlotId */
+/** @typedef {'FRONT' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK'} SlotKind */
+/** 
+ * @typedef { |
+*  'FRONT' | 'STRANGE' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK' |
+*  'FIX' | 'WORTH' | 'GUARD' | 'SKILL' | 'ENGAGE'
+* } Keywords
+*/
+
+
 globalThis.setup = structuredClone(setup);
 
 /** @type {State} */
 const alien = zignal(monitor)(structuredClone(setup));
-alien.foo = 'bizz-bazz'
 globalThis.alien = alien;
 
 import { STATIC } from './old-bird-soft.js';
 const fastDeck = structuredClone(cardCollection)
 fastDeck[STATIC] = true;
-alien.fastDeck = fastDeck;
+/// alien.fastDeck = fastDeck;
 
-
+/** @type {SlotId[]} */
 const forntline = ["L1", "L2", "L3", "L4"];
+/** @type {SlotId[]} */
+const heroLine = ["HE", "A1", "A2", "S1"];
+/** @type {SlotId[]} */
+const activeLine = ["A1", "A2"];
+/** @typedef {{slot:SlotId, card:string}} Slot */
 
-const zipcard = ({name,power,maxPower,type,side}) => [power,maxPower,name,type,side].join('|');
+const zipcard = ({ name, power, maxPower, type, side }) => [power, maxPower, name, type, side].join('|');
 const createDeck = () => alien.deck = cardCollection.map(zipcard) //.slice(0,11);
-const shuffleCards = () => alien.deck.sort(() => Math.random() -0.5 );
-const hero = () => alien.table.HERO = alien.deck.shift();
+const shuffleCards = () => alien.deck.sort(() => Math.random() - 0.5);
+const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
+  slotId => alien.table[slotId] = {slot:slotId, card: null});
+const hero = () => alien.table.HERO = ({slot:'HE', card:alien.deck.shift()});
 const dealCards = () => forntline
-  .filter(slot => !alien.table[slot])
-  .map(slot => alien.table[slot] = alien.deck.shift())
+  .filter(slot => !alien.table[slot].card)
+  .map(slot => alien.table[slot] = /** @type {Slot} */ ({slot,card:alien.deck.shift()}));
 
 const thisIsTheEnd = () =>
   alien.deck.length === 0
-  && !forntline.find(slot => !!alien.table[slot]);
+  && forntline.find(slot => alien.table[slot].card === null);
 
-const isSurvive = () => alien.table.HERO?.power > 0;
+const isSurvive = () => alien.table.HERO?.card?.power > 0;
 
 const conflict = (engage, guard) => {
   const [ePow, ...eRest] = engage.split('|');
@@ -71,17 +87,14 @@ const getPower = (card) => + card.split('|')?.[0];
 const gameRule = () => {
   alien.phases = "BEGIN";
   const start = performance.now()
+  emptyTable();
   createDeck();
   hero();
   shuffleCards();
   alien.phases = "STORY_GOES_ON"
   dealCards();
-  console.log ('zipped card  helps:',performance.now()-start)
-  // while (!thisIsTheEnd(alien)) {
-  //   alien.phases = "SOLITARE"
-  //   playerMove(alien);
-  // };
-  alien.phases = (isSurvive(alien))
+  console.log('zipped card  helps:', performance.now() - start)
+  alien.phases = (isSurvive())
     ? "SURVIVE"
     : "BURN_OUT"
     ;
@@ -89,74 +102,68 @@ const gameRule = () => {
 
 gameRule()
 
-// setTimeout(() => globalThis.saga(), 1000)
-/** 
- * @typedef {{
- *  A1: null
- *  A2: null
- *  DECK: null
- *  DROP: null
- *  HERO: "12|12|Captain Co|HERO|ALLY"
- *  L1: "3|3|Robotic Ally|SPACE-SHIP|ALLY"
- *  L2: "7|7|Space Mine|GADGET|ALLY"
- *  L3: "5|5|Space Ranger|SPACE-SHIP|ALLY"
- *  L4: "10|10|Black Hole|LOCATION|STRANGE"
- *  S1: null
- * }} TableExmple
- */
 
-/** @type {TableExmple} */
-let tableExample;
-
-/** @typedef {'L1' | 'L2' | 'L3' | 'L4' | HERO' | 'A1' | 'A2' | 'S1' | 'DROP' | 'DECK' } SlotId */
-/** @typedef {'FRONT' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK'} SlotKind */
-
-const {table} = alien;
+const { table } = alien;
 const frontLine = [table.L1, table.L2, table.L3, table.L4];
-const active = [table.A1, table.A2];
-/** @typedef {{card: string | null, id: SlotId, kind: SlotKind }} Slot */
+/** --typedef {{card: string | null, id: SlotId, kind: SlotKind }} Slot */
 
-/** @type {(from: Slot, to: Slot) => void} */
-const showPossibleMoves = (from, to) => {
-  possible(from, to)`
-    FRONT:STRANGE |> HERO: ${engageCaptain}
-    FRONT:STRANGE |> ACTIVE:GUARD ${engageGuard}
-    ACTIVE:ENGAGE |> FRONT:STRANGE ${engageStrange}
-    FRONT:FIX , STORE:FIX |> ACTIVE... ${fixCaptain}
-    FRONT:WORTH |> ACTIVE... ${gainScore}
-    FRONT:WORTH |> STORE... ${gainScore}
-    FRONT:ENGAGE , FRONT:GUARD , FRONT:SKILL |> STORE... ${storeSomething}
-    STORE:ENGAGE , STORE:GUARD , STORE:SKILL |> ACTIVE... ${prepare}
-    FRONT:ENGAGE , FRONT:GUARD , FRONT:SKILL |> ACTIVE... ${prepare}
-    FRONT:ALLY |> DROP ${dropSomething}
-  `
 
-  // Targeting means slots and cards for example front strange is means any front spot on any enemy card which named strange
-  // Pipe operator Hero is spot on lower line. That card are represent your hero.
-  // Engage captain means a function inserted to target template string.
-  // Let's drink some coffee because I am so tired.
+/** @type {(from:Slot, query: Keywords) => boolean} */
+const front = (from, query) => 
+  forntline.includes(from.slot) 
+  && from.card.includes(query)
 
-  targetting(from, to)`
-    FRONT:STRANGE |> HERO: ${engageCaptain}
-    FRONT:STRANGE |> ACTIVE:GUARD ${engageGuard}
-    ACTIVE:ENGAGE |> FRONT:STRANGE ${engageStrange}
-    FRONT:FIX |> ACTIVE... ${fixCaptain}
-    STORE:FIX |> ACTIVE... ${fixCaptain}
-    FRONT:WORTH |> ACTIVE... ${gainScore}
-    FRONT:WORTH |> STORE... ${gainScore}
-    FRONT:ENGAGE |> STORE... ${storeSomething}
-    FRONT:GUARD |> STORE... ${storeSomething}
-    FRONT:SKILL |> STORE... ${storeSomething}
-    STORE:ENGAGE |> ACTIVE... ${prepare}
-    STORE:GUARD |> ACTIVE... ${prepare}
-    STORE:SKILL |> ACTIVE... ${prepare}
-    FRONT:ENGAGE |> ACTIVE... ${prepare}
-    FRONT:GUARD |> ACTIVE... ${prepare}
-    FRONT:SKILL |> ACTIVE... ${prepare}
-    FRONT:ALLY |> DROP ${dropSomething}
-    ACTIVE:SKILL |> SLOT:CARD ${useSkill} // according skill targetting
-  `
+/** @type {(from:Slot, query: Keywords) => boolean} */
+const active = (from, query) => 
+  activeLine.includes(from.slot) 
+  && from.card.includes(query);
+
+/** @type {(to:Slot, check: Keywords) => boolean} */
+const toCheck = (to, check) => to.card === null ? false : to.card.includes(check);
+
+/** @type {(from:Slot, check: Keywords) => boolean} */
+const fromStore = (from, check) => from.slot === "S1" && from.card.includes(check);
+
+/** @type {(to:Slot) => boolean} */
+const toEmptyActive = (to) => activeLine.includes(to.slot) && to.card === null;
+
+/** @type {(to:Slot) => boolean} */
+const toEmptyStore = (to) => to.slot === "S1" && to.card === null;
+
+/** @type {(from: Slot, to: Slot) => [function, Slot, Slot] | null} */
+const moveByRule = (from, to) => {
+  if (from.card === null) return null;
+  if (front(from, "STRANGE") && toCheck(to, "HERO")) return [engageCaptain, from, to];
+  if (front(from, "STRANGE") && toCheck(to, "GUARD")) return [engageGuard, from, to];
+  if (active(from,"ENGAGE") && toCheck(to, "STRANGE")) return [engageStrange, from, to];
+  if (front(from, "FIX") && toEmptyActive(to)) return [fixCaptain, from, to];
+  if (fromStore(from, "FIX") && toEmptyActive(to)) return [fixCaptain, from, to];
+  if (front(from, "WORTH") && toEmptyActive(to)) return [gainScore, from, to];
+  if (front(from, "WORTH") && toEmptyStore(to)) return [gainScore, from, to];
+  if (
+    toEmptyStore(to) && (
+         front(from, "ALLY") 
+      || front(from, "SKILL")
+    )
+  ) return [storeSomething, from, to];
+  if (
+    toEmptyActive(to) && (
+         fromStore(from, "ALLY")
+      || fromStore("SKILL")
+      || front(from, "ALLY")
+      || front(from, "SKILL")
+    )
+  ) return [prepare, from, to];
+
+  return null;
 };
+globalThis.moveByRule = moveByRule;
+
+/** @type {(slot:Slot) => [function, Slot, Slot]} */
+const moveMap = (slot) => Object.keys(alien.table).map(
+  key => moveByRule(slot, alien.table[key])
+).filter(p => p)
+globalThis.moveMap = moveMap;
 
 const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
 const selectCardDemo = () => { };
@@ -175,28 +182,8 @@ const storeSomething = (p) => p;
 const dropSomething = (p) => p;
 const prepare = (p) => p;
 
-const playerMove = () => {
-  const move = selectCardInteraction(showPossibleMoves());
-  // alien.effect = showPossibleMoves;
-  // alien.addHandler = playCardInteraction; // | playCardDemo)
-  // alien.match = [
-  //   engageCaptain`LINE`,
-  //   engageGuard`LINE`,
-  //   engageEmptyActive`LINE`,
-  //   engageStrange`ACT`,
-  //   fixCaptain`LINE, STORE | FIX`,
-  //   useSkill`ACTIVE, STORE`,
-  //   gainScore`LINE, STORE | WORTH`,
-  //   storeSomething`LINE`,
-  //   dropSomething`LINE, STORE`,
-  //   prepare`LINE, STORE`,
-  // ];
-  // alien.calculateOutcome(state)
-  // alien.effect(renderAnimation)
-  // alien.effect(informPlayer);
-  // return new Promise(move)
-};
-
 globalThis.saga = gameFlow
 globalThis.gameRule = gameRule
+
+// test 11ty
 
