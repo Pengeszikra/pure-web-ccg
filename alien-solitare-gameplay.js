@@ -25,7 +25,7 @@ import { gameFlow } from './async-saga.js';
 /** 
  * @typedef { |
 *  'FRONT' | 'STRANGE' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK' |
-*  'FIX' | 'WORTH' | 'GUARD' | 'SKILL' | 'ENGAGE'
+*  'FIX' | 'WORTH' | 'GUARD' | 'SKILL' | 'ENGAGE' | 'NEUTRAL'
 * } Keywords
 */
 
@@ -129,6 +129,9 @@ const toEmptyActive = (to) => activeLine.includes(to.slot) && to.card === null;
 /** @type {(to:Slot) => boolean} */
 const toEmptyStore = (to) => to.slot === "S1" && to.card === null;
 
+/** @type {(to:Slot) => boolean} */
+const toDrop = (to) => to.slot === "DR";
+
 /** @type {(from: Slot, to: Slot) => [function, Slot, Slot] | null} */
 const moveByRule = (from, to) => {
   if (from.card === null) return null;
@@ -142,17 +145,29 @@ const moveByRule = (from, to) => {
   if (
     toEmptyStore(to) && (
          front(from, "ALLY") 
+      || front(from, "NEUTRAL")
       || front(from, "SKILL")
     )
   ) return [storeSomething, from, to];
   if (
     toEmptyActive(to) && (
          fromStore(from, "ALLY")
-      || fromStore("SKILL")
+      || fromStore(from, "NEUTRAL")
+      || fromStore(from, "SKILL")
       || front(from, "ALLY")
+      || front(from, "NEUTRAL")
       || front(from, "SKILL")
     )
   ) return [prepare, from, to];
+  if ((
+         fromStore(from, "ALLY")
+      || fromStore(from, "NEUTRAL")
+      || fromStore(from, "SKILL")
+      || front(from, "ALLY")
+      || front(from, "NEUTRAL")
+      || front(from, "SKILL")
+    ) && toDrop(to)
+  ) return [dropSomething, from, to];
 
   return null;
 };
