@@ -6,7 +6,6 @@
 
 import { setup, cardCollection } from './alien.js';
 import { zignal, monitor } from './old-bird-soft.js';
-import { gameFlow } from './async-saga.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -29,11 +28,10 @@ import { gameFlow } from './async-saga.js';
 * } Keywords
 */
 
-
 globalThis.setup = structuredClone(setup);
 
 /** @type {State} */
-const alien = zignal(monitor)(structuredClone({_over_:42,...setup}));
+const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
 globalThis.alien = alien;
 
 import { STATIC } from './old-bird-soft.js';
@@ -46,17 +44,17 @@ const forntline = ["L1", "L2", "L3", "L4"];
 const heroLine = ["HE", "A1", "A2", "S1"];
 /** @type {SlotId[]} */
 const activeLine = ["A1", "A2"];
-/** @typedef {{slot:SlotId, card:string}} Slot */
+/** @typedef {{idt:SlotId, card:string}} Slot */
 
 const zipcard = ({ name, power, maxPower, type, side }) => [power, maxPower, name, type, side].join('|');
 const createDeck = () => alien.deck = cardCollection.map(zipcard) //.slice(0,11);
 const shuffleCards = () => alien.deck.sort(() => Math.random() - 0.5);
 const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
-  slotId => alien.table[slotId] = {slot:slotId, card: null});
-const hero = () => alien.table.HERO = ({slot:'HE', card:alien.deck.shift()});
+  slotId => alien.table[slotId] = {id:slotId, card: null});
+const hero = () => alien.table.HERO = ({id:'HE', card:alien.deck.shift()});
 const dealCards = () => forntline
-  .filter(slot => !alien.table[slot].card)
-  .map(slot => alien.table[slot] = /** @type {Slot} */ ({slot,card:alien.deck.shift()}));
+  .filter(id => !alien.table[id].card)
+  .map(id => alien.table[id] = /** @type {Slot} */ ({id,card:alien.deck.shift()}));
 
 const thisIsTheEnd = () =>
   alien.deck.length === 0
@@ -109,28 +107,28 @@ const frontLine = [table.L1, table.L2, table.L3, table.L4];
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
 const front = (from, query) => 
-  forntline.includes(from.slot) 
+  forntline.includes(from.id) 
   && from.card.includes(query)
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
 const active = (from, query) => 
-  activeLine.includes(from.slot) 
+  activeLine.includes(from.id) 
   && from.card.includes(query);
 
 /** @type {(to:Slot, check: Keywords) => boolean} */
 const toCheck = (to, check) => to.card === null ? false : to.card.includes(check);
 
 /** @type {(from:Slot, check: Keywords) => boolean} */
-const fromStore = (from, check) => from.slot === "S1" && from.card.includes(check);
+const fromStore = (from, check) => from.id === "S1" && from.card.includes(check);
 
 /** @type {(to:Slot) => boolean} */
-const toEmptyActive = (to) => activeLine.includes(to.slot) && to.card === null;
+const toEmptyActive = (to) => activeLine.includes(to.id) && to.card === null;
 
 /** @type {(to:Slot) => boolean} */
-const toEmptyStore = (to) => to.slot === "S1" && to.card === null;
+const toEmptyStore = (to) => to.id === "S1" && to.card === null;
 
 /** @type {(to:Slot) => boolean} */
-const toDrop = (to) => to.slot === "DR";
+const toDrop = (to) => to.id === "DR";
 
 /** @type {(from: Slot, to: Slot) => [function, Slot, Slot] | null} */
 const moveByRule = (from, to) => {
@@ -197,8 +195,4 @@ const storeSomething = (p) => p;
 const dropSomething = (p) => p;
 const prepare = (p) => p;
 
-globalThis.saga = gameFlow
-globalThis.gameRule = gameRule
-
-// test 11ty
-
+globalThis.alien = alien;

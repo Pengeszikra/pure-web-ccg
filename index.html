@@ -22,7 +22,10 @@
       lg:outline-4
       outline-zinc-700 outline-dashed outline-offset-0
       hover:outline-sky-600 hover:outline-offset-4  hover:outline-4
-      [&[data-possible]]:outline-emerald-600 [&[data-possible]]:outline-offset-4  [&[data-possible]]:outline-4
+      [&[data-possible]]:outline-emerald-600
+        [&[data-possible]]:outline-offset-4
+        [&[data-possible]]:outline-4
+        [&[data-possible]]:duration-1000
       transition-all duration-500
     ">
       <span id="name" class="select-none">Deck</span>
@@ -84,6 +87,6 @@
     <section id="player" class="grid gap-4 grid-cols-4 p-4"></section>
   </main>
 </body>
-  <script type="module" src="pure-alien-solitare.js"></script>
+  <script type="module" src="pure-ccg-view.js"></script>
   <script type="module" src="alien-solitare-gameplay.js"></script>
 </html>
