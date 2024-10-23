@@ -5,7 +5,7 @@
 // @ts-check
 
 import { setup, cardCollection } from './alien.js';
-import { zignal, monitor } from './old-bird-soft.js';
+import { zignal, monitor, fragment } from './old-bird-soft.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -28,15 +28,11 @@ import { zignal, monitor } from './old-bird-soft.js';
 * } Keywords
 */
 
-globalThis.setup = structuredClone(setup);
+globalThis.setup = structuredClone(setup); // TODO remove
 
 /** @type {State} */
 const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
-globalThis.alien = alien;
-
-import { STATIC } from './old-bird-soft.js';
-// const fastDeck = structuredClone(cardCollection)
-// fastDeck[STATIC] = true;
+globalThis.alien = alien; // TODO remove
 
 /** @type {SlotId[]} */
 const forntline = ["L1", "L2", "L3", "L4"];
@@ -51,7 +47,7 @@ const createDeck = () => alien.deck = cardCollection.map(zipcard) //.slice(0,11)
 const shuffleCards = () => alien.deck.sort(() => Math.random() - 0.5);
 const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
   slotId => alien.table[slotId] = {id:slotId, card: null});
-const hero = () => alien.table.HERO = ({id:'HE', card:alien.deck.shift()});
+const hero = () => alien.table.HE = ({id:'HE', card:alien.deck.shift()});
 const dealCards = () => forntline
   .filter(id => !alien.table[id].card)
   .map(id => alien.table[id] = /** @type {Slot} */ ({id,card:alien.deck.shift()}));
@@ -78,6 +74,7 @@ const conflict = (engage, guard) => {
   };
 };
 
+
 /** @type {(card:string) => number} */
 const getPower = (card) => + card.split('|')?.[0];
 
@@ -86,6 +83,7 @@ const gameRule = () => {
   const start = performance.now()
   emptyTable();
   createDeck();
+  return; // TODO remove
   hero();
   shuffleCards();
   alien.phases = "STORY_GOES_ON"
@@ -169,14 +167,14 @@ const moveByRule = (from, to) => {
 
   return null;
 };
-globalThis.moveByRule = moveByRule;
+globalThis.moveByRule = moveByRule; // TODO remove
 
 /** @type {(slot:Slot) => [function, Slot, Slot]} */
 const moveMap = (slot) => Object.keys(alien.table).map(
   key => moveByRule(slot, alien.table[key])
 ).filter(p => p)
 .map(([fun,from,to]) => [fun?.name, from, to])
-globalThis.moveMap = moveMap;
+globalThis.moveMap = moveMap; // TODO remove
 
 const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
 const selectCardDemo = () => { };

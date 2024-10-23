@@ -1,24 +1,9 @@
 // @ts-check
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor, delay } from './old-bird-soft.js';
-
-const spriteSheet =
-  [4, 26, 50, 74, 96].map((horizontal) =>
-    [4, 36, 69, 103].map((vertical) => `${horizontal}% ${vertical}%`)
-).flat();
+import { signal, monitor, delay, fragment, STATIC } from './old-bird-soft.js';
 
 /** @typedef {import('./alien.js').State & {count:number, draw:object | null}} State */
-
-/** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
-const fragment = (templateId, parent, id) => {
-  const frag = document.querySelector(templateId).content.cloneNode(true);
-  /** @type HTMLElement */
-  const result = frag.querySelector('section');
-  if (id) { result.id = id; }
-  document.querySelector(parent)?.appendChild(frag);
-  return result;
-};
 
 /**
  * @type {(
@@ -101,19 +86,26 @@ const pick = arr => arr[Math.random() * arr.length | 0];
 const cardMiddleware = (obj, prop, value) => {
   // console.log(obj, prop, value)
   if (prop === 'mov') {
-    obj.card.style.zIndex = (state.count += 10).toString();
+    obj.card.style.zIndex = (alien.count += 10).toString();
     value.moveCardTo(obj.card);
     return {...obj, [prop]: [value.slot.id, value.topRem, value.leftRem]};
   }
-
   return value;
 }
 
-const cardList = cardCollection
-  .map(({ name: id, power }, index) => {
+const spriteSheet =
+  [4, 26, 50, 74, 96].map((horizontal) =>
+    [4, 36, 69, 103].map((vertical) => `${horizontal}% ${vertical}%`)
+).flat();
+
+alien.render = {[STATIC]:true};
+alien.count = 0;
+const cardList = [...alien.deck].reverse()
+  .map((source, index) => {
+    const [power, maxPower, id] = source.split('|');
     const card = fragment('#card', "#desk", id)
-    // view.deck[card.id] = signal(cardMiddleware)({card})
-    // view.deck[card.id].mov = view.slotList.DK
+    alien.render[card.id] = signal(cardMiddleware)({card})
+    alien.render[card.id].mov = tableOfSlots.DK
     card.style.backgroundPosition = spriteSheet[index % spriteSheet.length]  // pick(spriteSheet);
     card.querySelector('#name').innerHTML = id;
     card.querySelector('#power').innerHTML = power;
@@ -121,7 +113,9 @@ const cardList = cardCollection
   });
 
 
-globalThis.cardList = cardList;
-globalThis.signal = signal;
-globalThis.cardCollection = cardCollection;
-globalThis.monitor = monitor;
+
+globalThis.signal = signal; // TODO remove
+globalThis.cardCollection = cardCollection; // TODO remove
+globalThis.monitor = monitor; // TODO remove
+globalThis.ts = tableOfSlots; // TODO remove
+globalThis.render = alien.render; // TODO remove

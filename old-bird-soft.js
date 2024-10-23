@@ -42,7 +42,13 @@ export const signal = (watcher = () => { }) => (state = {}) => {
 
 export const STATIC = Symbol('static');
 
-/** @type {<T>(watcher?: function) => (state?: T | object) => T} */
+export const DIRECT = Symbol('direct');
+
+globalThis.DIRECT = DIRECT; // TODO remove
+
+/** @typedef {(root:any, target: any, prop:string, value:any) => void} Watcher */
+
+/** @type {<T>(watcher?: Watcher) => (state?: T | object) => T} */
 export const zignal = (watcher = () => { }) => (state = {}) => {
   let root;
   /** @type {<T>(state?: T | object) => T} */
@@ -57,6 +63,9 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
             : value
             ;
           watcher(root, target, prop, value);
+          if (target[prop]?.[DIRECT]) {
+            target[prop][DIRECT](target, prop, value);
+          }
           return true;
       }
     });
@@ -69,5 +78,15 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
   return root;
 };
 
-globalThis.zignal = zignal;
-globalThis.STATIC = STATIC;
+globalThis.zignal = zignal; // TODO remove
+globalThis.STATIC = STATIC; // TODO remove
+
+/** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
+export const fragment = (templateId, parent, id) => {
+  const frag = document.querySelector(templateId).content.cloneNode(true);
+  /** @type HTMLElement */
+  const result = frag.querySelector('section');
+  if (id) { result.id = id; }
+  document.querySelector(parent)?.appendChild(frag);
+  return result;
+};
