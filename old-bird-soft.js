@@ -58,13 +58,13 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
       {
         get: (target, prop) => target[prop],
         set: (target, prop, value) => {
-          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC]) 
+          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC] && !value[DIRECT]) 
             ? innerSignal(value)
             : value
             ;
           watcher(root, target, prop, value);
-          if (target[prop]?.[DIRECT]) {
-            target[prop][DIRECT](target, prop, value);
+          if (target?.[DIRECT]) {
+            target[DIRECT](prop, value);
           }
           return true;
       }
