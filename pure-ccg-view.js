@@ -4,6 +4,7 @@ import { cardCollection, setup } from "./alien.js"
 import { signal, monitor, delay, fragment, STATIC } from './old-bird-soft.js';
 
 /** @typedef {import('./alien.js').State & {count:number, draw:object | null}} State */
+import { DIRECT } from './old-bird-soft';
 
 /**
  * @type {(
@@ -15,6 +16,7 @@ import { signal, monitor, delay, fragment, STATIC } from './old-bird-soft.js';
  * ) => {
  *  slot:HTMLElement,
  *  moveCardTo:(card:HTMLElement) => void,
+ *  teleportCardTo:(card:HTMLElement) => void,
  *  topRem: number,
  *  leftRem: number,
  * }}
@@ -23,21 +25,18 @@ const slot = (parent, id, name, topRem, leftRem) => {
   const slot = fragment('#slot', parent, id);
   slot.querySelector('#name').innerText = name;
   const moveCardTo = async (card) => {
+    card.parentElement.appendChild(card)
+    await delay(7);
+    card.style.top = `${topRem}rem`;
+    card.style.left = `${leftRem}rem`;
+  }
+  const teleportCardTo = (card) => {
+    card.parentElement.appendChild(card)
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
   }
   slot.onclick = async () => {
-    // const draw = pick(cardList.filter(({ style }) =>
-    //   slot.style.top + ':' + slot.style.left
-    //   !==
-    //   style.top + ':' + style.left
-    // ));
-    // if (!draw) return;
-    // state.draw = draw.id;
-    // document.querySelector('#desk')?.appendChild(draw);
-    // draw.style.zIndex = (state.count += 10).toString();
-    // await delay(100);
-    // view.deck[draw.id].mov = view.slotList[id]
+    
   }
   slot.onmouseover = async () => {
     try {
@@ -45,6 +44,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
       const mm = moveMap(alien.table[id]);
       // console.log(mm);
       alien._over_ = mm;
+      // TODO rework :: tableOfSlots are the wierd connection between a reactive state and dom element
       mm.map(([,,target]) => tableOfSlots[target.id].slot.dataset.possible = 1);
     } catch (error) {
       alien._over_ = error
@@ -58,7 +58,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
       console.warn(error)
     }
   }
-  return { slot, moveCardTo, topRem, leftRem };
+  return { slot, moveCardTo, topRem, leftRem, teleportCardTo };
 };
 
 fragment('#empty', '#table');
@@ -83,11 +83,17 @@ const tableOfSlots = {
 
 const pick = arr => arr[Math.random() * arr.length | 0];
 
-const cardMiddleware = (obj, prop, value) => {
-  // console.log(obj, prop, value)
+const cardMiddleware = async (obj, prop, value) => {
+  //  console.log(obj, prop, value)
   if (prop === 'mov') {
-    obj.card.style.zIndex = (alien.count += 10).toString();
+    /** @type {{card:HTMLElement}} */
+    const {card}= obj;
+    // await delay(7)
+    card.parentElement.appendChild(card);
+    await delay(7)
+    // obj.card.style.zIndex = (alien.count += 10).toString();
     value.moveCardTo(obj.card);
+    
     return {...obj, [prop]: [value.slot.id, value.topRem, value.leftRem]};
   }
   return value;
@@ -106,16 +112,19 @@ const cardList = [...alien.deck].reverse()
     const card = fragment('#card', "#desk", id)
     alien.render[card.id] = signal(cardMiddleware)({card})
     alien.render[card.id].mov = tableOfSlots.DK
+    tableOfSlots.DK.teleportCardTo(card);
     card.style.backgroundPosition = spriteSheet[index % spriteSheet.length]  // pick(spriteSheet);
     card.querySelector('#name').innerHTML = id;
     card.querySelector('#power').innerHTML = power;
     return card;
   });
 
-
-
 globalThis.signal = signal; // TODO remove
 globalThis.cardCollection = cardCollection; // TODO remove
 globalThis.monitor = monitor; // TODO remove
 globalThis.ts = tableOfSlots; // TODO remove
 globalThis.render = alien.render; // TODO remove
+
+setTimeout(() => {
+  goingForward()
+}, 500);

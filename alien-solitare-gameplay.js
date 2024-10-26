@@ -5,7 +5,7 @@
 // @ts-check
 
 import { setup, cardCollection } from './alien.js';
-import { zignal, monitor, fragment } from './old-bird-soft.js';
+import { zignal, monitor, fragment, DIRECT, delay } from './old-bird-soft.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -31,8 +31,10 @@ import { zignal, monitor, fragment } from './old-bird-soft.js';
 globalThis.setup = structuredClone(setup); // TODO remove
 
 /** @type {State} */
-const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
+const alien = zignal()(structuredClone({_over_:[],...setup}));
 globalThis.alien = alien; // TODO remove
+
+const { table } = alien;
 
 /** @type {SlotId[]} */
 const forntline = ["L1", "L2", "L3", "L4"];
@@ -43,14 +45,26 @@ const activeLine = ["A1", "A2"];
 /** @typedef {{idt:SlotId, card:string}} Slot */
 
 const zipcard = ({ name, power, maxPower, type, side }) => [power, maxPower, name, type, side].join('|');
-const createDeck = () => alien.deck = cardCollection.map(zipcard) //.slice(0,11);
+const createDeck = () => {
+  const [hero,...zipCard] = cardCollection.map(zipcard);
+  const shuffled = zipCard.sort(() => Math.random() - 0.5);
+  alien.deck = [hero, ...shuffled];
+}
 const shuffleCards = () => alien.deck.sort(() => Math.random() - 0.5);
 const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
   slotId => alien.table[slotId] = {id:slotId, card: null});
 const hero = () => alien.table.HE = ({id:'HE', card:alien.deck.shift()});
-const dealCards = () => forntline
-  .filter(id => !alien.table[id].card)
-  .map(id => alien.table[id] = /** @type {Slot} */ ({id,card:alien.deck.shift()}));
+const dealCards = async () => {
+  /** @type {SlotId[]} */
+  const emptySlot = forntline.filter(id => !alien.table[id].card)
+//   .map(id => alien.table[id]);
+  for(const id of emptySlot) {
+    // console.log(slot)
+    alien.table[id] = {id,card:alien.deck.shift()}
+    await delay(400);
+  }
+  // ({id,card:alien.deck.shift()}));
+}
 
 const thisIsTheEnd = () =>
   alien.deck.length === 0
@@ -78,29 +92,41 @@ const conflict = (engage, guard) => {
 /** @type {(card:string) => number} */
 const getPower = (card) => + card.split('|')?.[0];
 
+
+const gameAnimation = (prop, prev, next) => {
+  try {
+    if (next?.id && next?.card) {
+      const [powerStr, maxPowerStr, cardNameId] = next.card.split('|');
+      // render[cardNameId].mov = ts[prop]
+      // this is .EQUAL.
+      ts[prop].moveCardTo(render[cardNameId].card)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const gameRule = () => {
   alien.phases = "BEGIN";
   const start = performance.now()
   emptyTable();
   createDeck();
-  return; // TODO remove
+  alien.table[DIRECT] = gameAnimation;
+}
+
+const goingForward = async () => {
   hero();
-  shuffleCards();
+  // shuffleCards();
+  await delay(600);
+  // return;
   alien.phases = "STORY_GOES_ON"
   dealCards();
-  console.log('zipped card  helps:', performance.now() - start)
-  alien.phases = (isSurvive())
-    ? "SURVIVE"
-    : "BURN_OUT"
-    ;
+  // console.log('zipped card  helps:', performance.now() - start)
 };
-
+globalThis.goingForward = goingForward;
 gameRule()
 
 
-const { table } = alien;
-const frontLine = [table.L1, table.L2, table.L3, table.L4];
-/** --typedef {{card: string | null, id: SlotId, kind: SlotKind }} Slot */
 
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
@@ -192,5 +218,3 @@ const gainScore = (p) => p;
 const storeSomething = (p) => p;
 const dropSomething = (p) => p;
 const prepare = (p) => p;
-
-globalThis.alien = alien;
