@@ -37,7 +37,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
   }
   slot.onclick = async () => {
     alien._over_ = id;
-    alien.table[id] = alien.deck.shift();
+    alien.table[id] = {id, card:alien.deck.shift()};
   }
   slot.onmouseover = async () => {
     try {

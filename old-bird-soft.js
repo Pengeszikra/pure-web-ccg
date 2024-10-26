@@ -57,8 +57,6 @@ export const signal = (watcher = () => { }) => (state = {}) => {
 export const STATIC = Symbol('static');
 export const DIRECT = Symbol('direct');
 
-globalThis.DIRECT = DIRECT; // TODO remove
-
 /** @typedef {(root:any, target: any, prop:string, value:any) => void} Watcher */
 
 /** @type {<T>(watcher?: Watcher) => (state?: T | object) => T} */
@@ -92,6 +90,7 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
 };
 
 globalThis.zignal = zignal; // TODO remove
+globalThis.DIRECT = DIRECT; // TODO remove
 globalThis.STATIC = STATIC; // TODO remove
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */

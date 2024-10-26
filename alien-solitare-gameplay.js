@@ -187,7 +187,9 @@ globalThis.moveByRule = moveByRule; // TODO remove
 /** @type {(slot:Slot) => [function, Slot, Slot]} */
 const moveMap = (slot) => Object.keys(alien.table).map(
   key => moveByRule(slot, alien.table[key])
-).filter(p => p)
+)
+// .map(p => { console.log(slot,p);return p})
+.filter(p => p)
 .map(([fun,from,to]) => [fun?.name, from, to])
 globalThis.moveMap = moveMap; // TODO remove
 

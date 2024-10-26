@@ -19,7 +19,12 @@ _no-compile minimal reactive JS Framework_
 The name is: Z I G N A L :: a gamechanger function;
 
 ```js
-/** @type {<T>(watcher?: function) => (state?: T | object) => T} */
+export const STATIC = Symbol('static');
+export const DIRECT = Symbol('direct');
+
+/** @typedef {(root:any, target: any, prop:string, value:any) => void} Watcher */
+
+/** @type {<T>(watcher?: Watcher) => (state?: T | object) => T} */
 export const zignal = (watcher = () => { }) => (state = {}) => {
   let root;
   /** @type {<T>(state?: T | object) => T} */
@@ -29,7 +34,10 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
       {
         get: (target, prop) => target[prop],
         set: (target, prop, value) => {
-          target[prop] = (value !== null && typeof value === 'object') 
+          if (target?.[DIRECT]) {
+            target[DIRECT](prop, target[prop], value);
+          }
+          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC] && !value[DIRECT]) 
             ? innerSignal(value)
             : value
             ;
@@ -39,7 +47,7 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
     });
     Object.entries(state).map(([key, val]) => proxy[key] = val);
     return proxy;
-  }
+  } 
   const end = innerSignal(state); 
   root = end;
   watcher(end);
