@@ -31,7 +31,7 @@ import { zignal, monitor, fragment, DIRECT, delay } from './old-bird-soft.js';
 globalThis.setup = structuredClone(setup); // TODO remove
 
 /** @type {State} */
-const alien = zignal()(structuredClone({_over_:[],...setup}));
+const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
 globalThis.alien = alien; // TODO remove
 
 const { table } = alien;
@@ -57,13 +57,10 @@ const hero = () => alien.table.HE = ({id:'HE', card:alien.deck.shift()});
 const dealCards = async () => {
   /** @type {SlotId[]} */
   const emptySlot = forntline.filter(id => !alien.table[id].card)
-//   .map(id => alien.table[id]);
   for(const id of emptySlot) {
-    // console.log(slot)
     alien.table[id] = {id,card:alien.deck.shift()}
     await delay(400);
   }
-  // ({id,card:alien.deck.shift()}));
 }
 
 const thisIsTheEnd = () =>
@@ -88,17 +85,15 @@ const conflict = (engage, guard) => {
   };
 };
 
-
 /** @type {(card:string) => number} */
 const getPower = (card) => + card.split('|')?.[0];
 
-
 const gameAnimation = (prop, prev, next) => {
   try {
-    if (next?.id && next?.card) {
-      const [powerStr, maxPowerStr, cardNameId] = next.card.split('|');
-      // render[cardNameId].mov = ts[prop]
-      // this is .EQUAL.
+    if (next?.card || next?.length) {
+      const [,, cardNameId] = !next.card
+        ? next.split('|')
+        : next.card.split('|')
       ts[prop].moveCardTo(render[cardNameId].card)
     }
   } catch (error) {
@@ -116,18 +111,12 @@ const gameRule = () => {
 
 const goingForward = async () => {
   hero();
-  // shuffleCards();
   await delay(600);
-  // return;
   alien.phases = "STORY_GOES_ON"
   dealCards();
-  // console.log('zipped card  helps:', performance.now() - start)
 };
 globalThis.goingForward = goingForward;
 gameRule()
-
-
-
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
 const front = (from, query) => 

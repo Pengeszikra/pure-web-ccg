@@ -3,7 +3,7 @@
 import { cardCollection, setup } from "./alien.js"
 import { signal, monitor, delay, fragment, STATIC } from './old-bird-soft.js';
 
-/** @typedef {import('./alien.js').State & {count:number, draw:object | null}} State */
+/** @typedef {import('./alien.js').State & {render?:object}} State */
 import { DIRECT } from './old-bird-soft';
 
 /**
@@ -36,7 +36,8 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.left = `${leftRem}rem`;
   }
   slot.onclick = async () => {
-    
+    alien._over_ = id;
+    alien.table[id] = alien.deck.shift();
   }
   slot.onmouseover = async () => {
     try {
@@ -91,7 +92,6 @@ const cardMiddleware = async (obj, prop, value) => {
     // await delay(7)
     card.parentElement.appendChild(card);
     await delay(7)
-    // obj.card.style.zIndex = (alien.count += 10).toString();
     value.moveCardTo(obj.card);
     
     return {...obj, [prop]: [value.slot.id, value.topRem, value.leftRem]};
@@ -105,7 +105,7 @@ const spriteSheet =
 ).flat();
 
 alien.render = {[STATIC]:true};
-alien.count = 0;
+
 const cardList = [...alien.deck].reverse()
   .map((source, index) => {
     const [power, maxPower, id] = source.split('|');
