@@ -14,7 +14,21 @@ export const monitor = state => {
 };
 
 /** @type {(ms:number) => Promise<void>} */
-export const delay = (ms) => new Promise((release) => setTimeout(release, ms));
+// export const delay = (ms) => new Promise((release) => setTimeout(release, ms));
+export const delay = (ms) => {
+  return new Promise((release) => {
+    const start = performance.now();
+    const tick = (now) => {
+      if (now - start >= ms) {
+        release();
+      } else {
+        requestAnimationFrame(tick);
+      }
+    };
+    requestAnimationFrame(tick);
+  });
+};
+
 
 /**
  * I just think it is so easy,
@@ -41,8 +55,13 @@ export const signal = (watcher = () => { }) => (state = {}) => {
 };
 
 export const STATIC = Symbol('static');
+export const DIRECT = Symbol('direct');
 
-/** @type {<T>(watcher?: function) => (state?: T | object) => T} */
+globalThis.DIRECT = DIRECT; // TODO remove
+
+/** @typedef {(root:any, target: any, prop:string, value:any) => void} Watcher */
+
+/** @type {<T>(watcher?: Watcher) => (state?: T | object) => T} */
 export const zignal = (watcher = () => { }) => (state = {}) => {
   let root;
   /** @type {<T>(state?: T | object) => T} */
@@ -52,7 +71,10 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
       {
         get: (target, prop) => target[prop],
         set: (target, prop, value) => {
-          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC]) 
+          if (target?.[DIRECT]) {
+            target[DIRECT](prop, target[prop], value);
+          }
+          target[prop] = (value !== null && typeof value === 'object' && !value[STATIC] && !value[DIRECT]) 
             ? innerSignal(value)
             : value
             ;
@@ -69,5 +91,15 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
   return root;
 };
 
-globalThis.zignal = zignal;
-globalThis.STATIC = STATIC;
+globalThis.zignal = zignal; // TODO remove
+globalThis.STATIC = STATIC; // TODO remove
+
+/** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
+export const fragment = (templateId, parent, id) => {
+  const frag = document.querySelector(templateId).content.cloneNode(true);
+  /** @type HTMLElement */
+  const result = frag.querySelector('section');
+  if (id) { result.id = id; }
+  document.querySelector(parent)?.appendChild(frag);
+  return result;
+};

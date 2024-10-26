@@ -5,8 +5,7 @@
 // @ts-check
 
 import { setup, cardCollection } from './alien.js';
-import { zignal, monitor } from './old-bird-soft.js';
-import { gameFlow } from './async-saga.js';
+import { zignal, monitor, fragment, DIRECT, delay } from './old-bird-soft.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
@@ -29,16 +28,13 @@ import { gameFlow } from './async-saga.js';
 * } Keywords
 */
 
-
-globalThis.setup = structuredClone(setup);
+globalThis.setup = structuredClone(setup); // TODO remove
 
 /** @type {State} */
-const alien = zignal(monitor)(structuredClone({_over_:42,...setup}));
-globalThis.alien = alien;
+const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
+globalThis.alien = alien; // TODO remove
 
-import { STATIC } from './old-bird-soft.js';
-// const fastDeck = structuredClone(cardCollection)
-// fastDeck[STATIC] = true;
+const { table } = alien;
 
 /** @type {SlotId[]} */
 const forntline = ["L1", "L2", "L3", "L4"];
@@ -46,17 +42,26 @@ const forntline = ["L1", "L2", "L3", "L4"];
 const heroLine = ["HE", "A1", "A2", "S1"];
 /** @type {SlotId[]} */
 const activeLine = ["A1", "A2"];
-/** @typedef {{slot:SlotId, card:string}} Slot */
+/** @typedef {{idt:SlotId, card:string}} Slot */
 
 const zipcard = ({ name, power, maxPower, type, side }) => [power, maxPower, name, type, side].join('|');
-const createDeck = () => alien.deck = cardCollection.map(zipcard) //.slice(0,11);
+const createDeck = () => {
+  const [hero,...zipCard] = cardCollection.map(zipcard);
+  const shuffled = zipCard.sort(() => Math.random() - 0.5);
+  alien.deck = [hero, ...shuffled];
+}
 const shuffleCards = () => alien.deck.sort(() => Math.random() - 0.5);
 const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
-  slotId => alien.table[slotId] = {slot:slotId, card: null});
-const hero = () => alien.table.HERO = ({slot:'HE', card:alien.deck.shift()});
-const dealCards = () => forntline
-  .filter(slot => !alien.table[slot].card)
-  .map(slot => alien.table[slot] = /** @type {Slot} */ ({slot,card:alien.deck.shift()}));
+  slotId => alien.table[slotId] = {id:slotId, card: null});
+const hero = () => alien.table.HE = ({id:'HE', card:alien.deck.shift()});
+const dealCards = async () => {
+  /** @type {SlotId[]} */
+  const emptySlot = forntline.filter(id => !alien.table[id].card)
+  for(const id of emptySlot) {
+    alien.table[id] = {id,card:alien.deck.shift()}
+    await delay(400);
+  }
+}
 
 const thisIsTheEnd = () =>
   alien.deck.length === 0
@@ -83,54 +88,60 @@ const conflict = (engage, guard) => {
 /** @type {(card:string) => number} */
 const getPower = (card) => + card.split('|')?.[0];
 
+const gameAnimation = (prop, prev, next) => {
+  try {
+    if (next?.card || next?.length) {
+      const [,, cardNameId] = !next.card
+        ? next.split('|')
+        : next.card.split('|')
+      ts[prop].moveCardTo(render[cardNameId].card)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
 const gameRule = () => {
   alien.phases = "BEGIN";
   const start = performance.now()
   emptyTable();
   createDeck();
+  alien.table[DIRECT] = gameAnimation;
+}
+
+const goingForward = async () => {
   hero();
-  shuffleCards();
+  await delay(600);
   alien.phases = "STORY_GOES_ON"
   dealCards();
-  console.log('zipped card  helps:', performance.now() - start)
-  alien.phases = (isSurvive())
-    ? "SURVIVE"
-    : "BURN_OUT"
-    ;
 };
-
+globalThis.goingForward = goingForward;
 gameRule()
-
-
-const { table } = alien;
-const frontLine = [table.L1, table.L2, table.L3, table.L4];
-/** --typedef {{card: string | null, id: SlotId, kind: SlotKind }} Slot */
-
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
 const front = (from, query) => 
-  forntline.includes(from.slot) 
+  forntline.includes(from.id) 
   && from.card.includes(query)
 
 /** @type {(from:Slot, query: Keywords) => boolean} */
 const active = (from, query) => 
-  activeLine.includes(from.slot) 
+  activeLine.includes(from.id) 
   && from.card.includes(query);
 
 /** @type {(to:Slot, check: Keywords) => boolean} */
 const toCheck = (to, check) => to.card === null ? false : to.card.includes(check);
 
 /** @type {(from:Slot, check: Keywords) => boolean} */
-const fromStore = (from, check) => from.slot === "S1" && from.card.includes(check);
+const fromStore = (from, check) => from.id === "S1" && from.card.includes(check);
 
 /** @type {(to:Slot) => boolean} */
-const toEmptyActive = (to) => activeLine.includes(to.slot) && to.card === null;
+const toEmptyActive = (to) => activeLine.includes(to.id) && to.card === null;
 
 /** @type {(to:Slot) => boolean} */
-const toEmptyStore = (to) => to.slot === "S1" && to.card === null;
+const toEmptyStore = (to) => to.id === "S1" && to.card === null;
 
 /** @type {(to:Slot) => boolean} */
-const toDrop = (to) => to.slot === "DR";
+const toDrop = (to) => to.id === "DR";
 
 /** @type {(from: Slot, to: Slot) => [function, Slot, Slot] | null} */
 const moveByRule = (from, to) => {
@@ -171,14 +182,14 @@ const moveByRule = (from, to) => {
 
   return null;
 };
-globalThis.moveByRule = moveByRule;
+globalThis.moveByRule = moveByRule; // TODO remove
 
 /** @type {(slot:Slot) => [function, Slot, Slot]} */
 const moveMap = (slot) => Object.keys(alien.table).map(
   key => moveByRule(slot, alien.table[key])
 ).filter(p => p)
 .map(([fun,from,to]) => [fun?.name, from, to])
-globalThis.moveMap = moveMap;
+globalThis.moveMap = moveMap; // TODO remove
 
 const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
 const selectCardDemo = () => { };
@@ -196,9 +207,3 @@ const gainScore = (p) => p;
 const storeSomething = (p) => p;
 const dropSomething = (p) => p;
 const prepare = (p) => p;
-
-globalThis.saga = gameFlow
-globalThis.gameRule = gameRule
-
-// test 11ty
-
