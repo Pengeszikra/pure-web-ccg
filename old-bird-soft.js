@@ -2,9 +2,11 @@
  //                                  \\
 // - - - - - - - - - [ pure web ] - - \\
 
-const monitorView = document.getElementById('monitor')
+/** @type {HTMLElement} */
+export const monitorView = document.getElementById('monitor');
+
 export const monitor = state => {
-  if (!monitorView) return;
+  if (!monitorView || monitorView.style.visibility === 'hidden') return;
   try {
     monitorView.innerText = JSON.stringify(state, null, 2);
   } catch (error) {

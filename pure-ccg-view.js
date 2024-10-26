@@ -1,7 +1,7 @@
 // @ts-check
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor, delay, fragment, STATIC } from './old-bird-soft.js';
+import { signal, monitor, delay, fragment, STATIC, monitorView } from './old-bird-soft.js';
 
 /** @typedef {import('./alien.js').State & {render?:object}} State */
 import { DIRECT } from './old-bird-soft';
@@ -36,8 +36,26 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.left = `${leftRem}rem`;
   }
   slot.onclick = async () => {
-    alien._over_ = id;
-    alien.table[id] = {id, card:alien.deck.shift()};
+    // alien.table[id] = {id, card:alien.deck.shift()};
+    if (alien.fly?.id) {
+      const found = alien.fly.moves
+        // .map(([f, from, to]) => [from.id, to.id, id, alien.fly.id, from.id == alien.fly.id && to.id == id])
+        .find(([, from, to]) => from.id == alien.fly.id && to.id == id)
+        // .map(console.log)
+      console.log(found);
+      if (found) {
+        const {card} = alien.table[alien.fly.id];
+        alien.table[alien.fly.id].card = null;
+        alien.table[id] = {id, card};
+        //console.log({id, card: alien.table[alien.fly.id].card})
+      }
+      alien.fly = null;
+      alien._over_ = [];
+    }
+    if (alien._over_?.[0]?.[1]?.id) {
+      alien.fly = {id, moves: alien._over_};
+      console.log(alien.fly.id, alien.fly.moves[0][1].card)
+    }
   }
   slot.onmouseover = async () => {
     try {
@@ -125,6 +143,11 @@ globalThis.monitor = monitor; // TODO remove
 globalThis.ts = tableOfSlots; // TODO remove
 globalThis.render = alien.render; // TODO remove
 
-setTimeout(() => {
-  goingForward()
-}, 500);
+setTimeout(() => goingForward(), 500);
+
+const debugSwitch = document.querySelector('code');
+debugSwitch.onclick = () => monitorView.style.visibility 
+  = monitorView.style.visibility === 'hidden' 
+  ? 'visible' 
+  : 'hidden';
+monitorView.style.visibility = 'hidden';
