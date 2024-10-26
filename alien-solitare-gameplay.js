@@ -31,7 +31,7 @@ import { zignal, monitor, fragment, DIRECT, delay } from './old-bird-soft.js';
 globalThis.setup = structuredClone(setup); // TODO remove
 
 /** @type {State} */
-const alien = zignal(monitor)(structuredClone({_over_:[],...setup}));
+const alien = zignal()(structuredClone({_over_:[],...setup}));
 globalThis.alien = alien; // TODO remove
 
 const { table } = alien;
