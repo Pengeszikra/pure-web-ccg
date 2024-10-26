@@ -1,10 +1,9 @@
 // @ts-check
 
 import { cardCollection, setup } from "./alien.js"
-import { signal, monitor, delay, fragment, STATIC, monitorView } from './old-bird-soft.js';
+import { signal, monitor, delay, fragment, STATIC, monitorView, DIRECT } from './old-bird-soft.js';
 
 /** @typedef {import('./alien.js').State & {render?:object}} State */
-import { DIRECT } from './old-bird-soft';
 
 /**
  * @type {(
@@ -150,4 +149,4 @@ debugSwitch.onclick = () => monitorView.style.visibility
   = monitorView.style.visibility === 'hidden' 
   ? 'visible' 
   : 'hidden';
-monitorView.style.visibility = 'hidden';
+// monitorView.style.visibility = 'hidden';

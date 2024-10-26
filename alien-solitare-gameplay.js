@@ -44,7 +44,7 @@ const heroLine = ["HE", "A1", "A2", "S1"];
 const activeLine = ["A1", "A2"];
 /** @typedef {{idt:SlotId, card:string}} Slot */
 
-const zipcard = ({ name, power, maxPower, type, side }) => [power, maxPower, name, type, side].join('|');
+const zipcard = ({ name, power, maxPower, type, side, work }) => [power, maxPower, name, type, side, work].join('|');
 const createDeck = () => {
   const [hero,...zipCard] = cardCollection.map(zipcard);
   const shuffled = zipCard.sort(() => Math.random() - 0.5);
@@ -193,7 +193,6 @@ const moveMap = (slot) => Object.keys(alien.table).map(
 .map(([fun,from,to]) => [fun?.name, from, to])
 globalThis.moveMap = moveMap; // TODO remove
 
-const selectCardInteraction = (possible) => prompt(`Play the next move (${possible})`);
 const selectCardDemo = () => { };
 const playCardInteraction = () => { };
 const renderAnimation = () => { };
