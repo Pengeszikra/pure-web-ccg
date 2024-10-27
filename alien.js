@@ -24,8 +24,8 @@
 * TODO: L5, L6, A3, S2 :: Space-ship / Location dynamic table size feature
 * 
 *  @typedef { 'DK' | 'DR' | 
-*     'L1' | 'L2' | 'L3' | 'L4' | 'L5' | 'L6' | 
-*     'HE' | 'A1' | 'A2' | 'A3' | 'S1' | 'S2'
+*     'L1' | 'L2' | 'L3' | 'L4' |
+*     'HE' | 'A1' | 'A2' | 'S1'
 * } SlotId
 */
 
@@ -61,6 +61,7 @@
 * table: Table,
 * phases: Phases,
 * score: number,
+* render?: object,
 * }} State
 */
 

@@ -152,10 +152,7 @@ const dealCards = async () => {
 
 dealCards();
 
-const slash = (a,b) => a.map((ae,ai) => b?.[ai] ? [ae, b[ai]] : [ae]).flat().join('|');
-
 globalThis.view = view;
-globalThis.slash = slash;
 globalThis.state = state;
 globalThis.cardList = cardList;
 globalThis.signal = signal;
@@ -174,10 +171,5 @@ sprite sheets of cards, composition: 5 x 4 grid, aspect ratio of each cards is s
 style: detailed crafted cut fantasy art
 Theme: alien invasion and space adventure moody Haroshi nagai inspired line art comic art with Syd Mead and Keith Parkinson, images on card in list: spaceship, alien, planet, gadget, scene, species, inner place of space ship, blast, scientic stuff, humanoid hero
 `
-
-// const alien = signal(monitor)();
-// alien.cards = Object.values(cardCollection).map(({name, power, type, id, side}) => ({name, power, type, id, side}));
-// alien.slots = {...view.slotList};
-// globalThis.alien = alien;
 
 // THE NAME IS: Z I G N A L

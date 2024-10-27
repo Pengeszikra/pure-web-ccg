@@ -1,9 +1,9 @@
 // @ts-check
 
-import { cardCollection, setup } from "./alien.js"
-import { signal, monitor, delay, fragment, STATIC, monitorView, DIRECT } from './old-bird-soft.js';
+import { cardCollection } from "./alien.js"
+import { signal, monitor, delay, fragment, STATIC, monitorView } from './old-bird-soft.js';
 
-/** @typedef {import('./alien.js').State & {render?:object}} State */
+/** @typedef {import('./alien.js').State} State */
 
 /**
  * @type {(
@@ -29,6 +29,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
   }
+  /** @type {(card:HTMLElement) => void} */
   const teleportCardTo = (card) => {
     card.parentElement.appendChild(card)
     card.style.top = `${topRem}rem`;
@@ -125,7 +126,7 @@ alien.render = {[STATIC]:true};
 
 const cardList = [...alien.deck].reverse()
   .map((source, index) => {
-    const [power, maxPower, id] = source.split('|');
+    const [power, maxPower, id,,,work] = source.split('|');
     const card = fragment('#card', "#desk", id)
     alien.render[card.id] = signal(cardMiddleware)({card})
     alien.render[card.id].mov = tableOfSlots.DK
@@ -133,6 +134,7 @@ const cardList = [...alien.deck].reverse()
     card.style.backgroundPosition = spriteSheet[index % spriteSheet.length]  // pick(spriteSheet);
     card.querySelector('#name').innerHTML = id;
     card.querySelector('#power').innerHTML = power;
+    card.querySelector('#work').innerHTML = work;
     return card;
   });
 
@@ -149,4 +151,4 @@ debugSwitch.onclick = () => monitorView.style.visibility
   = monitorView.style.visibility === 'hidden' 
   ? 'visible' 
   : 'hidden';
-// monitorView.style.visibility = 'hidden';
+monitorView.style.visibility = 'hidden';
