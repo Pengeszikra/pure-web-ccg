@@ -4,8 +4,11 @@
  * @typedef {'HERO' | 'ALIEN' | 'SPACE-SHIP' | 'LOCATION' | 'GADGET' | 'STORY' } Kind
  * @typedef {'GUARD' | 'ENGAGE' | 'FIX' | 'SKILL' | 'WORTH'} Work
  * @typedef {'ALLY' | 'STRANGE' | 'NEUTRAL'} Side
- * @typedef {'LINE' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK' } Slot
  */
+
+/** @typedef {'FRONT' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK'} SlotKind */
+
+/** @typedef {string} CardString */
 
 /** 
  * @typedef {{
@@ -19,6 +22,9 @@
 * }} Card
 */
 
+/** @typedef {{id:SlotId, card:CardString}} Slot */
+
+
 /**
 * Keys of Slots or Spots I was mixing this a bit.
 * TODO: L5, L6, A3, S2 :: Space-ship / Location dynamic table size feature
@@ -29,10 +35,11 @@
 * } SlotId
 */
 
+
 /**
 * This is represent the whole game are
 * 
-* @typedef {Card | null} TableSpot
+* @typedef {Slot | null} TableSpot
 */
 
 /** 
@@ -55,9 +62,9 @@
 
 /**
 * @typedef {{
-* deck: Card[],
-* lost: Card[],
-* fly: { from: SlotId, to?: SlotId, card: Card },
+* deck: CardString[],
+* lost: CardString[],
+* fly: { from: SlotId, to?: SlotId, card: CardString },
 * table: Table,
 * phases: Phases,
 * score: number,

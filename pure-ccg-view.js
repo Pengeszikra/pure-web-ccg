@@ -3,6 +3,8 @@
 import { cardCollection } from "./alien.js"
 import { signal, monitor, delay, fragment, STATIC, monitorView } from './old-bird-soft.js';
 
+import "./alien-solitare-gameplay.js"; // easy to solve multi script problem
+
 /** @typedef {import('./alien.js').State} State */
 
 /**

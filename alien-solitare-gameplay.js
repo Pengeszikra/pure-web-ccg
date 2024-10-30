@@ -9,6 +9,9 @@ import { zignal, monitor, DIRECT, delay } from './old-bird-soft.js';
 
 /** @typedef {import('./alien').State} State */
 /** @typedef {import('./alien').Phases} Phases */
+/** @typedef {import('./alien').SlotId} SlotId */
+/** @typedef {import('./alien').Slot} Slot */
+/** @typedef {import('./alien').CardString} CardString */
 
 /**
  * @typedef {State & {
@@ -19,8 +22,6 @@ import { zignal, monitor, DIRECT, delay } from './old-bird-soft.js';
  * }} AlienState
  */
 
-/** @typedef {'L1' | 'L2' | 'L3' | 'L4' | 'HE' | 'A1' | 'A2' | 'S1' | 'DR' | 'DK' } SlotId */
-/** @typedef {'FRONT' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK'} SlotKind */
 /** 
  * @typedef { |
 *  'FRONT' | 'STRANGE' | 'HERO' | 'ACTIVE' | 'STORE' | 'DROP' | 'DECK' |
@@ -47,7 +48,6 @@ const forntline = ["L1", "L2", "L3", "L4"];
 const heroLine = ["HE", "A1", "A2", "S1"];
 /** @type {SlotId[]} */
 const activeLine = ["A1", "A2"];
-/** @typedef {{id:SlotId, card:string}} Slot */
 
 const zipcard = ({ name, power, maxPower, type, side, work }) => [power, maxPower, name, type, side, work].join('|');
 const createDeck = () => {
@@ -92,13 +92,11 @@ const conflict = (engage, guard) => {
 /** @type {(card:string) => number} */
 const getPower = (card) => + card.split('|')?.[0];
 
-/** @type {(prop:Slot, _:any, next:Slot | import('./alien.js').Card) => void} */
+/** @type {(prop:Slot, _:any, next:Slot) => void} */
 const gameAnimation = (prop, _, next) => {
   try {
-    if (next?.card || next?.length) {
-      const [,, cardNameId] = !next.card
-        ? next.split('|')
-        : next.card.split('|')
+    if (next?.card) {
+      const [,, cardNameId] = next.card.split('|')
       ts[prop].moveCardTo(render[cardNameId].card)
     }
   } catch (error) {
@@ -188,11 +186,10 @@ const moveByRule = (from, to) => {
 };
 globalThis.moveByRule = moveByRule; // TODO remove
 
-/** @type {(slot:Slot) => [function, Slot, Slot]} */
+/** ---type {(slot:Slot) => [function, Slot, Slot]} */
 const moveMap = (slot) => Object.keys(alien.table).map(
   key => moveByRule(slot, alien.table[key])
 )
-// .map(p => { console.log(slot,p);return p})
 .filter(p => p)
 .map(([fun,from,to]) => [fun?.name, from, to])
 globalThis.moveMap = moveMap; // TODO remove
