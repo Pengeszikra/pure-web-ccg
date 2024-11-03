@@ -61,11 +61,12 @@ export const DIRECT = Symbol('direct');
 
 /** @typedef {(root:any, target?: any, prop?:string | Symbol, value?:any) => void} Watcher */
 
-/** @type {<T>(watcher?: Watcher) => (state?: T | object) => T} */
+/** @type {<T>(watcher?: Watcher) => (state?: T) => T} */
 export const zignal = (watcher = () => { }) => (state = {}) => {
   let root;
-  /** @type {<T>(state?: T | object) => T} */
+  /** @type {<T>(state?: T) => T} */
   const innerSignal = (state) => { 
+    /** @type {T} */
     const proxy = new Proxy(
       Array.isArray(state) ? [] : {}, 
       {
@@ -101,7 +102,6 @@ export const fragment = (templateId, parent, id) => {
   const tE = document.querySelector(templateId);
   const frag = tE?.content ?  tE.content.cloneNode(true) : null;
   if (frag === null) return null;
-  /** @type {HTMLElement} */ 
   const result = frag.querySelector('section');
   if (id) { result.id = id; }
   document.querySelector(parent)?.appendChild(frag);
