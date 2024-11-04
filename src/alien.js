@@ -24,6 +24,7 @@
 
 /** @typedef {{id:SlotId, card:CardString}} Slot */
 
+/** @typedef {[function | string, Slot, Slot]} Move */
 
 /**
 * Keys of Slots or Spots I was mixing this a bit.
@@ -64,11 +65,12 @@
 * @typedef {{
 * deck: CardString[],
 * lost: CardString[],
-* fly: { from: SlotId, to?: SlotId, card: CardString },
+* fly: { id: string, moves: Move[] },
 * table: Table,
 * phases: Phases,
 * score: number,
 * render?: object,
+* _over_?: array,
 * }} State
 */
 

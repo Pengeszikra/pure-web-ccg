@@ -24,7 +24,10 @@ import "./alien-solitare-gameplay.js"; // easy to solve multi script problem
  */
 const slot = (parent, id, name, topRem, leftRem) => {
   const slot = fragment('#slot', parent, id);
-  slot.querySelector('#name').innerText = name;
+  /** @type {HTMLElement} */
+  const element = slot.querySelector('#name')
+  if(element?.innerText) {element.innerText  = name; }
+  /** @type {(card:HTMLElement) => Promise} */
   const moveCardTo = async (card) => {
     card.parentElement.appendChild(card)
     await delay(7);
@@ -66,6 +69,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
       // console.log(mm);
       alien._over_ = mm;
       // TODO rework :: tableOfSlots are the wierd connection between a reactive state and dom element
+      // @ts-ignore
       mm.map(([,,target]) => tableOfSlots[target.id].slot.dataset.possible = 1);
     } catch (error) {
       alien._over_ = error
@@ -102,8 +106,10 @@ const tableOfSlots = {
   HE,A1,A2,S1,
 };
 
-const pick = arr => arr[Math.random() * arr.length | 0];
+/** @type {<T extends Array>(arr:T) => T} */
+export const pick = arr => arr[Math.random() * arr.length | 0];
 
+/** --type {import("./old-bird-soft.js").Watcher} */
 const cardMiddleware = async (obj, prop, value) => {
   //  console.log(obj, prop, value)
   if (prop === 'mov') {
@@ -113,7 +119,6 @@ const cardMiddleware = async (obj, prop, value) => {
     card.parentElement.appendChild(card);
     await delay(7)
     value.moveCardTo(obj.card);
-    
     return {...obj, [prop]: [value.slot.id, value.topRem, value.leftRem]};
   }
   return value;
@@ -128,7 +133,7 @@ alien.render = {[STATIC]:true};
 
 const cardList = [...alien.deck].reverse()
   .map((source, index) => {
-    const [power, maxPower, id,,,work] = source.split('|');
+    const [power,,id,,,work] = source.split('|');
     const card = fragment('#card', "#desk", id)
     alien.render[card.id] = signal(cardMiddleware)({card})
     alien.render[card.id].mov = tableOfSlots.DK
@@ -140,6 +145,8 @@ const cardList = [...alien.deck].reverse()
     return card;
   });
 
+
+globalThis.cardList = cardList;
 globalThis.signal = signal; // TODO remove
 globalThis.cardCollection = cardCollection; // TODO remove
 globalThis.monitor = monitor; // TODO remove

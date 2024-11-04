@@ -5,6 +5,7 @@
 /** @type {HTMLElement} */
 export const monitorView = document.getElementById('monitor');
 
+/** @type {(state: any) => void} */
 export const monitor = state => {
   if (!monitorView || monitorView.style.visibility === 'hidden') return;
   try {
@@ -20,6 +21,7 @@ export const monitor = state => {
 export const delay = (ms) => {
   return new Promise((release) => {
     const start = performance.now();
+    /** @type {(now: number) => void} */
     const tick = (now) => {
       if (now - start >= ms) {
         release();
@@ -62,11 +64,10 @@ export const DIRECT = Symbol('direct');
 /** @typedef {(root:any, target?: any, prop?:string | Symbol, value?:any) => void} Watcher */
 
 /** @type {<T>(watcher?: Watcher) => (state?: T) => T} */
-export const zignal = (watcher = () => { }) => (state = {}) => {
+export const zignal = (watcher = () => { }) => (state) => {
   let root;
-  /** @type {<T>(state?: T) => T} */
+  /** @type {<U>(state?: U) => U} */
   const innerSignal = (state) => { 
-    /** @type {T} */
     const proxy = new Proxy(
       Array.isArray(state) ? [] : {}, 
       {
@@ -84,6 +85,7 @@ export const zignal = (watcher = () => { }) => (state = {}) => {
       }
     });
     Object.entries(state).map(([key, val]) => proxy[key] = val);
+    // @ts-ignore
     return proxy;
   } 
   const end = innerSignal(state); 
@@ -100,8 +102,10 @@ globalThis.STATIC = STATIC; // TODO remove
 export const fragment = (templateId, parent, id) => {
   /** @type {HTMLTemplateElement} */
   const tE = document.querySelector(templateId);
-  const frag = tE?.content ?  tE.content.cloneNode(true) : null;
+  /** @type {Node | null} */
+  const frag = tE?.content ? tE.content.cloneNode(true) : null;
   if (frag === null) return null;
+  // @ts-ignore
   const result = frag.querySelector('section');
   if (id) { result.id = id; }
   document.querySelector(parent)?.appendChild(frag);
