@@ -161,3 +161,35 @@ debugSwitch.onclick = () => monitorView.style.visibility
   ? 'visible' 
   : 'hidden';
 monitorView.style.visibility = 'hidden';
+
+class TeaserAnimation extends HTMLElement {
+  constructor() {
+    super();
+    this.innerHTML = `
+      <article class="
+        hidden
+        absolute
+        top-12
+        right-12
+        p-16
+        bg-zinc-800
+        transition-all duration-500
+        hover:-translate-x-96
+      ">
+        <h1 class="text-orange-500 text-2xl">
+          Some information
+        </h1>
+        Some really inefficent Teaser article
+        <p>Maybe some trick we can using</p>
+        <br>
+        Lets right solution of design system
+        <br>
+        sometimes it is too complicated
+      </article>
+    `
+  }
+}
+
+customElements.define('teaser-animation', TeaserAnimation);
+
+// https://kinsta.com/blog/web-components/
