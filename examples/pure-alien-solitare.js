@@ -5,8 +5,8 @@
 // even without building.
 // this is help to using jsDoc in code a proper way.
 
-import { cardCollection, setup } from "./alien.js"
-import { signal, monitor, delay } from './old-bird-soft.js';
+import { cardCollection, setup } from "../src/alien.js"
+import { signal, monitor, delay } from '../src/old-bird-soft.js';
 
 const spriteSheet =
   [4, 26, 50, 74, 96].map((horizontal) =>
@@ -16,7 +16,7 @@ const spriteSheet =
 const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // a perfect type importing and reuse as composed type
 
-/** @typedef {import('./alien').State & {count:number, draw:object | null}} State */
+/** @typedef {import('../src/alien').State & {count:number, draw:object | null}} State */
 
 /** @type {State} */
 const state = signal()();
@@ -27,6 +27,7 @@ view.deck = {};
 
 /** @type {(templateId:string, parent:string, id?:string) => HTMLElement} */
 const fragment = (templateId, parent, id) => {
+  // @ts-ignore
   const frag = document.querySelector(templateId).content.cloneNode(true);
   /** @type HTMLElement */
   const result = frag.querySelector('section');
@@ -51,6 +52,7 @@ const fragment = (templateId, parent, id) => {
  */
 const slot = (parent, id, name, topRem, leftRem) => {
   const slot = fragment('#slot', parent, id);
+  // @ts-ignore
   slot.querySelector('#name').innerText = name;
   // if (id === "HE") {slot.dataset.possible = 1}
   const moveCardTo = async (card) => {
@@ -129,7 +131,7 @@ const cardList = cardCollection
     view.deck[card.id].mov = view.slotList.DK
     card.style.backgroundPosition = spriteSheet[index % spriteSheet.length]  // pick(spriteSheet);
     card.querySelector('#name').innerHTML = id;
-    card.querySelector('#power').innerHTML = power;
+    card.querySelector('#power').innerHTML = power.toString();
     return card;
   });
 
