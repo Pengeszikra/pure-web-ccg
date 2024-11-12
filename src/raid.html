@@ -7,28 +7,23 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @keyframes shake {
-
       0%,
       100% {
         transform: translateX(0);
       }
-
       25% {
         transform: translateX(-5px);
       }
-
       75% {
         transform: translateX(5px);
       }
     }
 
     @keyframes float {
-
       0%,
       100% {
         transform: translateY(0);
       }
-
       50% {
         transform: translateY(-10px);
       }
@@ -100,7 +95,6 @@
       0% {
         opacity: 0.5;
       }
-
       100% {
         opacity: 0;
       }
@@ -115,9 +109,7 @@
       <!-- Characters will be inserted here -->
     </div>
     <div class="text-center">
-      <button id="start-battle"
-        class="bg-green-600 px-6 py-3 rounded-lg text-white font-bold hover:bg-green-700 transition-colors hidden">
-        Start Battle </button>
+      <button id="start-battle" class="bg-green-600 px-6 py-3 rounded-lg text-white font-bold hover:bg-green-700 transition-colors hidden">Start Battle</button>
     </div>
   </div>
   <!-- Battle Screen -->
@@ -132,9 +124,8 @@
   <!-- Game Over Screen -->
   <div id="gameOver" class="fixed inset-0 bg-black bg-opacity-75 hidden flex-col items-center justify-center">
     <div class="text-4xl text-red-500 mb-4">Game Over!</div>
-    <div class="text-2xl text-yellow-500 mb-4">Score: <span id="finalScore">0</div>
-    <button id="restartButton" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700"> Play Again
-    </button>
+    <div class="text-2xl text-yellow-500 mb-4">Score: <span id="finalScore">0</span></div>
+    <button id="restartButton" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">Play Again</button>
   </div>
   <script>
     const characters = [
@@ -162,45 +153,19 @@
       currentTurn: 0
     };
 
-    // Add to BattleUIManager class
-    class BattleUIManager {
-      constructor() {
-        // ... existing constructor code ...
-        this.gameOverScreen = document.getElementById('gameOver');
-        this.finalScoreElement = document.getElementById('finalScore');
-        this.score = 0;
-      }
-
-      // Add new methods
-      showGameOver(result) {
-        this.gameOverScreen.style.display = 'flex';
-        this.finalScoreElement.textContent = this.score;
-
-        const gameOverTitle = this.gameOverScreen.querySelector('.text-4xl');
-        gameOverTitle.textContent = result === 'victory' ? 'Victory!' : 'Game Over!';
-        gameOverTitle.className = `text-4xl mb-4 ${result === 'victory' ? 'text-green-500' : 'text-red-500'}`;
-      }
-
-      updateScore(points) {
-        this.score += points;
-        this.finalScoreElement.textContent = this.score;
-      }
-    }
-
-
     function initializeCharacterSelect() {
       const container = document.querySelector('#character-select .grid');
       characters.forEach(char => {
         const charDiv = document.createElement('div');
         charDiv.className = 'character bg-gray-800 p-4 rounded-lg text-center cursor-pointer hover:bg-gray-700 transition-colors';
         charDiv.innerHTML = `
-                    <div class="text-4xl mb-2">${char.emoji}</div>
-                    <div class="font-bold">${char.name}</div>
-                    <div class="text-sm text-gray-400">
-                        HP: ${char.hp} | ATK: ${char.attack}<br>
-                        DEF: ${char.defense} | SPD: ${char.speed}
-                    </div>
-                `;
+          <div class="text-4xl mb-2">${char.emoji}</div>
+          <div class="font-bold">${char.name}</div>
+          <div class="text-sm text-gray-400">
+            HP: ${char.hp} | ATK: ${char.attack}<br>
+            DEF: ${char.defense} | SPD: ${char.speed}
+          </div>
+        `;
         charDiv.addEventListener('click', () => selectCharacter(char, charDiv));
         container.appendChild(charDiv);
       });
@@ -214,9 +179,7 @@
         element.classList.add('selected');
         selectedTeam.push(char);
       }
-
-      document.getElementById('start-battle').style.display =
-        selectedTeam.length === 3 ? 'inline-block' : 'none';
+      document.getElementById('start-battle').style.display = selectedTeam.length === 3 ? 'inline-block' : 'none';
     }
 
     function startBattle() {
@@ -235,44 +198,42 @@
       startTurn();
     }
 
-    // Replace the updateBattleUI function with this enhanced version
     function updateBattleUI() {
       // Update player team UI
       const playerTeamDiv = document.getElementById('player-team');
       playerTeamDiv.innerHTML = currentBattle.playerTeam.map(char => `
         <div class="bg-gray-800 p-4 rounded-lg text-center ${char.currentHp <= 0 ? 'opacity-50' : ''} min-w-[150px]">
-            <div class="text-4xl mb-2 ${char.currentHp > 0 ? 'float' : ''}">${char.emoji}</div>
-            <div class="font-bold">${char.name}</div>
-            <div class="health-bar-container">
-                <div class="health-bar ${getHealthBarClass(char.currentHp, char.hp)}" 
-                     style="width: ${(char.currentHp / char.hp) * 100}%">
-                </div>
+          <div class="text-4xl mb-2 ${char.currentHp > 0 ? 'float' : ''}">${char.emoji}</div>
+          <div class="font-bold">${char.name}</div>
+          <div class="health-bar-container">
+            <div class="health-bar ${getHealthBarClass(char.currentHp, char.hp)}" 
+                 style="width: ${(char.currentHp / char.hp) * 100}%">
             </div>
-            <div class="text-sm text-gray-400">
-                ${char.currentHp}/${char.hp}
-            </div>
+          </div>
+          <div class="text-sm text-gray-400">
+            ${char.currentHp}/${char.hp}
+          </div>
         </div>
-    `).join('');
+      `).join('');
 
       // Update enemy team UI
       const enemyTeamDiv = document.getElementById('enemy-team');
       enemyTeamDiv.innerHTML = currentBattle.enemyTeam.map(enemy => `
         <div class="bg-gray-800 p-4 rounded-lg text-center ${enemy.currentHp <= 0 ? 'opacity-50' : ''} min-w-[150px]">
-            <div class="text-4xl mb-2 ${enemy.currentHp > 0 ? 'float' : ''}">${enemy.emoji}</div>
-            <div class="font-bold">${enemy.name}</div>
-            <div class="health-bar-container">
-                <div class="health-bar ${getHealthBarClass(enemy.currentHp, enemy.hp)}" 
-                     style="width: ${(enemy.currentHp / enemy.hp) * 100}%">
-                </div>
+          <div class="text-4xl mb-2 ${enemy.currentHp > 0 ? 'float' : ''}">${enemy.emoji}</div>
+          <div class="font-bold">${enemy.name}</div>
+          <div class="health-bar-container">
+            <div class="health-bar ${getHealthBarClass(enemy.currentHp, enemy.hp)}" 
+                 style="width: ${(enemy.currentHp / enemy.hp) * 100}%">
             </div>
-            <div class="text-sm text-gray-400">
-                ${enemy.currentHp}/${enemy.hp}
-            </div>
+          </div>
+          <div class="text-sm text-gray-400">
+            ${enemy.currentHp}/${enemy.hp}
+          </div>
         </div>
-    `).join('');
+      `).join('');
     }
 
-    // Add these new helper functions
     function getHealthBarClass(current, max) {
       const percentage = (current / max) * 100;
       if (percentage <= 25) return 'danger';
@@ -298,17 +259,16 @@
     function showActionButtons(character) {
       const buttonsDiv = document.getElementById('action-buttons');
       buttonsDiv.innerHTML = character.skills.map(skill => `
-                <button class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-                    ${skill}
-                </button>
-            `).join('');
+        <button class="bg-blue-600 px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+          ${skill}
+        </button>
+      `).join('');
 
       buttonsDiv.querySelectorAll('button').forEach((button, index) => {
         button.addEventListener('click', () => executePlayerAction(character, character.skills[index]));
       });
     }
 
-    // Enhance the executePlayerAction and executeEnemyTurn functions with smooth health transitions
     function executePlayerAction(character, skill) {
       const target = currentBattle.enemyTeam.find(enemy => enemy.currentHp > 0);
       if (!target) return;
@@ -333,8 +293,11 @@
 
       let damage = calculateDamage(enemy, target);
 
-      // Animate health reduction
+      // Calculate the end health after taking damage
       const startHealth = target.currentHp;
+      const endHealth = Math.max(0, target.currentHp - damage);
+
+      // Animate health reduction
       animateHealth(target, startHealth, endHealth);
 
       target.currentHp = endHealth;
@@ -376,14 +339,11 @@
       return Math.max(1, Math.floor(base * multiplier));
     }
 
-    // Enhance the damage display with health bar animation
     function showDamageText(target, damage) {
-      // Create damage number
       const damageText = document.createElement('div');
       damageText.className = 'damage-text text-red-500 font-bold text-xl';
       damageText.textContent = `-${damage}`;
 
-      // Position the damage text randomly around the target
       const targetElement = document.querySelector(`div:has(> div.text-4xl:contains("${target.emoji}"))`);
       if (targetElement) {
         const rect = targetElement.getBoundingClientRect();
@@ -391,50 +351,16 @@
         damageText.style.top = `${rect.top + Math.random() * 50}px`;
         document.body.appendChild(damageText);
 
-        // Add damage flash effect to health bar
         const healthBar = targetElement.querySelector('.health-bar-container');
         const flash = document.createElement('div');
         flash.className = 'damage-flash';
         healthBar.appendChild(flash);
 
-        // Remove elements after animation
         setTimeout(() => {
           damageText.remove();
           flash.remove();
         }, 1000);
       }
-    }
-
-    // Add healing function for future use
-    function heal(target, amount) {
-      const startHealth = target.currentHp;
-      const endHealth = Math.min(target.hp, target.currentHp + amount);
-
-      // Create healing text
-      const healText = document.createElement('div');
-      healText.className = 'damage-text text-green-500 font-bold text-xl';
-      healText.textContent = `+${amount}`;
-
-      const targetElement = document.querySelector(`div:has(> div.text-4xl:contains("${target.emoji}"))`);
-      if (targetElement) {
-        const rect = targetElement.getBoundingClientRect();
-        healText.style.left = `${rect.left + Math.random() * 50}px`;
-        healText.style.top = `${rect.top + Math.random() * 50}px`;
-        document.body.appendChild(healText);
-
-        setTimeout(() => healText.remove(), 1000);
-      }
-
-      animateHealth(target, startHealth, endHealth);
-    }
-    function logBattleAction(attacker, target, skill, damage) {
-      const log = document.getElementById('battle-log');
-      log.innerHTML += `
-                <div class="text-sm mb-1">
-                    ${attacker.emoji} ${attacker.name} used ${skill} on ${target.emoji} ${target.name} for ${damage} damage!
-                </div>
-            `;
-      log.scrollTop = log.scrollHeight;
     }
 
     function nextTurn() {
@@ -460,7 +386,6 @@
       return currentBattle.playerTeam.includes(character);
     }
 
-    // Initialize game
     initializeCharacterSelect();
     document.getElementById('start-battle').addEventListener('click', startBattle);
   </script>

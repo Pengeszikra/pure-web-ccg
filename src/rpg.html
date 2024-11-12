@@ -36,12 +36,15 @@
                     { emoji: '🐉', position: 250, quest: 'Bring me a golden apple!' },
                     { emoji: '🏰', position: 350, quest: 'Rescue the princess!' }
                 ];
+                this.enemy = { emoji: '👹', position: 150, attackInterval: null };
 
                 this.leftBtn.addEventListener('click', () => this.movePlayer(-10));
                 this.rightBtn.addEventListener('click', () => this.movePlayer(10));
                 document.addEventListener('keydown', (e) => this.handleKeyPress(e));
 
                 this.renderNPCs();
+                this.renderEnemy();
+                this.startEnemyTurn();
             }
 
             handleKeyPress(e) {
@@ -72,6 +75,29 @@
                 });
             }
 
+            renderEnemy() {
+                const enemyElement = document.createElement('div');
+                enemyElement.id = 'enemy';
+                enemyElement.className = 'absolute bottom-0 text-4xl';
+                enemyElement.style.left = `${this.enemy.position}px`;
+                enemyElement.textContent = this.enemy.emoji;
+                this.gameArea.appendChild(enemyElement);
+            }
+
+            startEnemyTurn() {
+                this.enemy.attackInterval = setInterval(() => {
+                    this.moveEnemy();
+                    this.checkEnemyAttack();
+                }, 1000);
+            }
+
+            moveEnemy() {
+                const moveDistance = Math.random() > 0.5 ? 10 : -10;
+                this.enemy.position += moveDistance;
+                this.enemy.position = Math.max(0, Math.min(this.enemy.position, this.gameArea.offsetWidth - 40));
+                document.getElementById('enemy').style.left = `${this.enemy.position}px`;
+            }
+
             checkInteractions() {
                 this.npcs.forEach(npc => {
                     if (Math.abs(this.playerPosition - npc.position) < 20) {
@@ -84,6 +110,15 @@
                 const questEntry = document.createElement('p');
                 questEntry.textContent = `${npc.emoji} Quest: ${npc.quest}`;
                 this.questLog.prepend(questEntry);
+            }
+
+            checkEnemyAttack() {
+                if (Math.abs(this.playerPosition - this.enemy.position) < 20) {
+                    const attackEntry = document.createElement('p');
+                    attackEntry.textContent = `${this.enemy.emoji} attacked you!`;
+                    attackEntry.className = 'text-red-500';
+                    this.questLog.prepend(attackEntry);
+                }
             }
         }
 
