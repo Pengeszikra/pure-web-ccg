@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web VIM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-markup.min.js"></script>
+    <style>
+        .cursor-line {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .cursor {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+        .line-numbers {
+            counter-reset: line;
+        }
+        .line-number::before {
+            counter-increment: line;
+            content: counter(line);
+            display: inline-block;
+            width: 2em;
+            text-align: right;
+            padding-right: 1em;
+            color: #666;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-300">
+    <!-- Editor Container -->
+    <div class="container mx-auto p-4">
+        <!-- Status Bar -->
+        <div class="bg-gray-800 p-2 mb-2 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <span id="mode-indicator" class="px-2 py-1 bg-green-600 rounded">NORMAL
+                <span id="file-name">untitled
+            </div>
+            <div class="flex items-center gap-4">
+                <span id="cursor-position">Line: 1, Col: 1
+                <span id="file-info">0 lines
+            </div>
+        </div>
+
+        <!-- Editor Area -->
+        <div class="relative bg-gray-800 rounded-lg overflow-hidden">
+            <!-- Line Numbers -->
+            <div id="line-numbers" class="absolute left-0 top-0 bg-gray-900 p-2 text-gray-600 select-none line-numbers">
+            </div>
+
+            <!-- Text Area -->
+            <div id="editor-wrapper" class="ml-12 p-2 overflow-auto" style="height: 70vh;">
+                <pre id="editor" class="outline-none" contenteditable="true" spellcheck="false"></pre>
+            </div>
+        </div>
+
+        <!-- Command Line -->
+        <div class="bg-gray-800 mt-2 p-2">
+            <input id="command-line" type="text" class="w-full bg-transparent outline-none hidden" 
+                   placeholder=":" />
+        </div>
+
+        <!-- Help Modal -->
+        <div id="help-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div class="bg-gray-800 p-6 rounded-lg max-w-2xl">
+                <h2 class="text-xl mb-4">VIM Commands</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <h3 class="font-bold mb-2">Motion Commands</h3>
+                        <ul class="space-y-1">
+                            <li><kbd>h</kbd> - Move left</li>
+                            <li><kbd>j</kbd> - Move down</li>
+                            <li><kbd>k</kbd> - Move up</li>
+                            <li><kbd>l</kbd> - Move right</li>
+                            <li><kbd>w</kbd> - Next word</li>
+                            <li><kbd>b</kbd> - Previous word</li>
+                            <li><kbd>0</kbd> - Start of line</li>
+                            <li><kbd>$</kbd> - End of line</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-2">Edit Commands</h3>
+                        <ul class="space-y-1">
+                            <li><kbd>i</kbd> - Insert mode</li>
+                            <li><kbd>a</kbd> - Append mode</li>
+                            <li><kbd>x</kbd> - Delete character</li>
+                            <li><kbd>dd</kbd> - Delete line</li>
+                            <li><kbd>yy</kbd> - Yank (copy) line</li>
+                            <li><kbd>p</kbd> - Paste</li>
+                            <li><kbd>u</kbd> - Undo</li>
+                            <li><kbd>:w</kbd> - Save</li>
+                        </ul>
+                    </div>
+                </div>
+                <button onclick="toggleHelp()" class="mt-4 px-4 py-2 bg-blue-600 rounded hover:bg-blue-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Editor State
+        const state = {
+            mode: 'NORMAL',
+            content: [],
+            cursor: { line: 0, col: 0 },
+            clipboard: '',
+            history: [],
+            historyIndex: -1
+        };
+
+        // DOM Elements
+        const editor = document.getElementById('editor');
+        const modeIndicator = document.getElementById('mode-indicator');
+        const cursorPosition = document.getElementById('cursor-position');
+        const fileInfo = document.getElementById('file-info');
+        const commandLine = document.getElementById('command-line');
+        const lineNumbers = document.getElementById('line-numbers');
+
+        // Mode Handlers
+        const modeHandlers = {
+            'NORMAL': handleNormalMode,
+            'INSERT': handleInsertMode,
+            'COMMAND': handleCommandMode
+        };
+
+        // Normal Mode Commands
+        const normalCommands = {
+            'h': () => moveCursor(-1, 0),
+            'j': () => moveCursor(0, 1),
+            'k': () => moveCursor(0, -1),
+            'l': () => moveCursor(1, 0),
+            'i': () => setMode('INSERT'),
+            'a': () => { moveCursor(1, 0); setMode('INSERT'); },
+            ':': () => setMode('COMMAND'),
+            'x': deleteChar,
+            'u': undo,
+            'p': paste,
+            '0': () => moveCursorToLineStart(),
+            '$': () => moveCursorToLineEnd(),
+            'w': moveWordForward,
+            'b': moveWordBackward
+        };
+
+        // Initialize Editor
+        function initEditor() {
+            editor.addEventListener('keydown', handleKeyDown);
+            editor.addEventListener('input', handleInput);
+            commandLine.addEventListener('keydown', handleCommandLineKeyDown);
+            updateLineNumbers();
+            focusEditor();
+        }
+
+        // Key Handlers
+        function handleKeyDown(e) {
+            if (e.key === 'Escape') {
+                setMode('NORMAL');
+                e.preventDefault();
+                return;
+            }
+
+            modeHandlers[state.mode](e);
+        }
+
+        function handleNormalMode(e) {
+            const cmd = normalCommands[e.key];
+            if (cmd) {
+                e.preventDefault();
+                cmd();
+                updateUI();
+            }
+        }
+
+        function handleInsertMode(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                insertNewLine();
+            }
+            saveHistory();
+        }
+
+        function handleCommandMode(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                executeCommand(commandLine.value);
+                commandLine.value = '';
+                setMode('NORMAL');
+            }
+        }
+
+        // Editor Operations
+        function moveCursor(deltaX, deltaY) {
+            const lines = getLines();
+            let { line, col } = state.cursor;
+
+            line = Math.max(0, Math.min(line + deltaY, lines.length - 1));
+            col = Math.max(0, Math.min(col + deltaX, lines[line].length));
+
+            state.cursor = { line, col };
+            updateCursor();
+        }
+
+        function moveCursorToLineStart() {
+            state.cursor.col = 0;
+            updateCursor();
+        }
+
+        function moveCursorToLineEnd() {
+            const lines = getLines();
+            state.cursor.col = lines[state.cursor.line].length;
+            updateCursor();
+        }
+
+        function moveWordForward() {
+            const lines = getLines();
+            let { line, col } = state.cursor;
+            const currentLine = lines[line];
+
+            // Find next word boundary
+            while (col < currentLine.length && !/\s/.test(currentLine[col])) {
+                col++;
+            }
+            while (col < currentLine.length && /\s/.test(currentLine[col])) {
+                col++;
+            }
+
+            state.cursor = { line, col };
+            updateCursor();
+        }
+
+        function moveWordBackward() {
+            const lines = getLines();
+            let { line, col } = state.cursor;
+            const currentLine = lines[line];
+
+            // Find previous word boundary
+            while (col > 0 && /\s/.test(currentLine[col - 1])) {
+                col--;
+            }
+            while (col > 0 && !/\s/.test(currentLine[col - 1])) {
+                col--;
+            }
+
+            state.cursor = { line, col };
+            updateCursor();
+        }
+
+        function deleteChar() {
+            const lines = getLines();
+            const { line, col } = state.cursor;
+            const currentLine = lines[line];
+            
+            if (col < currentLine.length) {
+                lines[line] = currentLine.slice(0, col) + currentLine.slice(col + 1);
+                updateContent(lines);
+                saveHistory();
+            }
+        }
+
+        function insertNewLine() {
+            const lines = getLines();
+            const { line, col } = state.cursor;
+            const currentLine = lines[line];
+
+            const newLines = [
+                ...lines.slice(0, line),
+                currentLine.slice(0, col),
+                currentLine.slice(col),
+                ...lines.slice(line + 1)
+            ];
+
+            updateContent(newLines);
+            state.cursor = { line: line + 1, col: 0 };
+            saveHistory();
+            updateLineNumbers();
+        }
+
+        // History Management
+        function saveHistory() {
+            state.history = state.history.slice(0, state.historyIndex + 1);
+            state.history.push(getContent());
+            state.historyIndex++;
+        }
+
+        function undo() {
+            if (state.historyIndex > 0) {
+                state.historyIndex--;
+                updateContent(state.history[state.historyIndex].split('\n'));
+            }
+        }
+
+        // Clipboard Operations
+        function copy() {
+            const lines = getLines();
+            state.clipboard = lines[state.cursor.line];
+        }
+
+        function paste() {
+            if (!state.clipboard) return;
+
+            const lines = getLines();
+            lines.splice(state.cursor.line + 1, 0, state.clipboard);
+            updateContent(lines);
+            saveHistory();
+        }
+
+        // UI Updates
+        function updateUI() {
+            updateCursor();
+            updateLineNumbers();
+            updateFileInfo();
+            highlightSyntax();
+        }
+
+        function updateCursor() {
+            const { line, col } = state.cursor;
+            cursorPosition.textContent = `Line: ${line + 1}, Col: ${col + 1}`;
+        }
+
+        function updateLineNumbers() {
+            const lines = getLines();
+            lineNumbers.innerHTML = Array(lines.length)
+                .fill()
+                .map((_, i) => `<div class="line-number"></div>`)
+                .join('');
+        }
+
+        function updateFileInfo() {
+            const lines = getLines();
+            fileInfo.textContent = `${lines.length} lines`;
+        }
+
+        function highlightSyntax() {
+            const content = getContent();
+            editor.innerHTML = Prism.highlight(content, Prism.languages.markup, 'markup');
+        }
+
+        // Mode Management
+        function setMode(newMode) {
+            state.mode = newMode;
+            modeIndicator.textContent = newMode;
+            modeIndicator.className = `px-2 py-1 rounded ${
+                newMode === 'NORMAL' ? 'bg-green-600' :
+                newMode === 'INSERT' ? 'bg-blue-600' :
+                'bg-yellow-600'
+            }`;
+
+            commandLine.classList.toggle('hidden', newMode !== 'COMMAND');
+            if (newMode === 'COMMAND') {
+                commandLine.focus();
+            } else {
+                focusEditor();
+            }
+        }
+
+        // Utility Functions
+        function getLines() {
+            return editor.innerText.split('\n');
+        }
+
+        function getContent() {
+            return editor.innerText;
+        }
+
+        function updateContent(lines) {
+            editor.innerText = lines.join('\n');
+            highlightSyntax();
+        }
+
+        function focusEditor() {
+            editor.focus();
+            // Set cursor position
+            const selection = window.getSelection();
+            const range = document.createRange();
+            const lines = editor.childNodes;
+            
+            if (lines.length > state.cursor.line) {
+                const line = lines[state.cursor.line];
+                range.setStart(line, Math.min(state.cursor.col, line.length));
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+
+        function executeCommand(cmd) {
+            if (cmd === 'w') {
+                // Save functionality would go here
+                showNotification('File saved');
+            } else if (cmd === 'q') {
+                // Quit functionality would go here
+            } else if (cmd === 'help') {
+                toggleHelp();
+            }
+        }
+
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-4 right-4 bg-gray-800 px-4 py-2 rounded shadow-lg';
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 2000);
+        }
+
+        function toggleHelp() {
+            const helpModal = document.getElementById('help-modal');
+            helpModal.classList.toggle('hidden');
+        }
+
+        // Initialize
+        initEditor();
+    </script>
+</body>
+</html>
