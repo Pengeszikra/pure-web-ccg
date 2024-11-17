@@ -33,7 +33,7 @@
       bg-[url(../sprites/potter3m.png)]
       bg-[length:570%] 
       rounded-xl 
-      pointer-events-none
+      --pointer-events-none
       border-[.2rem]
       border-black
     "></figure>
@@ -304,10 +304,11 @@ Maybe I can crawl out of the box my long forgotten animation editor/language ide
   globalThis.startStop = () => {
     // if (an2.playState == 'running') {
     const actor = fragment('#card', 'body', 'card-02', 'figure')
-    actor.style.top=`${rnd(50)}rem`;
+    actor.style.top=`${rnd(55)}rem`;
     actor.style.left=`${rnd(70)}rem`;
     actor.style.transform=`scale(${Math.random()})`;
     actor.style.backgroundPosition = spriteSheet[rnd(spriteSheet.length)];
+    // actor.addEventListener("click", () => {actor.pause()});
     // style don't work any more.
     actor.animate(anim, timeline);
     actor.playbackRate = rnd(5000);
@@ -315,6 +316,6 @@ Maybe I can crawl out of the box my long forgotten animation editor/language ide
   }
 </script>
 
-<section class="fixed bottom-16 left-0">
-  <button class="p-2 bg-zinc-600 m-2" onclick="globalThis.startStop()">another card please</button>
+<section class="fixed bottom-16 left-16">
+  <button class="p-2 bg-sky-600 text-sky-200 m-2 rounded-full" onclick="globalThis.startStop()">card +</button>
 </section>
