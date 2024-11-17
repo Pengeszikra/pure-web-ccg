@@ -98,15 +98,15 @@ globalThis.zignal = zignal; // TODO remove
 globalThis.DIRECT = DIRECT; // TODO remove
 globalThis.STATIC = STATIC; // TODO remove
 
-/** @type {(templateId:string, parent:string, id?:string) => HTMLElement | null} */
-export const fragment = (templateId, parent, id) => {
+/** @type {(templateId:string, parent:string, id?:string, query?:string) => HTMLElement | null} */
+export const fragment = (templateId, parent, id, query = 'section') => {
   /** @type {HTMLTemplateElement} */
   const tE = document.querySelector(templateId);
   /** @type {Node | null} */
   const frag = tE?.content ? tE.content.cloneNode(true) : null;
   if (frag === null) return null;
   // @ts-ignore
-  const result = frag.querySelector('section');
+  const result = frag.querySelector(query);
   if (id) { result.id = id; }
   document.querySelector(parent)?.appendChild(frag);
   return result;
