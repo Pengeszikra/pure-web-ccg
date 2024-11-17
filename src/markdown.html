@@ -28,11 +28,14 @@
   <template id="card">
     <figure class="
       fixed top-[30rem] left-[30rem]
-      w-[7rem] h-[12rem]
+      w-[7rem] h-[8.5rem]
+      bg-slate-700
+      bg-[url(../sprites/potter3m.png)]
+      bg-[length:570%] 
       rounded-xl 
       pointer-events-none
-      outline-lime-400 outline-1 outline-dashed
-      bg-slate-700
+      border-[.2rem]
+      border-black
     "></figure>
     <a href="https://github.com/mundimark/awesome-markdown-editors?tab=readme-ov-file">markdown editors collection</a>
   </template>
@@ -275,13 +278,20 @@ Maybe I can crawl out of the box my long forgotten animation editor/language ide
     markdownView.changeContent(e?.target?.value);
   })
   
+  // Animation test over markdown editor
+
+  const spriteSheet =
+  [4, 26, 50, 74, 96].map((horizontal) =>
+    [4, 36, 69, 103].map((vertical) => `${horizontal}% ${vertical}%`)
+  ).flat();
+
   import { fragment } from './old-bird-soft.js';
 
   const anim = [
     { transform: "translateX(%0)" },
-    { transform: "rotate(0) translate3D(-50%, -50%, 0)", backgroundColor: "#000" },
-    { backgroundColor: "#431236", offset: 0.3 },
-    { transform: "rotate(360deg) translate3D(-50%, -50%, 0)", backgroundColor: "#000" },
+    { transform: "rotate(0) translate3D(-50%, -50%, 0)" },
+    // { backgroundColor: "#431236", offset: 0.3 },
+    { transform: "rotate(360deg) translate3D(-50%, -50%, 0)" },
     { transform: "translateX(%80)" },
   ]
   const timeline = {
@@ -289,14 +299,19 @@ Maybe I can crawl out of the box my long forgotten animation editor/language ide
     iterations: Infinity
   }
 
+  const rnd = range => Math.random() * range | 0;
+
   globalThis.startStop = () => {
     // if (an2.playState == 'running') {
     const actor = fragment('#card', 'body', 'card-02', 'figure')
-    actor.style.top=`${Math.random()*100|0}rem`;
-    actor.style.left=`${Math.random()*100|0}rem`;
+    actor.style.top=`${rnd(50)}rem`;
+    actor.style.left=`${rnd(70)}rem`;
     actor.style.transform=`scale(${Math.random()})`;
+    actor.style.backgroundPosition = spriteSheet[rnd(spriteSheet.length)];
+    // style don't work any more.
     actor.animate(anim, timeline);
-    actor.playbackRate(Math.random()*5000)
+    actor.playbackRate = rnd(5000);
+    actor.play();
   }
 </script>
 
