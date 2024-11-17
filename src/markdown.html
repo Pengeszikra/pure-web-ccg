@@ -1,9 +1,22 @@
 <script src="https://cdn.tailwindcss.com"></script>
-
+<body class="bg-zinc-950"></body>
+<!-- markdown view skining -->
+<style>
+  markdown-view {
+    --h1: #A6F;
+    --h2: #893;
+    --code-sm: #77F;
+    --code: #ABC;
+    --info-bg: #222;
+    --info-text: #888;
+    --link: #56A;
+    --hover-link: #78F;
+  }
+</style>
 <main class="min-h-screen bg-zinc-950 text-zinc-400">
   <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-2">
     <textarea
-    class="bg-zinc-800 text-zinc-400 focus:outline-none p-8"
+    class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
     placeholder=" - - - markdown editor - - - "
     spellcheck="false"
     ></textarea>
@@ -20,8 +33,23 @@
     "></figure>
     <a href="https://github.com/mundimark/awesome-markdown-editors?tab=readme-ov-file">markdown editors collection</a>
   </template>
-  
 
+  <!-- markdown components -->
+  <template id="code-block">
+    <pre class="bg-zinc-950 p-4 text-lime-200 overflow-x-scroll"><slot></slot></pre>
+  </template>
+  <template class="head-1">
+    <h1 class="text-orange-200 text-[2rem]"><slot></slot></h1>
+  </template>
+  <template class="head-2">
+    <h2 class="text-orange-400 text-xl"><slot></slot></h2>
+  </template>
+  <template class="s-italic">
+    <em><slot></slot></em>
+  </template>
+  <template id="info-block">
+    <p class="bg-zinc-950 p-4 rounded"><slot></slot></p>
+  </template>
   <!-- Check it: <a class="underline text-emerald-400" href="https://github.com/mundimark/awesome-markdown-editors?tab=readme-ov-file" target="_blank">markdown-ediotor-collections</a> -->
 </main>
 
@@ -41,10 +69,11 @@
       "\\": "&#92",
       "'": "&apos;",
       "`": "&#96",
+      "|": "|"
     }[specialCharacter]));
 
   const inlineMarkdown = str => encodCodeBlockToSafeHtml(str)
-    .replaceAll(/`([^`]*)`/g, `<span class="text-sky-400">$1</span>`)
+    .replaceAll(/`([^`]*)`/g, `<span class="text-[--code-sm]">$1</span>`)
     .replaceAll(/\[([^\]]+)\]\(([^\)].+)\)/g,`<a class="transition-all duration-500 text-white hover:text-sky-400 hover:bg-sky-800 p-2 rounded" href="$2" target="_blank">$1</a>`)
 
   /**
@@ -77,13 +106,15 @@
               line.slice(line.indexOf('#') + 2 ?? 0)
             )}</h2>`;
           case /^\s*_[^_]+_/.test(line):
-            return `<p class="italic">${inlineMarkdown(
+            return `<em>${inlineMarkdown(
               line.replaceAll('_', '')
-            )}</p>`;
+            )}</em>`;
           case /^\s*>\s/.test(line):
             return `<p class="bg-zinc-950 p-4 rounded">${inlineMarkdown(
               line.replace('>','')
             )}</p>`;
+          case /^\s*\!\[.*\]\(.*\)\s/.test(line):
+            return `<picture>- image - placeholder -</picture>`;
           default:
             return inlineMarkdown(line);
         }
@@ -95,7 +126,6 @@
   customElements.define('markdown-view', class extends HTMLElement {
     constructor () {
       super();
-      // const source = document.querySelector('template').innerHTML.toString();
       const source = document.querySelector('textarea').value;
       globalThis.so = source;
       this.innerHTML = markdownParser(source);
@@ -121,28 +151,44 @@
     - [x] HTML injection safe
     - subtitle \`error\` fix
     - [x] Set the right size of this two panel.
-    - Skining with \`CSS\` vars (just colors)
+    - [x] Skining with \`CSS\` vars (just colors)
     - create a single panel editor,
       where I am immediatley edit on a proper edit.
     - more than one link in one line
     - add VIM motion to editor
+    - add VS-Code shortkey to editor
     - save / load :: localhost
     - fix italic
     - collect all markdown element
     - collect all VIM motion
     - Web Animation API backed scroll animation
     - prot to \`Rust\`
+    - YAML metadata - take look what exactly meanings
 
     [localhost](http://localhost)
 
     [this localhost](localhost)
-
 
     ## Why I would like to make this?
 
 Because a big part of development is based on markdown \`documentation\`
 If you would like inform me this is just a \`bullshit\`.
 I am arguing the opposite is the true.
+
+_table test_
+
+\`\`\`
+| why hidden the first | this is very strange |
+| -------------------- | -------------------- |
+| hello                |                  100 |
+| other                |                 1000 |
+\`\`\`
+## gameLoop
+    - create a table
+    - insert visual spot
+    - insert hidden spot
+    - put a bunch of cards to the table
+    - real time card Edit capability
 
 > Need to be figure out: how can I handle a so much \`language switch\`
 Markdown -> HTML -> CSS ->
@@ -176,6 +222,37 @@ export const MainFrame = ({ children }) => {
 }
 \`\`\`
 
+---
+title: "My First Post"
+date: "2023-10-01"
+slug: "my-first-post"
+highlight: true
+---
+> also would like to handle a metadata part a differential way.
+
+## Krita on tablet
+Some brushes is very nice. UI is terrible.
+But free so very usefull.
+
+## Markdown editor of very few lines
+Hi \`@pengeszikra\` In my process of creating Markdown, I'm using a "desktop" application for editing Markdown content. For example, I use Typora and/or Obsidian.
+
+## VIM + VS
+\`VIM + VS Code - vim extra functionality ->\`
+
+     At least some VIM motion need to insert.
+     But a few VS-Code motion is also handy.
+     Let't buld  a really nice text editor, with
+     a minimal codebase as possible.
+
+     If I can conbine a markdown with a great
+     soft editor then it will be fantastic.
+
+     But now let's take a looke some game 
+     development improvements
+
+                                               Strange editor
+----
                                                                     _happy coding_
   `)
 
