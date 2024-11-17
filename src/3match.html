@@ -7,7 +7,7 @@
   <template id="frag">
     <figure class="
       fixed top-[5rem] left-[2rem]
-      w-[7rem] h-[7rem]
+      w-[6rem] h-[6rem]
       bg-[url(../sprites/potter3m.png)]
       bg-[length:660%]
       --bg-[position:23.5%_26.7%]
@@ -16,6 +16,8 @@
       rounded-xl 
       transition-all
       duration-1000
+      hover:opacity-30
+      hover:duration-200
     "></figure>
   </template>
 
@@ -42,20 +44,28 @@
     return actor;
   }
 
-  spriteSheet.map(
+  const state =  Array(6 * 8).fill(0).map(_=>rnd(9) + 12);
+
+  state.map(
     (sprite, index) => {
       /** @type {HTMLElement} */
       const frg = fragFactory(
+        'frg_'+index,
         sprite,
-        index,
-        index % 6 * 7.4 + 2,
-        (index / 6 | 0 ) * 7.4 + 5
+        index % 6 * 6.4 + 2,
+        // (index / 6 | 0 ) * 6.4 + 5
+        -20
       );
       frg.onclick = async e => {
         frg.style.zIndex = 100;
         delay(10);
         e.target.style.top = '100vh';
       }
+      setTimeout(() => {
+        frg.style.top = `${(index / 6 | 0 ) * 6.4 + 5}rem`  
+      }, rnd(3000));
+      
     }
   );
+
 </script>
