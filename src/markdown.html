@@ -11,28 +11,72 @@
     --info-text: #888;
     --link: #56A;
     --hover-link: #78F;
+    --scroll-bg: #131313;
+    --scroll-tumb: #222;
+    --scroll-hover: #89a15d;
   }
+
+  ::-webkit-scrollbar { width: 1rem; }
+  ::-webkit-scrollbar-track { background: var(--scroll-bg) }
+  ::-webkit-scrollbar-thumb { background: var(--scroll-tumb) }
+  ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover)}
+
+  pre {
+    scrollbar-width: thin;
+    scrollbar-color: #111 #333!important;
+  }
+
+  sw {color:#fb8600}
+  rw {color:#acd641}
+  bw {color:#ac84d7}
+  uw {color:#efe164}
+  st {color:#2fd57f}
+  rm {color:#768d76}
+  wt {color:#618be3}
+
 </style>
 <script src="old-bird-soft.js" type="module"></script>
 <main class="min-h-screen bg-zinc-950 text-zinc-400">
-  <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-2">
+  <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-3">
     <textarea
     class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
     placeholder=" - - - markdown editor - - - "
     spellcheck="false"
     ></textarea>
+    <pre class="p-8 text-emerald-200">
+<bw>export</bw> <rw>const</rw> <u>MainFrame</u> <uw>=</uw> <sw>({</sw> children <sw>})</sw> <uw>=&gt;</uw> <sw>{</sw>
+  <rw>const</rw> <sw>{</sw> theme, setTheme, switchTheme <sw>}</sw> <uw>=</uw> useDarkLightTheme<sw>()</sw>;
+  useEffect<sw>(()</sw> <uw>=&gt;</uw> <sw>{</sw> setTheme<sw>(</sw>Theme.DARK<sw>)</sw>; <sw>}</sw>, <sw>[</sw>setTheme<sw>])</sw>;
+
+  <rm>// this is a basic highlighting test</rm>
+
+  <rw>return</rw> <sw>(</sw>
+    <wt>&lt;main</wt> <bw>className</bw>=<st>"dark:bg-zinc-800 dark:text-white min-h-screen"</st><wt>&gt;</wt>
+      <wt>&lt;button</wt>
+        <bw>className</bw>=<st>"fixed right-0 p-2 m-2 rounded-lg dark:bg-black bg-white opacity-70 z-20"</st>
+        <bw>onClick</bw>=<sw>{()</sw> <uw>=&gt;</uw> switchTheme<sw>()}</sw><wt>&gt;</wt>
+          <sw>{</sw>theme<sw>}</sw>
+      <wt>&lt;/button&gt;</wt>
+      <wt>&lt;section</wt> <bw>className</bw>=<st>"m-auto max-w-screen-md"</st><wt>&gt;</wt>
+        <sw>{</sw>children<sw>}</sw>
+      <wt>&lt;/section&gt;</wt>
+    <wt>&lt;/main&gt;</wt>
+  <sw>)</sw>;
+<sw>}</sw>;
+</pre>
     <article class="bg-zinc-900 whitespace-pre-wrap px-8">
       <markdown-view source="textarea" />
     </article>
   </section>
+
   <template id="card">
     <figure class="
       fixed top-[30rem] left-[30rem]
       w-[7rem] h-[8.5rem]
       bg-slate-700
       bg-[url(../sprites/potter3m.png)]
-      bg-[length:570%] 
-      rounded-xl 
+      bg-[length:570%]
+      rounded-xl
       --pointer-events-none
       border-[.2rem]
       border-black
@@ -78,9 +122,20 @@
       "|": "|"
     }[specialCharacter]));
 
+  globalThis.safeEncode = encodCodeBlockToSafeHtml;
+
   const inlineMarkdown = str => encodCodeBlockToSafeHtml(str)
     .replaceAll(/`([^`]*)`/g, `<span class="text-[--code-sm]">$1</span>`)
-    .replaceAll(/\[([^\]]+)\]\(([^\)].+)\)/g,`<a class="transition-all duration-500 text-white hover:text-sky-400 hover:bg-sky-800 p-2 rounded" href="$2" target="_blank">$1</a>`)
+    .replaceAll(/\[([^\]]+)\]\(([^\)].+)\)/g,`<a class="
+       transition-all
+       duration-500
+       text-white
+       hover:text-sky-400
+       hover:bg-sky-800
+       p-2 rounded"
+       href="$2"
+      target="_blank">$1</a>
+    `)
 
   /**
    * Very Earluy POC level Parser
@@ -161,6 +216,7 @@
     - create a single panel editor,
       where I am immediatley edit on a proper edit.
     - more than one link in one line
+    - [x] syntax highlight POC
     - add VIM motion to editor
     - add VS-Code shortkey to editor
     - save / load :: localhost
@@ -180,6 +236,40 @@
 Because a big part of development is based on markdown \`documentation\`
 If you would like inform me this is just a \`bullshit\`.
 I am arguing the opposite is the true.
+
+> Some code works something \`don't\`
+
+## Syntax Highliter POC
+Example of sytax highlight
+- <bw> : basic word
+- <rw> : reserved word
+- <sw> : special word
+- <tw> : tag word
+
+> The most problematic highlighter is a \`HTML\` highlihter
+Because the \`HTML\` can also contain: \`CSS\`, \`JS\`, \`RegExp\`, \`Template string\` or even \`JSX\` also
+
+\`\`\`
+<bw>export</bw> <rw>const</rw> MainFrame = <sw>({</sw> children <sw>})</sw> => {
+  const { theme, setTheme, switchTheme } = useDarkLightTheme();
+  useEffect(() => { setTheme(Theme.DARK); }, [setTheme]);
+
+  <rw>return</rw> <sw>(</sw>
+    <tw><main<\tw> className="dark:bg-zinc-800 dark:text-white min-h-screen">
+      <button
+        className="fixed right-0 p-2 m-2 rounded-lg dark:bg-black bg-white opacity-70 z-20"
+        onClick={() => switchTheme()}>
+          {theme}
+      </button>
+      <section className="m-auto max-w-screen-md">
+        {children}
+      </section>
+    </main>
+  );
+\`\`\`
+
+[Highlighter Code Example](https://www.w3schools.com/howto/tryit.asp?filename=tryhow_syntax_highlight)
+
 
 _table test_
 
@@ -254,7 +344,7 @@ Hi \`@pengeszikra\` In my process of creating Markdown, I'm using a "desktop" ap
      If I can conbine a markdown with a great
      soft editor then it will be fantastic.
 
-     But now let's take a looke some game 
+     But now let's take a looke some game
      development improvements
 
                                                Strange editor
@@ -269,19 +359,19 @@ Which is the way of \`MDX\` if I am right.
 ## Slash
 Maybe I can crawl out of the box my long forgotten animation editor/language idea called: \`SLASH\` from the ages of \`Flash\`.
 
-# ZEN development 🧌
+# ZEN development
 ## Keep in the Flow
 What is means \`ZEN game development\` ? Sure it is part of \`pure HTML\` because the main idea is very simple:
 Write your game without any library, game engine, compiling your code to somewhere else.
 Just use a pure HTML page as starting point - even less ( I will be explaining a later )
 
-## Loose your chain 
+## Loose your chain
 Even thi editor also created this way. So the final target is creating everything from \`skratch\`.
 
 > At the start your code looks like this:
 
 \`\`\`html
-// <script> tag broke the vite which is just Hot Reloader 
+// <script> tag broke the vite which is just Hot Reloader
 // in this workflow
 
 <main class="bg-zinc-800 text-zinc-400 p-8 min-h-screen">
@@ -292,8 +382,11 @@ Even thi editor also created this way. So the final target is creating everythin
 ## The Black Hole Traveller!
  I don't know you are heard about the black hole traveller. This is a brand-new class of existing job in the universe or bright leader shoulder shaking new technology which I love to us to reach the forest edge of the universe without need a spend of the generation life, so that's why we brought, to invite you in our team us captain of our latest spaceship and we also would you like to meet your wall stuff?
 
+ ## Super Small Editor
+SSE - means Super Small Editor, the current state is show I am no so fare away of creating a simple Web Component to replace the \`VS Code\` to a really simple one. But my focus need to be on \`Game Hackhaton\` which is much more valuable project.
+
 _the end_
-                                              
+
 ----
                                                                     _happy coding_
   `)
@@ -302,7 +395,7 @@ _the end_
     e.stopPropagation();
     markdownView.changeContent(e?.target?.value);
   })
-  
+
   // Animation test over markdown editor
 
   const spriteSheet =
@@ -341,6 +434,6 @@ _the end_
   }
 </script>
 
-<section class="fixed bottom-16 left-16">
+<section class="fixed bottom-16 left-16 hidden">
   <button class="p-2 bg-sky-600 text-sky-200 m-2 rounded-full" onclick="globalThis.startStop()">card +</button>
 </section>
