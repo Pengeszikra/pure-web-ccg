@@ -6,7 +6,8 @@
 
   <template id="frag">
     <figure class="
-      fixed top-[5rem] left-[2rem]
+      fixed 
+      top-[5rem] left-[2rem]
       w-[6rem] h-[6rem]
       bg-[url(../sprites/potter3m.png)]
       bg-[length:660%]
@@ -46,7 +47,7 @@
 
   const state =  Array(6 * 8).fill(0).map(_=>rnd(9) + 12);
 
-  state.map(
+  const view = state.map(
     (sprite, index) => {
       /** @type {HTMLElement} */
       const frg = fragFactory(
@@ -64,8 +65,10 @@
       setTimeout(() => {
         frg.style.top = `${(index / 6 | 0 ) * 6.4 + 5}rem`  
       }, rnd(3000));
-      
+      return {index,frg};
     }
   );
+
+  console.log(view)
 
 </script>
