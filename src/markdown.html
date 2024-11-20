@@ -39,7 +39,7 @@
 </style>
 <script src="old-bird-soft.js" type="module"></script>
 <main class="min-h-screen bg-zinc-950 text-zinc-400">
-  <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-3">
+  <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-2">
     <textarea
     class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
     placeholder=" - - - markdown editor - - - "
@@ -133,11 +133,12 @@
       .replaceAll(/("[^&]*"|`[^&]*`|&apos;[^&]*&apos;)/g, "<st>$1</st>")
       .replaceAll(/(&lt;[^\s|^&]*&gt;)/g, "<wt>$1</wt>")
       .replaceAll(/(&lt;[^\s|^&|^\!]*)(\s+)/g, "<wt>$1</wt>$2")
+      .replaceAll(/(\/&gt;)/g, "<wt>$1</wt>")
       .replaceAll(/(\{|\}|\(|\)|\[|\])/g, "<sw>$1</sw>")
-      .replaceAll(/(const|let|return|function|var|for|if|while|\?|\:)/g, "<rw>$1</rw>")
-      .replaceAll(/(className|class|onClick|onInput|export|import|@type|@typedef|string|number|object|false|true)/g, "<ew>$1</ew>")
+      .replaceAll(/(\s*|\n*)(const|let|return|function|var|for|if|while|\?|\:)(\s+|\n+)/g, "$1<rw>$2</rw>$3")
+      .replaceAll(/(\s*|\n*)(className|class|onClick|onInput|export|import|@type|@typedef|string|number|object|false|true)(\s+|\n+|\=)/g, "$1<ew>$2</ew>$3")
       .replaceAll(/(\=&gt;|\=|\|)/g, "<uw>$1</uw>")
-      .replaceAll(/(\/\/(.*)$)/g, "<rm>$1</rm>")
+      .replaceAll(/(\/\/(.*)$)/g, "<rm>$1</rm>") // .replaceAll(/(\<([^\>|^rm]*)\>)/g,"")
       .replaceAll(/(\/\*\*[^\*|.]*\*\/)/g, "<jd>$1</jd>")
       .replaceAll(/(&lt;\!--[.|^&]*--&gt;)/g, "<rm>$1</rm>")
     ;
@@ -224,6 +225,28 @@
   Please test the editor on left side.
   This is need to be proper work \`under\` the right way! [localhost](localhost)
 
+  \`\`\`
+export const MainFrame = ({ children }) => {
+  const { theme, setTheme, switchTheme } = useDarkLightTheme();
+  useEffect(() => { setTheme(Theme.DARK); }, [setTheme]);
+
+  // some remmark with "highlighted stuff" this let help = true;
+
+  return (
+    <main className="dark:bg-zinc-800 dark:text-white min-h-screen">
+      <button
+        className="fixed right-0 p-2 m-2 rounded-lg dark:bg-black bg-white opacity-70 z-20"
+        onClick={() => switchTheme()}>
+          {theme}
+      </button>
+      <section className="m-auto max-w-screen-md">
+        {children}
+      </section>
+    </main>
+  );
+\`\`\`
+
+
 > :: \`TODO\` ::
     - [x] fine size of editor / view
     - table
@@ -236,6 +259,7 @@
       where I am immediatley edit on a proper edit.
     - more than one link in one line
     - [x] syntax highlight POC
+    - [x] syntax highlight \`beta\`
     - add VIM motion to editor
     - add VS-Code shortkey to editor
     - save / load :: localhost
@@ -267,26 +291,6 @@ Example of sytax highlight
 
 > The most problematic highlighter is a \`HTML\` highlihter
 Because the \`HTML\` can also contain: \`CSS\`, \`JS\`, \`RegExp\`, \`Template string\`, \`SVG\`, \`RegExp\` or even \`JSX\` also
-
-\`\`\`
-export const MainFrame = ({ children <sw>}) => {
-  const { theme, setTheme, switchTheme } = useDarkLightTheme();
-  useEffect(() => { setTheme(Theme.DARK); }, [setTheme]);
-
-  return (
-    <main className="dark:bg-zinc-800 dark:text-white min-h-screen">
-      <button
-        className="fixed right-0 p-2 m-2 rounded-lg dark:bg-black bg-white opacity-70 z-20"
-        onClick={() => switchTheme()}>
-          {theme}
-      </button>
-      <section className="m-auto max-w-screen-md">
-        {children}
-      </section>
-    </main>
-  );
-\`\`\`
-
 
 
 [Highlighter Code Example](https://www.w3schools.com/howto/tryit.asp?filename=tryhow_syntax_highlight)
