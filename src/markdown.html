@@ -29,9 +29,11 @@
   sw {color:#fb8600}
   rw {color:#acd641}
   bw {color:#ac84d7}
-  uw {color:#efe164}
+  ew {color:#ac84d7}
+  uw {color:#8f665f}
   st {color:#2fd57f}
   rm {color:#768d76}
+  jd {color:#9ea77d}
   wt {color:#618be3}
 
 </style>
@@ -43,7 +45,7 @@
     placeholder=" - - - markdown editor - - - "
     spellcheck="false"
     ></textarea>
-    <pre class="p-8 text-emerald-200">
+    <pre class="p-8 text-emerald-200 overflow-x-scroll hidden">
 <bw>export</bw> <rw>const</rw> <u>MainFrame</u> <uw>=</uw> <sw>({</sw> children <sw>})</sw> <uw>=&gt;</uw> <sw>{</sw>
   <rw>const</rw> <sw>{</sw> theme, setTheme, switchTheme <sw>}</sw> <uw>=</uw> useDarkLightTheme<sw>()</sw>;
   useEffect<sw>(()</sw> <uw>=&gt;</uw> <sw>{</sw> setTheme<sw>(</sw>Theme.DARK<sw>)</sw>; <sw>}</sw>, <sw>[</sw>setTheme<sw>])</sw>;
@@ -60,6 +62,7 @@
       <wt>&lt;section</wt> <bw>className</bw>=<st>"m-auto max-w-screen-md"</st><wt>&gt;</wt>
         <sw>{</sw>children<sw>}</sw>
       <wt>&lt;/section&gt;</wt>
+      <wt>&lt;/button&gt;</wt>Do Something<wt>&lt;/button&gt;</wt>
     <wt>&lt;/main&gt;</wt>
   <sw>)</sw>;
 <sw>}</sw>;
@@ -124,6 +127,22 @@
 
   globalThis.safeEncode = encodCodeBlockToSafeHtml;
 
+  /** @type {(safeCode:string) => string} */
+  const syntaxHighlight = safeCode => {
+    return encodCodeBlockToSafeHtml(safeCode)
+      .replaceAll(/("[^&]*"|`[^&]*`|&apos;[^&]*&apos;)/g, "<st>$1</st>")
+      .replaceAll(/(&lt;[^\s|^&]*&gt;)/g, "<wt>$1</wt>")
+      .replaceAll(/(&lt;[^\s|^&|^\!]*)(\s+)/g, "<wt>$1</wt>$2")
+      .replaceAll(/(\{|\}|\(|\)|\[|\])/g, "<sw>$1</sw>")
+      .replaceAll(/(const|let|return|function|var|for|if|while|\?|\:)/g, "<rw>$1</rw>")
+      .replaceAll(/(className|class|onClick|onInput|export|import|@type|@typedef|string|number|object|false|true)/g, "<ew>$1</ew>")
+      .replaceAll(/(\=&gt;|\=|\|)/g, "<uw>$1</uw>")
+      .replaceAll(/(\/\/(.*)$)/g, "<rm>$1</rm>")
+      .replaceAll(/(\/\*\*[^\*|.]*\*\/)/g, "<jd>$1</jd>")
+      .replaceAll(/(&lt;\!--[.|^&]*--&gt;)/g, "<rm>$1</rm>")
+    ;
+  }
+
   const inlineMarkdown = str => encodCodeBlockToSafeHtml(str)
     .replaceAll(/`([^`]*)`/g, `<span class="text-[--code-sm]">$1</span>`)
     .replaceAll(/\[([^\]]+)\]\(([^\)].+)\)/g,`<a class="
@@ -151,13 +170,13 @@
             case /^\s*```/.test(line):
               codeBlock = false;
               return '</pre>'
-            default: return encodCodeBlockToSafeHtml(line);
+            default: return syntaxHighlight(line);
           }
 
         if (!codeBlock) switch (true) {
           case /^\s*```/.test(line):
             codeBlock = true;
-            return '<pre class="bg-zinc-950 p-4 text-lime-200 overflow-x-scroll">'
+            return '<pre class="bg-zinc-950 p-4 text-emerald-200 overflow-x-scroll">'
           case /^\s*#\s/.test(line):
             return `<h1 class="text-orange-200 text-[2rem]">${inlineMarkdown(
               line.slice(line.indexOf('#') + 2 ?? 0)
@@ -247,15 +266,15 @@ Example of sytax highlight
 - <tw> : tag word
 
 > The most problematic highlighter is a \`HTML\` highlihter
-Because the \`HTML\` can also contain: \`CSS\`, \`JS\`, \`RegExp\`, \`Template string\` or even \`JSX\` also
+Because the \`HTML\` can also contain: \`CSS\`, \`JS\`, \`RegExp\`, \`Template string\`, \`SVG\`, \`RegExp\` or even \`JSX\` also
 
 \`\`\`
-<bw>export</bw> <rw>const</rw> MainFrame = <sw>({</sw> children <sw>})</sw> => {
+export const MainFrame = ({ children <sw>}) => {
   const { theme, setTheme, switchTheme } = useDarkLightTheme();
   useEffect(() => { setTheme(Theme.DARK); }, [setTheme]);
 
-  <rw>return</rw> <sw>(</sw>
-    <tw><main<\tw> className="dark:bg-zinc-800 dark:text-white min-h-screen">
+  return (
+    <main className="dark:bg-zinc-800 dark:text-white min-h-screen">
       <button
         className="fixed right-0 p-2 m-2 rounded-lg dark:bg-black bg-white opacity-70 z-20"
         onClick={() => switchTheme()}>
@@ -267,6 +286,8 @@ Because the \`HTML\` can also contain: \`CSS\`, \`JS\`, \`RegExp\`, \`Template s
     </main>
   );
 \`\`\`
+
+
 
 [Highlighter Code Example](https://www.w3schools.com/howto/tryit.asp?filename=tryhow_syntax_highlight)
 
