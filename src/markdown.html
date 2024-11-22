@@ -2,6 +2,10 @@
 <body class="bg-zinc-950"></body>
 <!-- markdown view skining -->
 <style>
+  body {
+    background: #333;
+    color: #999;
+  }
   markdown-view {
     --h1: #A6F;
     --h2: #893;
@@ -45,16 +49,16 @@
     placeholder=" - - - markdown editor - - - "
     spellcheck="false"
     ></textarea>
-
     <article class="bg-zinc-900 whitespace-pre-wrap px-8
-      min-w-full min-h-screen
+      min-w-full min-h-screen relative
     ">
+      <span id="debug-ms" class="absolute -top-4 left-4 p-2 rounded-lg bg-neutral-950"></span>
       <markdown-view source="textarea" />
     </article>
   </section>
 
   <!-- markdown components -->
-  <template id="code-block">
+  <!-- <template id="code-block">
     <pre class="bg-zinc-950 p-4 text-lime-200 overflow-x-scroll"><slot></slot></pre>
   </template>
   <template class="head-1">
@@ -68,7 +72,7 @@
   </template>
   <template id="info-block">
     <p class="bg-zinc-950 p-4 rounded"><slot></slot></p>
-  </template>
+  </template> -->
   <!-- Check it: <a class="underline text-emerald-400" href="https://github.com/mundimark/awesome-markdown-editors?tab=readme-ov-file" target="_blank">markdown-ediotor-collections</a> -->
 </main>
 
@@ -123,15 +127,18 @@
       target="_blank">$1</a>
     `)
 
+  const debugMs = document.querySelector('#debug-ms');
+
   /**
    * Very Earluy POC level Parser
    * @type {(source:string) => string}
    */
   const markdownParser = (source) => {
+    const start = performance.now();
     let codeBlock = false;
     const CR = '\n';
     const lines = source.split(CR);
-    return lines.map(
+    const colorCode = lines.map(
       line => {
         if (codeBlock) switch (true) {
             case /^\s*```/.test(line):
@@ -168,6 +175,8 @@
       }
     )
     .join(CR);
+    debugMs.innerHTML = `run: ${performance.now() - start} ms`;
+    return colorCode;
   }
 
   customElements.define('markdown-view', class extends HTMLElement {
@@ -192,45 +201,4 @@
     e.stopPropagation();
     markdownView.changeContent(e?.target?.value);
   })
-
-  // Animation test over markdown editor
-
-  const spriteSheet =
-  [4, 26, 50, 74, 96].map((horizontal) =>
-    [4, 36, 69, 103].map((vertical) => `${horizontal}% ${vertical}%`)
-  ).flat();
-
-  import { fragment } from './old-bird-soft.js';
-
-  const anim = [
-    { transform: "translateX(%0)" },
-    { transform: "rotate(0) translate3D(-50%, -50%, 0)" },
-    // { backgroundColor: "#431236", offset: 0.3 },
-    { transform: "rotate(360deg) translate3D(-50%, -50%, 0)" },
-    { transform: "translateX(%80)" },
-  ]
-  const timeline = {
-    duration: 2000,
-    iterations: Infinity
-  }
-
-  const rnd = range => Math.random() * range | 0;
-
-  globalThis.startStop = () => {
-    // if (an2.playState == 'running') {
-    const actor = fragment('#card', 'body', 'card-02', 'figure')
-    actor.style.top=`${rnd(55)}rem`;
-    actor.style.left=`${rnd(70)}rem`;
-    actor.style.transform=`scale(${Math.random()})`;
-    actor.style.backgroundPosition = spriteSheet[rnd(spriteSheet.length)];
-    // actor.addEventListener("click", () => {actor.pause()});
-    // style don't work any more.
-    actor.animate(anim, timeline);
-    actor.playbackRate = rnd(5000);
-    actor.play();
-  }
 </script>
-
-<section class="fixed bottom-16 left-16 hidden">
-  <button class="p-2 bg-sky-600 text-sky-200 m-2 rounded-full" onclick="globalThis.startStop()">card +</button>
-</section>
