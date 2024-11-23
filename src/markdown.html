@@ -195,7 +195,7 @@
   const markdownView = document.querySelector('markdown-view');
   const markdownEditor = document.querySelector('textarea');
 
-  fetch('./demo.md').then(r=>r.text()).then(md => markdownView.changeContent(md))
+  fetch('./md-example.md').then(r=>r.text()).then(md => markdownView.changeContent(md))
 
   markdownEditor.addEventListener("input", e => {
     e.stopPropagation();

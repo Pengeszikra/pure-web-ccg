@@ -19,7 +19,9 @@
       duration-1000
       hover:opacity-30
       hover:duration-200
-    "></figure>
+    ">
+    <span class="text-rose-600 text-4xl bg-black/40 p-2 m-2"></span>
+  </figure>
   </template>
 
   <img src="../sprites/potter3m.png" alt="" class="w-96 fixed right-0 top-0 opacity-35">
@@ -45,14 +47,40 @@
     return actor;
   }
 
-  const state =  Array(6 * 8).fill(0).map(_=>rnd(9) + 12);
+  const state =  Array(6 * 8).fill(0).map(_=>rnd(3) + 12);
+
+  /** @type {(table: number[]) => []} */
+  const findTheMatches = (table) => {
+    const OUTOFF = new Symbol('out-off');
+    const maxX = 6;
+    const maxY = 8;
+    /** @type {(x:number, y:number) => number | Symbol} */
+    const pick = (x,y) => 
+      x >= 0 && x < maxX && 
+      y >= 0 && y < maxY
+      ?  table[y * 8 + x]
+      : OUTOFF
+      ;
+    const fourMoves = [-1, -1 * maxY, 1, 1 * maxY];
+    const getPoz = (index, maxY) =>[index % maxY, index / maxY | 0];
+
+    const countMatches = ((item, index) => {
+      const [x, y] = getPoz(index, maxY);
+      fourMoves
+        .map(move => getPoz(index + move, maxY))
+        .filter(validMoves);
+    });
+
+    return table.map(countMatches);
+  };
+
 
   const view = state.map(
-    (sprite, index) => {
+    (tag, index) => {
       /** @type {HTMLElement} */
       const frg = fragFactory(
         'frg_'+index,
-        sprite,
+        tag,
         index % 6 * 6.4 + 2,
         // (index / 6 | 0 ) * 6.4 + 5
         -20
@@ -62,13 +90,61 @@
         delay(10);
         e.target.style.top = '100vh';
       }
+      const log = (info) => frg.children[0].innerText = info;
+      // log(tag);
       setTimeout(() => {
         frg.style.top = `${(index / 6 | 0 ) * 6.4 + 5}rem`  
       }, rnd(3000));
-      return {index,frg};
+      return {index,frg, tag, log};
     }
   );
 
-  console.log(view)
+  // let line = "2,3,4,5,5,5,3,7,7,7,5,5,5,2";
+  // let {0:fo, 1:nu, index} = /(\b\d+\b)(?:,\1){2,}/g.exec(line);
+
+  const findMatch = line => {
+    let {0:fo, 1:nu, index} = /(\b\d+\b)(?:,\1){2,}/g.exec(line) ?? {};
+    return fo ? {fo, nu, index} : null;
+  }
+
+  const maxX = 6;
+  const maxY = 8;
+
+  /** @type {(start:number, end:number) => number[]} */
+  const range = (start, end) => Array(end - start).fill().map((_, idx) => idx + start);
+
+  let pattern = [];
+
+  // horizontal find
+  range(0, maxY).forEach(idx => {
+    const line = state.slice(idx * maxX, (idx * maxX) + maxX).join();
+    const find = findMatch(line);
+    if (find) {
+      const {fo, nu, index} = find;
+      pattern.push({nu:+nu, score: fo.split(',').length, idx: index / (nu.length + 1)})
+    }
+    console.log(line + "::" + JSON.stringify(find))
+  });
+
+  console.log('--------')
+
+  // vertical find
+  range(0, maxX).forEach(idx => {
+    const line = range(0, maxY).map(collumn => state[collumn * maxX + idx]);
+    const find = findMatch(line);
+    if (find) {
+      const {fo, nu, index} = find;
+      pattern.push({nu:+nu, score: fo.split(',').length, idx: index / (nu.length + 1)})
+    }
+    console.log(line + "::" + JSON.stringify(find))
+  })
+
+  console.log(pattern)
+
+
+  state.forEach((nu, idx) => view[idx].log(nu))
+
+  globalThis.state = state;
+  globalThis.view = view;
 
 </script>

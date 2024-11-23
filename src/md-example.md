@@ -37,5 +37,26 @@ const alfa = `Some interesting ${beta = false ? "no" :  "yes" } template-str`
 - combine to one syntax
 
 
+```
+/** @type {(matrix: number[])=>number[]} */
+const matchLoop = (matrix) => {
+  
+}
+```
+
+## TODO for today
+- figure out what game will be developed for AWS Game Builder Challenge
+  - space travell card game with lot of adventure and game collection
+  - space live card game, where you can advanture throught the galaxy to find your planet where you live and base to your quest.  I thik this idea need at least a bunch of month to create, I don't have that many times. 
+  - Somehow figure out where is the good place the revoicer voicer.
+- figure out a game design, and that at least somehow need to be consistent.
+- alien solitare or 3match game will be working.
+- try at least two or three AWS service for game
+- find a name for this Editor
+- shortkey for editor
+- figure out what cause the problem on `DRSA` admin tool
+
+great story about game developer : [Eric creator of Stardew Valley](https://www.youtube.com/watch?v=v0OsW8HSqA8)
+
 _hapy ending_
 
