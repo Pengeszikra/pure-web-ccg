@@ -49,8 +49,8 @@ const matchLoop = (matrix) => {
 
 ## TODO for today
   - figure out what game will be developed for AWS Game Builder Challenge
-    - space travell card game with lot of adventure and game collection
-    - space live card game, where you can advanture throught the galaxy to find your planet where you live and base to your quest.  I thik this idea need at least a bunch of month to create, I don't have that many times.
+    - space travel card game with lot of adventure and game collection
+    - space live card game, where you can advanture throught the galaxy to find your planet where you live and base to your quest.  I think this idea need at least a bunch of month to create, I don't have that many times.
     - Somehow figure out where is the good place the revoicer voicer.
   - figure out a game design, and that at least somehow need to be consistent.
   - alien solitare or 3match game will be working.
@@ -81,5 +81,36 @@ v=v0OsW8HSqA8)
 The problem with ZED is how reformat the Tailwind class in HTML on every save.
 Even if turn off the
 The positive feedback is the consistent syntax highlight even in HTML embeded javascript code
+
+## Name of this editor:
+```
+- THED - <this-editor>
+- POET - <poc-editor>
+- AXEDIT - <axe-editor>
+- FENCER - <fencer-editor>
+- MARKER - <mark-editor>
+```
+[great article of editors](https://sotergreco.com/ive-used-every-code-editor-what-is-the-best)
+
+```
+- TIE - <the-inde-editor>
+
+     /     \
+     |--O--|
+     \     /
+```
+_maybe also fancy if some ASCII capability included_
+
+## Performance on long code.
+performance is slow when I edit a 3000 LOC code
+round 15 -> 20ms just for a render function.
+this is definetley need to be speed up.
+because at every keystroke, I was recalculate the
+whole `syntaxhighlight` rerender, that is awefull slow.
+
+## Kilo :: no-dependency C editor
+
+[writing editor in less than 1000LOC](http://antirez.com/news/108)
+[kilo :: github](https://github.com/antirez/kilo)
 
 _hapy ending_
