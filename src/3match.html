@@ -24,7 +24,7 @@
         hover:duration-200
       "
     >
-      <span class="text-rose-600 text-4xl bg-black/40 p-2 m-2"></span>
+      <span class="text-emerald-200 text-4xl bg-black/40 p-2 m-2"></span>
     </figure>
   </template>
 
@@ -59,25 +59,6 @@
   const state = Array(6 * 8)
     .fill(0)
     .map((_) => rnd(3) + 12);
-
-  /** @type {(table: number[]) => []} */
-  const findTheMatches = (table) => {
-    const OUTOFF = new Symbol("out-off");
-    const maxX = 6;
-    const maxY = 8;
-    /** @type {(x:number, y:number) => number | Symbol} */
-    const pick = (x, y) =>
-      x >= 0 && x < maxX && y >= 0 && y < maxY ? table[y * 8 + x] : OUTOFF;
-    const fourMoves = [-1, -1 * maxY, 1, 1 * maxY];
-    const getPoz = (index, maxY) => [index % maxY, (index / maxY) | 0];
-
-    const countMatches = (item, index) => {
-      const [x, y] = getPoz(index, maxY);
-      fourMoves.map((move) => getPoz(index + move, maxY)).filter(validMoves);
-    };
-
-    return table.map(countMatches);
-  };
 
   const view = state.map((tag, index) => {
     /** @type {HTMLElement} */
@@ -130,9 +111,12 @@
 
   // horizontal find
   range(0, maxY).forEach((idx) => {
-    const line = state.slice(idx * maxX, idx * maxX + maxX).join();
+    const start = idx * maxX;
+    const line = state.slice(start, start + maxX).join();
     const find = findMatch(line);
     if (find) {
+      find.pos = find.list.map(m => m + (start));
+      find.ff  = start;
       pattern.push(find);
       console.log(line + "::" + JSON.stringify(find));
     }
@@ -145,6 +129,7 @@
     const line = range(0, maxY).map((collumn) => state[collumn * maxX + idx]);
     const find = findMatch(line);
     if (find) {
+      //find.pos = find.list.map(m => m + (idx * maxX)); 
       pattern.push(find);
       console.log(line + "::" + JSON.stringify(find));
     }
@@ -152,7 +137,20 @@
 
   // console.log(pattern);
 
-  state.forEach((nu, idx) => view[idx].log(nu));
+  const matchList = new Set(
+    pattern.map(({pos}) => pos)
+    .flat()
+    .sort((a,b) => a - b)
+  );
+
+  console.log(matchList)
+
+
+  state.forEach((nu, idx) => view[idx].log(
+    matchList.has(idx) 
+      ? `(${nu})`
+      : nu
+  ));
 
   globalThis.state = state;
   globalThis.view = view;
