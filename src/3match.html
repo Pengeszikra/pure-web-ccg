@@ -1,7 +1,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <body class="bg-zinc-950"></body>
 <main class="bg-zinc-800 text-zinc-400 p-8 min-h-screen">
-  <h1 class="text-orange-400 text-xl">Three Match Game</h1>
+  <h1 class="text-orange-400 text-xl">Three Match Game :: <span></span></h1>
   <template id="frag">
     <figure class="
         fixed
@@ -20,13 +20,15 @@
         hover:opacity-30
         hover:duration-200
       ">
-      <span class="text-emerald-200 text-4xl bg-black/40 p-2 m-2"></span>
+      <span class="hidden text-emerald-200 text-4xl bg-black/40 p-2 m-2"></span>
     </figure>
   </template>
   <img src="../sprites/potter3m.png" alt="" class="w-96 fixed right-0 top-0 opacity-35" />
 </main>
 <script type="module">
   import { fragment, delay } from "./old-bird-soft.js";
+
+  let score = 0;
 
   const rnd = (range) => (Math.random() * range) | 0;
 
@@ -46,19 +48,17 @@
     return actor;
   };
 
+  const rollTag = () => rnd(3) + 12;
+
   const state = Array(6 * 8)
     .fill(0)
-    .map((_) => rnd(3) + 12);
+    .map(rollTag);
+
+  const randomFrag = (tag, index) => fragFactory("frg_" + index, tag, (index % 6) * 6.4 + 2, -20);
 
   const view = state.map((tag, index) => {
     /** @type {HTMLElement} */
-    const frg = fragFactory(
-      "frg_" + index,
-      tag,
-      (index % 6) * 6.4 + 2,
-      // (index / 6 | 0 ) * 6.4 + 5
-      -20,
-    );
+    const frg = randomFrag(tag, index);
     frg.onclick = async (e) => {
       frg.style.zIndex = 100;
       delay(10);
@@ -128,6 +128,32 @@
       ? `(${nu})`
       : nu
   ));
+
+  setTimeout(() => {
+    view
+      .filter((_,idx) => fIndex.includes(idx)) 
+      .map(({frg}) => setTimeout(() => {
+          frg.style.top = '100rem';
+          document.querySelector('h1 span').innerText = score += 100;
+        }, rnd(1000))
+      )
+    refill();
+  }, 4000);
+
+  const refill = () => setTimeout(() => {
+    view 
+      .map(({frg}, idx) => {
+        if (!fIndex.includes(idx)) return;
+        frg.style.display = 'none';
+        const tag = rollTag();
+        frg = randomFrag(tag, idx);
+        state[idx] = tag;
+        setTimeout(() => {
+          frg.display = 'block'
+          frg.style.top = `${((idx / 6) | 0) * 6.4 + 5}rem`;
+        }, rnd(1000));
+      })
+  }, 3000);
 
   globalThis.state = state;
   globalThis.view = view;
