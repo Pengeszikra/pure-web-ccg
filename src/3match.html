@@ -72,22 +72,6 @@
     return { index, frg, tag, log };
   });
 
-  // let line = "2,3,4,5,5,5,3,7,7,7,5,5,5,2";
-  // let {0:fo, 1:nu, index} = /(\b\d+\b)(?:,\1){2,}/g.exec(line);
-
-  // const findMatch = (line) => {
-  //   let { 0: fo, 1: nu, index } = /(\b\d+\b)(?:,\1){2,}/g.exec(line) ?? {};
-  //   const score = fo?.split(",")?.length;
-  //   return score
-  //     ? {
-  //       nu: +nu,
-  //       score,
-  //       idx: index / (nu.length + 1),
-  //       list: range(index, index + score),
-  //     }
-  //     : null;
-  // };
-
   const maxX = 6;
   const maxY = 8;
 
@@ -98,19 +82,6 @@
       .map((_, idx) => idx + start);
 
   let pattern = [];
-
-  // horizontal find
-  // range(0, maxY).forEach((idx) => {
-  //   const start = idx * maxX;
-  //   const line = state.slice(start, start + maxX).join();
-  //   const find = findMatch(line);
-  //   if (find) {
-  //     find.pos = find.list.map(m => m + (start));
-  //     find.ff = start;
-  //     // pattern.push(find);
-  //     console.log(line + "::" + JSON.stringify(find));
-  //   }
-  // });
 
   const countMatches = (
     line, 
@@ -134,32 +105,26 @@
 
   globalThis.countMatches = countMatches;
 
-  console.log("--------");
+  // horizontal find
+  range(0, maxX).forEach((row) => {
+    const found = countMatches(state, row * maxX, row * maxX + maxX, 1)
+    if (found.length) pattern.push(found);
+  });
 
-  // vertical find
-  // range(0, maxX).forEach((idx) => {
-  //   const line = range(0, maxY).map((collumn) => state[collumn * maxX + idx]);
-  //   const find = findMatch(line);
-  //   if (find) {
-  //     //find.pos = find.list.map(m => m + (idx * maxX)); 
-  //     // pattern.push(find);
-  //     console.log(line + "::" + JSON.stringify(find));
-  //   }
-  // });
+  //  vertical find
+  range(0, maxY).forEach((column) => {
+    const found = countMatches(state, column, (maxY * maxX), maxX)
+    if (found.length) pattern.push(found);
+  });
 
-  // console.log(pattern);
+  console.log(pattern);
 
-  const matchList = new Set(
-    pattern.map(({ pos }) => pos)
-      .flat()
-      .sort((a, b) => a - b)
-  );
+  const fIndex = pattern.flat().map(({lst}) => lst).flat();
 
-  console.log(matchList)
-
+  console.log(fIndex)
 
   state.forEach((nu, idx) => view[idx].log(
-    matchList.has(idx)
+    fIndex.includes(idx)
       ? `(${nu})`
       : nu
   ));
