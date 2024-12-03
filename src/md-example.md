@@ -113,4 +113,89 @@ whole `syntaxhighlight` rerender, that is awefull slow.
 [writing editor in less than 1000LOC](http://antirez.com/news/108)
 [kilo :: github](https://github.com/antirez/kilo)
 
+# <table-top>
+```
+// how can I code a tabletop game
+
+/** @type {(situation: Situation) => Rule} */
+const rule = (situation) => {};
+
+// even I can use template string to organize a Rule by `DSL`
+rule`
+  // A L I E N - S O L I T A R E
+
+  let player select his/her hero
+  let player choose a game type
+  let create 48 predefined deck of cards
+      according player collection and choiced game type
+
+  // - - - Layout - - -
+  //
+  //             deck | drop
+  //  line1 | line2   | line3   | line4
+  //  hero  | action1 | action2 | store1
+  //
+
+  let the top one is the hero card of player
+  let deal hero to player
+  let shuffle the deck
+  // phase: `deal`
+  let deal 4 top card to `frontline` line1 -> line4
+  // phase: `interaction`
+  let player able to play card following these rules:
+    - stranger can move
+       :: front - vs -> hero
+       :: front - vs -> action:guard
+    - fix can move
+       ::  front -> store1 = actions -> fixing
+       :: front -> drop
+    - guard can move
+       :: front -> actions, store, drop
+    - strike can move
+       :: front -> actions, store, drop
+       :: actions -> stranger ( front )
+    - score can move
+       :: front -> actions, store, drop
+    - skill can move
+       :: front -> actions, store, drop
+  while at least 3 front slot empty
+  if game don't reach some goal goto to phase `deal`
+  let end of the game and show the `result`
+`;
+
+/** @type {() => UI} */
+const render = () => {};
+```
+
+## Grid Hell
+
+```
+<SubHeader>
+  <HeaderLeft>
+    <Grid container alignItems="center" wrap="nowrap" spacing={5}>
+      <Grid item xs={4}>
+        <Grid container alignItems="center" wrap="nowrap" spacing={2}>
+          <Grid item>
+            <Typography variant="subtitle1" noWrap>
+              <FormattedMessage {...messages.tokens} />
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <Select value={currentPartner.id} onChange={handleChange}>
+                {map(partner => (
+                  <MenuItem key={partner.id} value={partner.id}>
+                    {partner.label || partner.id}
+                  </MenuItem>
+                ))(partners)}
+              </Select>
+            </FormControl>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
+  </HeaderLeft>
+</SubHeader>
+```
+
 _hapy ending_

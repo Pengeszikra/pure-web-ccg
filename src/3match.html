@@ -1,12 +1,9 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <body class="bg-zinc-950"></body>
-
 <main class="bg-zinc-800 text-zinc-400 p-8 min-h-screen">
   <h1 class="text-orange-400 text-xl">Three Match Game</h1>
-
   <template id="frag">
-    <figure
-      class="
+    <figure class="
         fixed
         top-[5rem]
         left-[2rem]
@@ -22,19 +19,12 @@
         duration-1000
         hover:opacity-30
         hover:duration-200
-      "
-    >
+      ">
       <span class="text-emerald-200 text-4xl bg-black/40 p-2 m-2"></span>
     </figure>
   </template>
-
-  <img
-    src="../sprites/potter3m.png"
-    alt=""
-    class="w-96 fixed right-0 top-0 opacity-35"
-  />
+  <img src="../sprites/potter3m.png" alt="" class="w-96 fixed right-0 top-0 opacity-35" />
 </main>
-
 <script type="module">
   import { fragment, delay } from "./old-bird-soft.js";
 
@@ -85,18 +75,18 @@
   // let line = "2,3,4,5,5,5,3,7,7,7,5,5,5,2";
   // let {0:fo, 1:nu, index} = /(\b\d+\b)(?:,\1){2,}/g.exec(line);
 
-  const findMatch = (line) => {
-    let { 0: fo, 1: nu, index } = /(\b\d+\b)(?:,\1){2,}/g.exec(line) ?? {};
-    const score = fo?.split(",")?.length;
-    return score
-      ? {
-          nu: +nu,
-          score,
-          idx: index / (nu.length + 1),
-          list: range(index, index + score),
-        }
-      : null;
-  };
+  // const findMatch = (line) => {
+  //   let { 0: fo, 1: nu, index } = /(\b\d+\b)(?:,\1){2,}/g.exec(line) ?? {};
+  //   const score = fo?.split(",")?.length;
+  //   return score
+  //     ? {
+  //       nu: +nu,
+  //       score,
+  //       idx: index / (nu.length + 1),
+  //       list: range(index, index + score),
+  //     }
+  //     : null;
+  // };
 
   const maxX = 6;
   const maxY = 8;
@@ -110,44 +100,66 @@
   let pattern = [];
 
   // horizontal find
-  range(0, maxY).forEach((idx) => {
-    const start = idx * maxX;
-    const line = state.slice(start, start + maxX).join();
-    const find = findMatch(line);
-    if (find) {
-      find.pos = find.list.map(m => m + (start));
-      find.ff  = start;
-      pattern.push(find);
-      console.log(line + "::" + JSON.stringify(find));
+  // range(0, maxY).forEach((idx) => {
+  //   const start = idx * maxX;
+  //   const line = state.slice(start, start + maxX).join();
+  //   const find = findMatch(line);
+  //   if (find) {
+  //     find.pos = find.list.map(m => m + (start));
+  //     find.ff = start;
+  //     // pattern.push(find);
+  //     console.log(line + "::" + JSON.stringify(find));
+  //   }
+  // });
+
+  const countMatches = (
+    line, 
+    start=0, 
+    length = line.length,
+    step = 1
+  ) => {
+    let fo = { nu: -1, lst: [] }
+    let res = [];
+    for (let i = start; i < length; i += step) {
+      if (fo.nu !== line[i]) {
+        if (fo.lst.length > 2) res.push(fo);
+        fo = { nu: line[i], lst: [i] };
+        continue;
+      }
+      fo.lst.push(i);
     }
-  });
+    if (fo.lst.length > 2) res.push(fo);
+    return res;
+  };
+
+  globalThis.countMatches = countMatches;
 
   console.log("--------");
 
   // vertical find
-  range(0, maxX).forEach((idx) => {
-    const line = range(0, maxY).map((collumn) => state[collumn * maxX + idx]);
-    const find = findMatch(line);
-    if (find) {
-      //find.pos = find.list.map(m => m + (idx * maxX)); 
-      pattern.push(find);
-      console.log(line + "::" + JSON.stringify(find));
-    }
-  });
+  // range(0, maxX).forEach((idx) => {
+  //   const line = range(0, maxY).map((collumn) => state[collumn * maxX + idx]);
+  //   const find = findMatch(line);
+  //   if (find) {
+  //     //find.pos = find.list.map(m => m + (idx * maxX)); 
+  //     // pattern.push(find);
+  //     console.log(line + "::" + JSON.stringify(find));
+  //   }
+  // });
 
   // console.log(pattern);
 
   const matchList = new Set(
-    pattern.map(({pos}) => pos)
-    .flat()
-    .sort((a,b) => a - b)
+    pattern.map(({ pos }) => pos)
+      .flat()
+      .sort((a, b) => a - b)
   );
 
   console.log(matchList)
 
 
   state.forEach((nu, idx) => view[idx].log(
-    matchList.has(idx) 
+    matchList.has(idx)
       ? `(${nu})`
       : nu
   ));
