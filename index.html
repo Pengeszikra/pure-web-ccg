@@ -10,7 +10,7 @@
     html {
       font-size: 1.8vmin;
     }
-    main...#desk {
+    --main#desk {
         transform-style: preserve-3d;
         transform:
           perspective(700px)
@@ -80,7 +80,8 @@
       </dialog>
     </section>
   </template>
-  <code class="bg-emerald-950 text-black p-2 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0">{</code>
+  <code class="bg-emerald-950 text-black p-2 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]">{</code>
+  <code id="show-set" class="bg-emerald-950 text-black p-2 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]">}</code>
   <pre id="monitor" class="select-none pointer-events-none z-[10000] p-4 absolute text-emerald-300 text-[1rem]"></pre>
   <main id="desk" class="relative max-h-screen aspect-[4/4] mx-auto --opacity-15">
     <section id="table" class="grid gap-4 grid-cols-4 p-4"></section>

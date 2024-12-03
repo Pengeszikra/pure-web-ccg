@@ -5,7 +5,7 @@
 // even without building.
 // this is help to using jsDoc in code a proper way.
 
-import { cardCollection, setup } from "../src/alien.js";
+import { cardCollection } from "../src/alien.js";
 import { signal, monitor, delay } from "../src/old-bird-soft.js";
 
 const spriteSheet = [4, 26, 50, 74, 96]
@@ -14,7 +14,7 @@ const spriteSheet = [4, 26, 50, 74, 96]
   )
   .flat();
 
-const setLog = (obj, prop, value) => console.log(obj, prop, value);
+// const setLog = (obj, prop, value) => console.log(obj, prop, value);
 // a perfect type importing and reuse as composed type
 
 /** @typedef {import('../src/alien').State & {count:number, draw:object | null}} State */
@@ -189,3 +189,9 @@ sprite sheets of cards, composition: 5 x 4 grid, aspect ratio of each cards is s
 style: detailed crafted cut fantasy art
 Theme: alien invasion and space adventure moody Haroshi nagai inspired line art comic art with Syd Mead and Keith Parkinson, images on card in list: spaceship, alien, planet, gadget, scene, species, inner place of space ship, blast, scientic stuff, humanoid hero
 `;
+
+document.getElementById("show-set").onclick = (e) => {
+  document.getElementById("show-set").style.top = '1rem'
+  console.log(e);
+  
+}

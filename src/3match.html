@@ -11,9 +11,6 @@
         h-[6rem]
         bg-[url(../sprites/potter3m.png)]
         bg-[length:660%]
-        --bg-[position:23.5%_26.7%]
-        --bg-[position:42.5%_26.7%]
-        --bg-[position:42.5%_36.4%]
         rounded-xl
         transition-all
         duration-1000
@@ -63,9 +60,10 @@
       frg.style.zIndex = 100;
       delay(10);
       e.target.style.top = "100vh";
+      state[index] = 0;
     };
     const log = (info) => (frg.children[0].innerText = info);
-    // log(tag);
+    log(tag);
     setTimeout(() => {
       frg.style.top = `${((index / 6) | 0) * 6.4 + 5}rem`;
     }, rnd(3000));
@@ -103,7 +101,6 @@
       .fill()
       .map((_, idx) => idx + start);
 
-
   const gameLoop = () => {
     let pattern = [];
     const refill = () => setTimeout(() => {
@@ -135,16 +132,10 @@
       if (found.length) pattern.push(found);
     });
 
-    // console.log(pattern);
-
     const fIndex = pattern.flat().map(({ lst }) => lst).flat();
 
-    // console.log(fIndex)
-
     state.forEach((nu, idx) => view[idx].log(
-      fIndex.includes(idx)
-        ? `(${nu})`
-        : nu
+      fIndex.includes(idx) ? `(${nu})` : nu
     ));
 
     setTimeout(() => {
