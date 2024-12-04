@@ -10,20 +10,23 @@
     html {
       font-size: 1.8vmin;
     }
-    --main#desk {
+    main#desk {
         transform-style: preserve-3d;
         transform:
           perspective(700px)
-          rotateX(26deg)
+          rotateX(35deg)
           rotateY(-360deg)
           rotateZ(-360deg)
+          scale(.7)
           translateZ(75px);
+        pointer-events: none;
     }
   </style>
 </head>
 <body class="bg-black text-zinc-400 min-h-screen min-w-screen">
   <template id="slot">
     <section class="
+      pointer-events-auto
       w-[11rem] rounded-2xl aspect-[4/6]
       relative
       p-4
