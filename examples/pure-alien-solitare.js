@@ -195,3 +195,8 @@ document.getElementById("show-set").onclick = (e) => {
   console.log(e);
   
 }
+
+
+// document.querySelector('.card-front').style.transform="translateX(0rem) translateZ(0rem) translateY(37rem)"
+
+// document.querySelector('.card-front').style.transform="translateX(13rem) translateZ(15rem) translateY(37rem) rotateY(45deg)"
