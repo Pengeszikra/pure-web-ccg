@@ -156,9 +156,9 @@ globalThis.render = alien.render; // TODO remove
 setTimeout(() => goingForward(), 500);
 
 const debugSwitch = document.querySelector('code');
-debugSwitch.onclick = () => monitorView.style.visibility 
-  = monitorView.style.visibility === 'hidden' 
-  ? 'visible' 
+debugSwitch.onclick = () => monitorView.style.visibility
+  = monitorView.style.visibility === 'hidden'
+  ? 'visible'
   : 'hidden';
 monitorView.style.visibility = 'hidden';
 
@@ -193,3 +193,24 @@ class TeaserAnimation extends HTMLElement {
 customElements.define('teaser-animation', TeaserAnimation);
 
 // https://kinsta.com/blog/web-components/
+
+const rnd = (range) => (Math.random() * range) | 0;
+
+const fly = () => {
+  // @ts-ignore
+  [...document.querySelectorAll('.card-front')].map(card =>
+    setTimeout(() =>
+    card.style.transform=`
+      translateX(${rnd(40)-20}rem)
+      translateZ(${rnd(10)-5}rem)
+      translateY(${rnd(40)-20}rem)
+      rotateY(${rnd(20)-10}deg)
+    `,
+    rnd(1000)
+    )
+  );
+}
+
+globalThis.fly = fly;
+
+document.getElementById("show-set").onclick = fly;
