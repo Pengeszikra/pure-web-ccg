@@ -10,14 +10,20 @@
     html {
       font-size: 1.8vmin;
     }
+    body {
+      --background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
+      --background-image: url(https://cdn.midjourney.com/2f08df50-4acc-4677-89a9-0b9a8ce04163/0_0.png);
+      background-size: 70vh;
+      --background-blend-mode: hard-light;
+    }
     main#desk {
         transform-style: preserve-3d;
         transform:
-          perspective(700px)
-          rotateX(35deg)
+          perspective(70vh)
+          rotateX(30deg)
           rotateY(-360deg)
           rotateZ(-360deg)
-          scale(.7)
+          scale(.64)
           translateZ(75px);
         pointer-events: none;
     }

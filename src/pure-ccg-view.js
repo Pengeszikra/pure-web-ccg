@@ -33,6 +33,7 @@ const slot = (parent, id, name, topRem, leftRem) => {
     await delay(7);
     card.style.top = `${topRem}rem`;
     card.style.left = `${leftRem}rem`;
+    setTimeout(() => card.style.transform = `translateZ(0)`, 100)
   }
   /** @type {(card:HTMLElement) => void} */
   const teleportCardTo = (card) => {
@@ -153,8 +154,6 @@ globalThis.monitor = monitor; // TODO remove
 globalThis.ts = tableOfSlots; // TODO remove
 globalThis.render = alien.render; // TODO remove
 
-setTimeout(() => goingForward(), 500);
-
 const debugSwitch = document.querySelector('code');
 debugSwitch.onclick = () => monitorView.style.visibility
   = monitorView.style.visibility === 'hidden'
@@ -194,6 +193,7 @@ customElements.define('teaser-animation', TeaserAnimation);
 
 // https://kinsta.com/blog/web-components/
 
+/** @type {(range:number) => number} */
 const rnd = (range) => (Math.random() * range) | 0;
 
 const fly = () => {
@@ -214,3 +214,11 @@ const fly = () => {
 globalThis.fly = fly;
 
 document.getElementById("show-set").onclick = fly;
+
+
+// ------ [ begin the game setup ]
+
+setTimeout(() => {
+  alien.deck.map((id, idx) => render[id.split('|')[2]].card.style.transform = `translateZ(${(alien.deck.length - idx) / 7 }rem)`)
+}, 500);
+setTimeout(() => goingForward(), 1000);

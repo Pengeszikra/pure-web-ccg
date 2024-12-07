@@ -50,14 +50,18 @@ const heroLine = ["HE", "A1", "A2", "S1"];
 const activeLine = ["A1", "A2"];
 
 const zipcard = ({ name, power, maxPower, type, side, work }) => [power, maxPower, name, type, side, work].join('|');
+
 const createDeck = () => {
   const [hero,...zipCard] = cardCollection.map(zipcard);
   const shuffled = zipCard.sort(() => Math.random() - 0.5);
   alien.deck = [hero, ...shuffled];
+  // alien.deck.map(frg => frg.style.translate =  )
 }
 const emptyTable = () => [...forntline, ...heroLine, "DR", "DK"].map(
   slotId => alien.table[slotId] = {id:slotId, card: null});
+
 const hero = () => alien.table.HE = ({id:'HE', card:alien.deck.shift()});
+
 const dealCards = async () => {
   /** @type {SlotId[]} */
   const emptySlot = forntline.filter(id => !alien.table[id].card)
@@ -112,6 +116,7 @@ const gameRule = () => {
 }
 
 const goingForward = async () => {
+  await delay(300);
   hero();
   await delay(600);
   alien.phases = "STORY_GOES_ON"

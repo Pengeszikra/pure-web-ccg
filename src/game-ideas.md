@@ -1,5 +1,38 @@
 # Prepare for Hackhathon
 
+[redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
+
+## Midjourney first impression
+It is very exciting the ability way of combining pictures wit `--cref` and `--sref`, this way I can create a consistent `asset` style, so just a bit of time to wait a `structural reference`. The `relax` mode is give a power to make any amount assets, just need a bit patente, but that is oke 
+
+![](https://cdn.midjourney.com/da3ac216-33e3-4f5a-9775-3ecf6c1051e9/0_0.png)
+
+![](https://cdn.midjourney.com/de64befd-f71a-45f4-bcac-064da827875a/0_1.png)
+
+## Game Engine :: `Marker`
+The best way, when I create a minimal game engine, where I can setup a tabletop game in 3D with a sprite sheets. Let's do that way. May this marker have a game builder plugin. Why not?
+
+```html
+    main#desk {
+        transform-style: preserve-3d;
+        transform:
+          perspective(70vh)
+          rotateX(30deg)
+          rotateY(-360deg)
+          rotateZ(-360deg)
+          scale(.64)
+          translateZ(75px);
+        pointer-events: none;
+    }
+```
+
+![](https://cdn.midjourney.com/b8516cb2-7f04-42f3-8ce4-d14f52ea2778/0_1.png)
+
+![](https://cdn.midjourney.com/8eb8d805-7ab6-4209-9121-f064d8b776b7/0_2.png)
+
+## Galactic Reality Show
+Your deck contains `intergalactic celebrities` and their `challanges` to survive the most epic reality show ever. Meanwhile a lot of good, bad or funy `moments` also stand your ( and enemi players ) way. That teams facing exotic `adventures` and `quest`, can youse a most luxory or even out dated spaceship, robots or other `gadget`, your goal to earn so many `fame score` as can do and survive every `vote out` ceremony.
+
 ## Login System With Markdown Editor
 
 How much fun if the login system is a markdown editor,
@@ -144,4 +177,7 @@ One image can be describe somethin better, than 1000 word.
 ```
 // my gallery
 {% https://dream.ai/profile/pvivo %}
+
+// flux
+{% https://cgdream.ai/my-images %}
 ```
