@@ -27,6 +27,16 @@ It is very exciting the ability way of combining pictures wit `--cref` and `--sr
 
 ![](https://cdn.midjourney.com/da3ac216-33e3-4f5a-9775-3ecf6c1051e9/0_0.png)
 
+```js
+// deck rotate left
+alien.deck.map((id, idx) => render[id.split('|')[2]].card.style.transform = `
+  translateZ(${(alien.deck.length - idx) / 5 }rem)
+  translateX(${(alien.deck.length - idx) / 2 }rem)
+  rotateY(${(alien.deck.length - idx) * 2}deg)
+  
+  `);1
+```
+
 ![](https://cdn.midjourney.com/de64befd-f71a-45f4-bcac-064da827875a/0_1.png)
 
 ## Game Engine :: `Marker`

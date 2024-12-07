@@ -213,8 +213,41 @@ const fly = () => {
 
 globalThis.fly = fly;
 
-document.getElementById("show-set").onclick = fly;
 
+/** @type {(aZ:number, aX:number) => void} */
+const board = (angleZ = 0, angleX = 30) => {
+    // @ts-ignore
+    document.querySelector("main#desk").style  = `
+        transform-style: preserve-3d;
+        transform:
+          perspective(70vh)
+          rotateX(${angleX}deg)
+          rotateY(0deg)
+          rotateZ(${angleZ}deg)
+          scale(.64)
+          translateZ(75px);
+        pointer-events: none;
+`
+}
+
+board(0, 30);
+
+globalThis.board = board;
+
+const playWithTable = () => {
+  alien.deck.map((id, idx) => render[id.split('|')[2]].card.style.transform = `
+    translateZ(${(alien.deck.length - idx) / 5 }rem)
+    translateX(${(alien.deck.length - idx) / 2 }rem)
+    rotateY(${(alien.deck.length - idx) * 2}deg)
+  `);
+  let aZ = 0;
+  let ss = setInterval( () => board(aZ += 10, 50) , 50);
+  return ss;
+}
+
+globalThis.playWithTable = playWithTable;
+
+document.getElementById("show-set").onclick = playWithTable;
 
 // ------ [ begin the game setup ]
 
