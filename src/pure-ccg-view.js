@@ -214,7 +214,7 @@ const fly = () => {
 globalThis.fly = fly;
 
 
-/** @type {(aZ:number, aX:number) => void} */
+/** @type {(aZ?:number, aX?:number) => void} */
 const board = (angleZ = 0, angleX = 30) => {
     // @ts-ignore
     document.querySelector("main#desk").style  = `
@@ -241,13 +241,41 @@ const playWithTable = () => {
     rotateY(${(alien.deck.length - idx) * 2}deg)
   `);
   let aZ = 0;
-  let ss = setInterval( () => board(aZ += 10, 50) , 50);
+  let ss = setInterval( () => board(aZ += 1.3, 50), 15);
+  setTimeout(() => {
+    clearTimeout(ss)
+  }, 3500);
   return ss;
 }
 
 globalThis.playWithTable = playWithTable;
 
 document.getElementById("show-set").onclick = playWithTable;
+
+
+// gimbRotateX.oninput = (e) => {
+//   // @ts-ignore
+//   document.querySelector('#rotateX + label').innerText = gimbRotateX.value;
+//   board(+ gimbRotateX.value);
+// }
+
+/** @type {(id:string, setFunc?: function) => void} */
+const gimbalRotate = (id, setFunc = () => {}) => {
+  /** @type {HTMLInputElement} */
+  const el = document.querySelector(id);
+  // @ts-ignore
+  document.querySelector(`${id} + label`).innerText = el.value;
+  el.oninput = _ => {
+    // @ts-ignore
+    document.querySelector(`${id} + label`).innerText = el.value;
+    setFunc(el.value);
+  }
+};
+
+gimbalRotate('#rotateX', v => board(v));
+// @ts-ignore
+gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v));
+gimbalRotate('#rotateZ');
 
 // ------ [ begin the game setup ]
 

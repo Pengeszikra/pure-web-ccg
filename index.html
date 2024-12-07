@@ -56,10 +56,12 @@
       w-[11rem] rounded-2xl aspect-[4/6] lg
       px-1 py-3 bg-neutral-800 absolute top-0 left-0
       transition-all duration-500
-      pointer-events-none
+      --pointer-events-none
 
       bg-[url(sprites/many-card-002.jpeg)]
       --bg-[url(sprites/elf-cardset.jpg)]
+      --bg-[url(sprites/cat-cardset.jpg)]
+      --bg-[url(sprites/gremlins.png)]
       bg-[length:570%]
       bg-[position:4%_4%] 4 28 50 74 96, 4 36 69 103
       bg-no-repeat
@@ -98,8 +100,8 @@
     max-h-screen
     aspect-[4/4]
     mx-auto
-    transition-all
-    duration-500
+    --transition-all
+    --duration-500
     transform-style:preserve-3d
   ">
     <section id="table" class="grid gap-4 grid-cols-4 p-4"></section>
@@ -107,6 +109,11 @@
     <section id="player" class="grid gap-4 grid-cols-4 p-4"></section>
   </main>
   <teaser-animation></teaser-animation>
+  <section class="grid grid-cols-2 min-w-[40rem] gap-4 fixed top-4 left-[4rem]">
+    <input type="range" min="-180" max="180" id="rotateX" value="0" /><label></label>
+    <input type="range" min="0" max="70" id="rotateY" value="30" /><label></label>
+    <input type="range" min="0" max="360" id="rotateZ" value="0" /><label></label>
+  </section>
 </body>
   <script type="module" src="src/pure-ccg-view.js"></script>
 </html>
