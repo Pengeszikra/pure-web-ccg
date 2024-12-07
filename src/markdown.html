@@ -1,19 +1,17 @@
 <script src="https://cdn.tailwindcss.com"></script>
-
 <script>
-  //   M A R K E R - T H E - C O N S T R U C T O R  \\
- //                                                  \\
-// - - - - - - - - - - - - - - - - [ pure web ] - - - \\
+    //   M A R K E R - T H E - C O N S T R U C T O R  \\
+   //                                                  \\
+  // - - - - - - - - - - - - - - - - [ pure web ] - - - \\
 </script>
-
 <body class="bg-zinc-950"></body>
 <!-- markdown view skining -->
-
 <style>
   body {
     background: #333;
     color: #999;
   }
+
   markdown-view {
     --h1: #A6F;
     --h2: #893;
@@ -28,35 +26,31 @@
     --scroll-hover: #89a15d;
   }
 
-  ::-webkit-scrollbar { width: 1rem; }
+  ::-webkit-scrollbar { width: 1rem;}
   ::-webkit-scrollbar-track { background: var(--scroll-bg) }
   ::-webkit-scrollbar-thumb { background: var(--scroll-tumb) }
-  ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover)}
+  ::-webkit-scrollbar-thumb:hover { background: var(--scroll-hover) }
 
   pre {
     scrollbar-width: thin;
-    scrollbar-color: #111 #333!important;
+    scrollbar-color: #111 #333 !important;
   }
 
-  sw {color:#fb8600}
-  rw {color:#acd641}
-  bw {color:#ac84d7}
-  ew {color:#ac84d7}
-  uw {color:#8f665f}
-  st {color:#2fd57f}
-  rm {color:#768d76}
-  jd {color:#9ea77d}
-  wt {color:#618be3}
-
+  sw { color: #fb8600}
+  rw { color: #acd641}
+  bw { color: #ac84d7}
+  ew { color: #ac84d7}
+  uw { color: #8f665f}
+  st { color: #2fd57f}
+  rm { color: #768d76}
+  jd { color: #9ea77d}
+  wt { color: #618be3}
 </style>
 <script src="old-bird-soft.js" type="module"></script>
 <main class="min-h-screen bg-zinc-950 text-zinc-400">
   <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-2">
-    <textarea
-    class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
-    placeholder=" - - - markdown editor - - - "
-    spellcheck="false"
-    ></textarea>
+    <textarea class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
+      placeholder=" - - - markdown editor - - - " spellcheck="false"></textarea>
     <article class="bg-zinc-900 whitespace-pre-wrap px-8
       min-w-full min-h-screen relative
     ">
@@ -65,7 +59,6 @@
     </article>
   </section>
 </main>
-
 <script type="module">
   /**
    * https://mateam.net/html-escape-characters/
@@ -74,16 +67,16 @@
    */
   const encodCodeBlockToSafeHtml = str => str
     .replaceAll(/[\&|<|>|\\|']/g,
-    specialCharacter => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      "\"": "&quot;",
-      "\\": "&#92",
-      "'": "&apos;",
-      "`": "&#96",
-      "|": "|"
-    }[specialCharacter]));
+      specialCharacter => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "\\": "&#92",
+        "'": "&apos;",
+        "`": "&#96",
+        "|": "|"
+      }[specialCharacter]));
 
   globalThis.safeEncode = encodCodeBlockToSafeHtml;
 
@@ -101,7 +94,7 @@
       .replaceAll(/(\/\/(.*)$)/g, "<rm>$1</rm>") // .replaceAll(/(\<([^\>|^rm]*)\>)/g,"")
       .replaceAll(/(\/\*\*[^\*|.]*\*\/)/g, "<jd>$1</jd>")
       .replaceAll(/(&lt;\!--[.|^&]*--&gt;)/g, "<rm>$1</rm>")
-    ;
+      ;
   }
 
   // ![potter](../sprites/potter3m.png)
@@ -144,15 +137,40 @@
     const colorCode = lines.map(
       line => {
         if (codeBlock) switch (true) {
-            case /^\s*```/.test(line):
+          case /^\s*```\.\.\./.test(line): {
+              const code = codeBlock.join('\n');
               codeBlock = false;
-              return '</pre>'
-            default: return syntaxHighlight(line);
-          }
+              const NO = Symbol('NO');
+              let result;
+              let error;
+              try {
+                result = (new Function(
+                  code.includes('return')
+                    ? code
+                    : "return " + code
+                ))();
+                if (typeof result === "object") result = JSON.stringify(result, 2, null);
+                if (result?.toString() === undefined) error = "result.toStirng() :: undefined"
+              } catch(err) {
+                error = err
+              }
+
+              return `</pre><pre class="overflow-x-scroll p-2 mt-1 whitespace-pre-wrap overflow-auto
+                ${!error ? 'bg-emerald-900' : 'bg-rose-900'}"
+                >${result ?? error}</pre>
+              `;
+            }
+          case /^\s*```/.test(line):
+            codeBlock = false;
+            return '</pre>'
+          default:
+            codeBlock.push(line)
+            return syntaxHighlight(line);
+        }
 
         if (!codeBlock) switch (true) {
           case /^\s*```/.test(line):
-            codeBlock = true;
+            codeBlock = [];
             return '<pre class="bg-zinc-950 p-4 text-emerald-200 overflow-x-scroll">'
           case /^\s*#\s/.test(line):
             return `<h1 class="text-orange-200 text-[2rem]">${inlineMarkdown(
@@ -168,7 +186,7 @@
             )}</em>`;
           case /^\s*>\s/.test(line):
             return `<p class="bg-zinc-950 p-4 rounded">${inlineMarkdown(
-              line.replace('>','')
+              line.replace('>', '')
             )}</p>`;
           case /\{\%\s*([^%]+)\s*\%\}/.test(line):
             return line.replaceAll(
@@ -180,20 +198,20 @@
         }
       }
     )
-    .join(CR);
+      .join(CR);
     debugMs.innerHTML = `run: ${performance.now() - start} ms`;
     return colorCode;
   }
 
   customElements.define('markdown-view', class extends HTMLElement {
-    constructor () {
+    constructor() {
       super();
       const source = document.querySelector('textarea').value;
       globalThis.so = source;
       this.innerHTML = markdownParser(source);
     }
 
-    changeContent (source) {
+    changeContent(source) {
       this.innerHTML = markdownParser(source);
     }
   });
@@ -201,7 +219,7 @@
   const markdownView = document.querySelector('markdown-view');
   const markdownEditor = document.querySelector('textarea');
 
-  fetch('./game-ideas.md').then(r=>r.text()).then(md => markdownView.changeContent(md))
+  fetch('./game-ideas.md').then(r => r.text()).then(md => markdownView.changeContent(md))
 
   markdownEditor.addEventListener("input", e => {
     e.stopPropagation();

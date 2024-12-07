@@ -2,6 +2,26 @@
 
 [redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
 
+## `<\>` Board Editor 
+Let's moving forward to `board editor` which is a online 3D tabletop game editor, capable to handle a different `spritesheets` setup the whole environmet, handle cards, syntax highlight the generated code. Store asset valuse in JS object.
+
+## `+` inline coding to `marker`
+```
+// After triple ` insert a "..." to make 
+// render a whole stuff as a function.
+// Which is strange but maybe working.
+return "Hello World !"
+```...
+
+```
+--return 42
+```...
+
+roll the dice 
+```
+Math.random() * 6 | 0 + 1
+```...
+
 ## Midjourney first impression
 It is very exciting the ability way of combining pictures wit `--cref` and `--sref`, this way I can create a consistent `asset` style, so just a bit of time to wait a `structural reference`. The `relax` mode is give a power to make any amount assets, just need a bit patente, but that is oke 
 
@@ -144,8 +164,6 @@ output code plus iframe every typing.
     \-----------------------/
 ```
 
-{% .. %}
-
 ## Gallery
 
 ```sh
@@ -180,4 +198,19 @@ One image can be describe somethin better, than 1000 word.
 
 // flux
 {% https://cgdream.ai/my-images %}
+
+// character animatior
+{% https://viggle.ai/create %}
+
+// maybe we can saw what we can arn this stuff? ( 10$/month ) also have a slow mode.
+// just when the reddit game at least earn some state
+//   example:
+{% https://viggle.ai/share/e0807b30-9eaa-4547-a5f9-ceb39af9e84b %}
 ```
+
+
+
+
+
+
+
