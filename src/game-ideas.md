@@ -183,24 +183,19 @@ lll > gallery.md
 ```
 
 ![ui-spritesheet-01.png](../sprites/ui-spritesheet-01.png)
-![color-alien-cardset.jpg](../sprites/color-alien-cardset.jpg)
-![alien-cardset.jpg](../sprites/alien-cardset.jpg)
 ![cat-cardset.jpg](../sprites/cat-cardset.jpg)
-![elf-cardset.jpg](../sprites/elf-cardset.jpg)
 ![card-al-bg.png](../sprites/card-al-bg.png)
-![moody-cardset.jpg](../sprites/moody-cardset.jpg)
-![many-card-002.jpeg](../sprites/many-card-002.jpeg)
-![retro-ufo.jpg](../sprites/retro-ufo.jpg)
-![potter3m.png](../sprites/potter3m.png)
 
 {% https://alien-solitare.vercel.app/ %}
-
-![](https://images.wombo.art/generated/d34b07a7-5a5e-4719-beaa-84624b280ed2/final.jpg?Expires=1740612249&Signature=YYJ84eQ~nIAjh0I-~EPdP1tGyg9b63OzGsDvwtIPXBAKXxqoBTdYYYdhQyDl-ldfvI2~SbChmKfZp~TgTu~zu~weR9v2ouoPUdDx7NGF8NL9rrqmJDzFKcP00dT~GKbXGCctnh1r~z5u0d903xHsrig8HZshztlVdiJJTbIs5O7fAu8hqHkw~YpeJI1elhUVO5ky0pTfoy2IbwNhYDfnmDOphKA3dKjg-r-j3-8l27p5WA6WOOJRBZEXZdMlP0xGueE2ZxpiHs-Ntv6JitTdim4rfHWipsX3kvfRuklgDTgvv5T5WnAbr2GHbknPNTRSW28~IqITSPBS4aD2uFdR4g__&Key-Pair-Id=K1ZXCNMC55M2IL)
 
 ## Star Tabletop Game
 One image can be describe somethin better, than 1000 word.
 
-![](https://images.wombo.art/generated/07fdcfc6-1a72-43a1-acd7-40d45a6d56fb/final.jpg?Expires=1740612183&Signature=YAPaUBSfZyRMdK24FfBD~9wXl2UGAwbyL77emIlyt10rZjmte877u5HGyD2cm8gWatzl7SXBaqymHcK2beqjFqXpzvRXAtyw2cYeWAULhejzkGsNg7rjWjS0A8UVaY8vPiYgYtyAPfS7vDT11PfCLOQaEcbSusUMct321kvYBZijWEjGjArvYOyk2Mvjd12-~toBIiFhIY4tE~oo4mX~EfJq83aFtyDcLti4hghyPGs0dwSahZLibGT5ZLb5WOtdWejyX7JWZGSSijnfPkptBn4KEx47PbZGrQ-VeWLs~Dt7tLpmmZ6L8sb2nEoMeZXzx8WiigOtSM00JCyf1cpvWA__&Key-Pair-Id=K1ZXCNMC55M2IL)
+![](../sprites/duck-girl.png)
+![](../sprites/floor-galaxy.png)
+![](../sprites/floor-g2.png)
+
+{% .. %}
 
 ```
 // my gallery
@@ -211,6 +206,9 @@ One image can be describe somethin better, than 1000 word.
 
 // character animatior
 {% https://viggle.ai/create %}
+
+// remove background
+{% https://clipdrop.co/remove-background %}
 
 // maybe we can saw what we can arn this stuff? ( 10$/month ) also have a slow mode.
 // just when the reddit game at least earn some state
