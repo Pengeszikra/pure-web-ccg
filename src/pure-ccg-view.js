@@ -272,7 +272,8 @@ const gimbalRotate = (id, setFunc = () => {}) => {
   }
 };
 
-gimbalRotate('#rotateX', v => board(v));
+// @ts-ignore
+gimbalRotate('#rotateX', v => board(v, + document.querySelector('#rotateY').value));
 // @ts-ignore
 gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v));
 gimbalRotate('#rotateZ');

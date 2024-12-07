@@ -5,7 +5,7 @@
 ## `<\>` Board Editor 
 Let's moving forward to `board editor` which is a online 3D tabletop game editor, capable to handle a different `spritesheets` setup the whole environmet, handle cards, syntax highlight the generated code. Store asset valuse in JS object.
 
-## `+` inline coding to `marker`
+## `+` inline coding to `marker` or `vim-bledon` ??
 ```
 // After triple ` insert a "..." to make 
 // render a whole stuff as a function.
