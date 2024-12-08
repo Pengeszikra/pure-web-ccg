@@ -1,9 +1,13 @@
 # `<\>` M A R K E R `<\>`
 _`vim-bledon` edition_
 
-## Prepare for Hackhathon
-
+[current development state](..)
+## Reddit Hackhathon are closing
 [redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
+```
+"Due date is Dec 18 :: left --> " +
+Math.ceil((new Date((new Date()).getFullYear()+(((new Date())>new Date((new Date()).getFullYear(),11,18))?1:0),11,18)-new Date())/(1000*60*60*24))
+```...
 
 ## `<\>` Board Editor 
 Let's moving forward to `board editor` which is a online 3D tabletop game editor, capable to handle a different `spritesheets` setup the whole environmet, handle cards, syntax highlight the generated code. Store asset valuse in JS object.

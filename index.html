@@ -11,11 +11,11 @@
       font-size: 1.8vmin;
     }
     body {
-      background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
+      --background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
       --background-image: url(https://cdn.midjourney.com/2f08df50-4acc-4677-89a9-0b9a8ce04163/0_0.png);
       --background-image: url(https://cdn.midjourney.com/792d4c77-ce66-48c9-b666-af06b4c5631d/0_2.png);
-      background-size: 70vh;
-      background-blend-mode: hard-light;
+      --background-size: 70vh;
+      --background-blend-mode: hard-light;
       --mix-blend-mode: screen;
     }
     main#desk-off {
@@ -31,7 +31,7 @@
     }
   </style>
 </head>
-<body class="bg-zinc-900 text-zinc-400 min-h-screen min-w-screen">
+<body class="bg-zinc-800 text-zinc-400 min-h-screen min-w-screen">
   <template id="slot">
     <section class="
       pointer-events-auto
@@ -94,8 +94,9 @@
       </dialog>
     </section>
   </template>
-  <code class="bg-emerald-950 text-black p-2 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]">{</code>
-  <code id="show-set" class="bg-emerald-950 text-black p-2 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]">}</code>
+  <code class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]"></code>
+  <code id="show-set" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]"></code>
+  <a href="src/markdown.html" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-[3.5rem] right-0 z-[20000]"></a>
   <pre id="monitor" class="select-none pointer-events-none z-[10000] p-4 absolute text-emerald-300 text-[1rem]"></pre>
   <main id="desk" class="
     relative

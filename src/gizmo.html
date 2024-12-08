@@ -1,213 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<style>
-  body {
-    margin: 0; 
-    width: 100vw; 
-    height: 100vh; 
-    overflow: hidden; 
-    background: #222;
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    color: white;
-    font-family: sans-serif;
-  }
-
-  .board {
-    position: relative;
-    width: 500px; 
-    height: 300px; 
-    background: #333;
-  }
-
-  .card {
-    position: absolute;
-    width: 100px;
-    height: 150px;
-    background: linear-gradient(to bottom right, #665, #221);
-    border-radius: 8px;
-    top: 75px; 
-    left: 200px;
-    transition: transform 0.5s;
-  }
-
-  .gizmo-container {
-    position: absolute;
-    pointer-events: none; /* The SVG won't block clicks unless on visible elements */
-    overflow: visible;
-  }
-
-  svg {
-    overflow: visible;
-  }
-
-  /* Make the handles clickable */
-  .handle {
-    cursor: pointer;
-    pointer-events: all;
-  }
-
-  .handle:hover {
-    opacity: 0.8;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SVG 3D Gizmo</title>
+  <style>
+    body {
+      background-color: #222;
+    }
+  </style>
 </head>
 <body>
-  <div class="board">
-    <div class="card" id="card"></div>
-    <!-- Gizmo container (overlays the selected element) -->
-    <div class="gizmo-container" id="gizmo">
-      <svg width="200" height="200" viewBox="-100 -100 200 200">
-        <!-- Translate Arrows -->
-        <!-- X-axis arrow (red) -->
-        <line class="handle translate-x" x1="0" y1="0" x2="50" y2="0" stroke="red" stroke-width="5" stroke-linecap="round"/>
-        <polygon class="handle translate-x" points="50,0 40,-5 40,5" fill="red"/>
 
-        <!-- Y-axis arrow (green) -->
-        <line class="handle translate-y" x1="0" y1="0" x2="0" y2="-50" stroke="green" stroke-width="5" stroke-linecap="round"/>
-        <polygon class="handle translate-y" points="0,-50 -5,-40 5,-40" fill="green"/>
+<svg width="100vw" height="100vh" viewBox="-50 -50 100 100" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <!-- Front square -->
+    <polygon points="-20,-20 20,-20 20,20 -20,20" fill="none" stroke="black" stroke-width="2"/>
+    <!-- Back square (shifted to create a pseudo 3D effect) -->
+    <polygon points="-15,-15 25,-15 25,25 -15,25" fill="none" stroke="#555" stroke-width="2"/>
+    <!-- Connecting lines between front and back squares -->
+    <line x1="-20" y1="-20" x2="-15" y2="-15" stroke="#333" stroke-width="2"/>
+    <line x1="20" y1="-20" x2="25" y2="-15" stroke="#333" stroke-width="2"/>
+    <line x1="20" y1="20" x2="25" y2="25" stroke="#333" stroke-width="2"/>
+    <line x1="-20" y1="20" x2="-15" y2="25" stroke="#333" stroke-width="2"/>
 
-        <!-- Rotation ring (blue) -->
-        <circle class="handle rotate-ring" cx="0" cy="0" r="60" fill="none" stroke="blue" stroke-width="5" stroke-dasharray="5,5"/>
+    <!-- Rotation animation -->
+    <animateTransform attributeName="transform"
+                      type="rotate"
+                      from="0 0 0"
+                      to="360 0 0"
+                      dur="5s"
+                      repeatCount="indefinite"/>
+  </g>
+</svg>
 
-      </svg>
-    </div>
-  </div>
-
-<script>
-  const card = document.getElementById('card');
-  const gizmo = document.getElementById('gizmo');
-  let isDragging = false;
-  let dragMode = null; // 'translate-x', 'translate-y', 'rotate'
-  let startX, startY;
-  let startAngle = 0;
-  let startTransform = {x: 0, y:0, rotate:0};
-
-  // Store the card’s current transform
-  function getCardTransform() {
-    // Extract from card.style.transform something like "translate3d(xpx, ypx, 0px) rotateZ(angledeg)"
-    const style = window.getComputedStyle(card);
-    const transform = style.transform || "none";
-    // Parse matrix or fallback to stored values
-    if (transform === "none") {
-      return {...startTransform}; 
-    } else {
-      const values = transform.match(/matrix\(([^)]+)\)/);
-      if (values) {
-        const matrix = values[1].split(',').map(v => parseFloat(v));
-        // matrix = [a, b, c, d, tx, ty]
-        const x = matrix[4];
-        const y = matrix[5];
-        // Approximate rotation angle from the matrix
-        const angle = Math.atan2(matrix[1], matrix[0]) * (180 / Math.PI);
-        return {x, y, rotate: angle};
-      } else {
-        // If we have rotate(...) and translate(...), we can parse them separately
-        const translateMatch = transform.match(/translate\((-?\d+\.?\d*)px,\s*(-?\d+\.?\d*)px/);
-        const rotateMatch = transform.match(/rotate\((-?\d+\.?\d*)deg\)/);
-        const x = translateMatch ? parseFloat(translateMatch[1]) : 0;
-        const y = translateMatch ? parseFloat(translateMatch[2]) : 0;
-        const rotate = rotateMatch ? parseFloat(rotateMatch[1]) : 0;
-        return {x, y, rotate};
-      }
-    }
-  }
-
-  function setCardTransform({x, y, rotate}) {
-    card.style.transform = `translate(${x}px, ${y}px) rotate(${rotate}deg)`;
-  }
-
-  function positionGizmo() {
-    // Place the gizmo around the card’s center
-    const rect = card.getBoundingClientRect();
-    const boardRect = document.querySelector('.board').getBoundingClientRect();
-    const centerX = rect.left + rect.width/2 - boardRect.left;
-    const centerY = rect.top + rect.height/2 - boardRect.top;
-
-    gizmo.style.left = centerX + 'px';
-    gizmo.style.top = centerY + 'px';
-  }
-
-  positionGizmo();
-
-  // Add event listeners to handles
-  const translateXHandle = gizmo.querySelector('.translate-x');
-  const translateYHandle = gizmo.querySelector('.translate-y');
-  const rotateHandle = gizmo.querySelector('.rotate-ring');
-
-  [translateXHandle, translateYHandle, rotateHandle].forEach(handle => {
-    handle.addEventListener('mousedown', onHandleDown);
-    handle.addEventListener('touchstart', onHandleDown, {passive:false});
-  });
-
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-  document.addEventListener('touchmove', onMouseMove, {passive:false});
-  document.addEventListener('touchend', onMouseUp);
-
-  function onHandleDown(e) {
-    e.preventDefault();
-    isDragging = true;
-    startX = (e.touches ? e.touches[0].clientX : e.clientX);
-    startY = (e.touches ? e.touches[0].clientY : e.clientY);
-    
-    if (e.currentTarget.classList.contains('translate-x')) {
-      dragMode = 'translate-x';
-    } else if (e.currentTarget.classList.contains('translate-y')) {
-      dragMode = 'translate-y';
-    } else if (e.currentTarget.classList.contains('rotate-ring')) {
-      dragMode = 'rotate';
-      const box = card.getBoundingClientRect();
-      const cx = box.left + box.width/2;
-      const cy = box.top + box.height/2;
-      const angle = getAngle(cx, cy, startX, startY);
-      startAngle = angle - getCardTransform().rotate;
-    }
-
-    startTransform = getCardTransform();
-  }
-
-  function onMouseMove(e) {
-    if (!isDragging) return;
-    const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
-    const clientY = (e.touches ? e.touches[0].clientY : e.clientY);
-    
-    const dx = clientX - startX;
-    const dy = clientY - startY;
-
-    let newTransform = {...startTransform};
-
-    if (dragMode === 'translate-x') {
-      newTransform.x += dx;
-    } else if (dragMode === 'translate-y') {
-      newTransform.y += dy;
-    } else if (dragMode === 'rotate') {
-      const box = card.getBoundingClientRect();
-      const cx = box.left + box.width/2;
-      const cy = box.top + box.height/2;
-      const angle = getAngle(cx, cy, clientX, clientY);
-      newTransform.rotate = angle - startAngle;
-    }
-
-    setCardTransform(newTransform);
-    positionGizmo();
-  }
-
-  function onMouseUp() {
-    isDragging = false;
-    dragMode = null;
-  }
-
-  function getAngle(cx, cy, x, y) {
-    const dx = x - cx;
-    const dy = y - cy;
-    let angle = Math.atan2(dy, dx) * 180 / Math.PI;
-    return angle;
-  }
-</script>
 </body>
 </html>
