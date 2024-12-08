@@ -42,18 +42,14 @@ const slot = (parent, id, name, topRem, leftRem) => {
     card.style.left = `${leftRem}rem`;
   }
   slot.onclick = async () => {
-    // alien.table[id] = {id, card:alien.deck.shift()};
     if (alien.fly?.id) {
       const found = alien.fly.moves
-        // .map(([f, from, to]) => [from.id, to.id, id, alien.fly.id, from.id == alien.fly.id && to.id == id])
         .find(([, from, to]) => from.id == alien.fly.id && to.id == id)
-        // .map(console.log)
-      console.log(found);
+      // console.log(found);
       if (found) {
         const {card} = alien.table[alien.fly.id];
         alien.table[alien.fly.id].card = null;
         alien.table[id] = {id, card};
-        //console.log({id, card: alien.table[alien.fly.id].card})
       }
       alien.fly = null;
       alien._over_ = [];
@@ -282,6 +278,38 @@ gimbalRotate('#rotateX', v => board(v, + document.querySelector('#rotateY').valu
 gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v, + document.querySelector('#rotateZ').value));
 // @ts-ignore
 gimbalRotate('#rotateZ', v => board(+ document.querySelector('#rotateX').value, + document.querySelector('#rotateY').value, v));
+
+const addFloor = (id = Math.random().toString(36)) => {
+  /** @type {HTMLElement} */
+  const frg = fragment("#floor", "#desk", id);
+  let [x, y] = [20, -10];
+  let u = 0
+  let v = 0;
+  const move = (x, y) => frg.style.transform = `translate3D(${x}rem, ${y}rem, -.2rem) scale(1)`;
+  move(x, y);
+  let isDrag = false;
+  frg.onmousedown = ({layerX, layerY}) => {
+    u = layerX;
+    v = layerY;
+    isDrag = true;
+  };
+  frg.onmouseup = () => isDrag = false;
+  frg.onmouseleave = () => isDrag = false;
+  frg.onmousemove = ({layerX, layerY}) => {
+    if (!isDrag) return;
+    console.log(layerX - u, layerY - v)
+    x += (layerX - u) / 100;
+    y += (layerY - v) / 100;
+    console.log(x, y)
+    move(x, y)
+  }
+  frg.style.backgroundPosition = '0% 50%'
+  return frg;
+}
+addFloor()
+globalThis.addFloor = addFloor;
+globalThis.fragment = fragment;
+
 
 // ------ [ begin the game setup ]
 

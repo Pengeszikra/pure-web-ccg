@@ -23,8 +23,8 @@
         transform:
           perspective(70vh)
           rotateX(30deg)
-          rotateY(-360deg)
-          rotateZ(-360deg)
+          rotateY(0deg)
+          rotateZ(0deg)
           scale(.64)
           translateZ(75px);
         pointer-events: none;
@@ -83,6 +83,22 @@
   <template id="empty">
     <section></section>
   </template>
+  <template id="floor">
+    <section class="
+      absolute
+      top-[0rem]
+      left-[38rem]
+      h-[30rem]
+      w-[30rem]
+      bg-[position:100%_50%]
+      bg-[url(sprites/floor-galaxy.png)]
+      bg-[length:280%]
+      bg-no-repeat
+      transform-style:preserve-3d
+      pointer-events-auto
+    "
+    ></section>
+  </template>
   <template id="test-dialog">
     <section>
       <dialog class="
@@ -111,19 +127,6 @@
     transform-style:preserve-3d
   ">
     <!-- board elements -->
-    <section class="
-      absolute
-      top-[0rem]
-      left-[38rem]
-      h-[20rem]
-      w-[20rem]
-      bg-[url(sprites/floor-galaxy.png)]
-      bg-[length:280%]
-      bg-no-repeat
-      transform-style:preserve-3d
-      pointer-events-auto
-    "
-    ></section>
     
     <section class="
       absolute
