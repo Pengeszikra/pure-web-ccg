@@ -29,6 +29,9 @@
           translateZ(75px);
         pointer-events: none;
     }
+    .duck-girl {
+       transform: rotateX(-90deg) translateY(-10rem);
+    }
   </style>
 </head>
 <body class="bg-zinc-800 text-zinc-400 min-h-screen min-w-screen">
@@ -121,19 +124,7 @@
       pointer-events-auto
     "
     ></section>
-    <section class="
-      absolute
-      top-[0rem]
-      left-[52rem]
-      h-[20rem]
-      w-[20rem]
-      bg-[url(sprites/floor-galaxy.png)]
-      bg-[length:280%]
-      bg-no-repeat
-      transform-style:preserve-3d
-      pointer-events-auto
-    "
-    ></section>
+    
     <section class="
       absolute
       top-[0rem]
@@ -146,6 +137,25 @@
       rounded-full
     "></section>
 
+    <section class="
+      duck-girl
+      absolute
+      top-[0rem]
+      left-[-5rem]
+      h-[20rem]
+      w-[20rem]
+      bg-[url(sprites/duck-girl.png)]
+      bg-[length:100%]
+      bg-no-repeat
+      transform-style:preserve-3d
+      pointer-events-auto
+      --outline
+      --outline-1
+      --outline-sky-500
+    "
+    ></section>
+
+
     <section id="table" class="grid gap-4 grid-cols-4 p-4"></section>
     <section id="incoming" class="grid gap-4 grid-cols-4 p-4"></section>
     <section id="player" class="grid gap-4 grid-cols-4 p-4"></section>
@@ -154,7 +164,7 @@
   <section class="grid grid-cols-2 min-w-[40rem] gap-4 fixed top-4 left-[4rem]">
     <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="-180" max="180" id="rotateX" value="0" /><label></label>
     <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="0" max="70" id="rotateY" value="30" /><label></label>
-    <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="30" max="100" id="rotateZ" value="64" /><label></label>
+    <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="-30" max="10" id="rotateZ" value="0" /><label></label>
   </section>
   <iframe 
     src="src/markdown.html" 

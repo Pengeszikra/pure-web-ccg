@@ -215,19 +215,23 @@ globalThis.fly = fly;
 
 
 /** @type {(aZ?:number, aX?:number, scale?:number) => void} */
-const board = (angleZ = 0, angleX = 30, scale = 64) => {
+const board = (angleZ = 0, angleX = 30, scale = 0) => {
     // @ts-ignore
     document.querySelector("main#desk").style  = `
         transform-style: preserve-3d;
         transform:
-          perspective(${70 / scale * 64}vh)
+          perspective(70vh)
           rotateX(${angleX}deg)
           rotateY(0deg)
           rotateZ(${angleZ}deg)
-          scale(${scale / 100})
-          translateZ(75px);
+          scale(0.64)
+          translateZ(${scale}rem);
         pointer-events: none;
-`
+    `;
+    //@ts-ignore
+    document.querySelector(".duck-girl").style = `
+      transform: rotateX(-90deg) translateY(-10rem) rotateY(${angleZ}deg);
+    `
 }
 
 board(0, 30);
