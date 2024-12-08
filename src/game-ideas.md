@@ -1,9 +1,14 @@
-# Prepare for Hackhathon
+# `<\>` M A R K E R `<\>`
+_`vim-bledon` edition_
+
+## Prepare for Hackhathon
 
 [redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
 
 ## `<\>` Board Editor 
 Let's moving forward to `board editor` which is a online 3D tabletop game editor, capable to handle a different `spritesheets` setup the whole environmet, handle cards, syntax highlight the generated code. Store asset valuse in JS object.
+
+{% .. %}
 
 ## `+` inline coding to `marker` or `vim-bledon` ??
 ```
@@ -21,6 +26,10 @@ roll the dice
 ```
 Math.random() * 6 | 0 + 1
 ```...
+
+## SVG 
+I just forget the power of `SVG` which is will be very handy to create some element, like a Gizmo.
+Plus I can make a svg draw again, maybe in this new HTML area that is also run fast as I expected, if not enough fast then will be improving by webworker or `rust-wasm`.
 
 ## Midjourney first impression
 It is very exciting the ability way of combining pictures wit `--cref` and `--sref`, this way I can create a consistent `asset` style, so just a bit of time to wait a `structural reference`. The `relax` mode is give a power to make any amount assets, just need a bit patente, but that is oke 
@@ -195,8 +204,6 @@ One image can be describe somethin better, than 1000 word.
 ![](../sprites/floor-galaxy.png)
 ![](../sprites/floor-g2.png)
 
-{% .. %}
-
 ```
 // my gallery
 {% https://dream.ai/profile/pvivo %}
@@ -215,7 +222,20 @@ One image can be describe somethin better, than 1000 word.
 //   example:
 {% https://viggle.ai/share/e0807b30-9eaa-4547-a5f9-ceb39af9e84b %}
 ```
-
+```html
+ <input type=range
+  class="
+    appearance-none
+    bg-transparent
+    [&::-webkit-slider-runnable-track]:rounded-full 
+    [&::-webkit-slider-runnable-track]:bg-black/25
+    [&::-webkit-slider-thumb]:appearance-none
+    [&::-webkit-slider-thumb]:h-[50px]
+    [&::-webkit-slider-thumb]:w-[50px]
+    [&::-webkit-slider-thumb]:rounded-full 
+    [&::-webkit-slider-thumb]:bg-purple-500" 
+  />
+```
 
 
 

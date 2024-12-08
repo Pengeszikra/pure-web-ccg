@@ -11,11 +11,12 @@
       font-size: 1.8vmin;
     }
     body {
-      --background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
+      background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
       --background-image: url(https://cdn.midjourney.com/2f08df50-4acc-4677-89a9-0b9a8ce04163/0_0.png);
       --background-image: url(https://cdn.midjourney.com/792d4c77-ce66-48c9-b666-af06b4c5631d/0_2.png);
       background-size: 70vh;
       background-blend-mode: hard-light;
+      --mix-blend-mode: screen;
     }
     main#desk-off {
         transform-style: preserve-3d;
@@ -105,6 +106,7 @@
     --duration-500
     transform-style:preserve-3d
   ">
+    <!-- board elements -->
     <section class="
       absolute
       top-[0rem]
@@ -149,10 +151,31 @@
   </main>
   <teaser-animation></teaser-animation>
   <section class="grid grid-cols-2 min-w-[40rem] gap-4 fixed top-4 left-[4rem]">
-    <input type="range" min="-180" max="180" id="rotateX" value="0" /><label></label>
-    <input type="range" min="0" max="70" id="rotateY" value="30" /><label></label>
-    <input type="range" min="0" max="360" id="rotateZ" value="0" /><label></label>
+    <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="-180" max="180" id="rotateX" value="0" /><label></label>
+    <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="0" max="70" id="rotateY" value="30" /><label></label>
+    <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="0" max="360" id="rotateZ" value="0" /><label></label>
   </section>
+  <iframe 
+    src="src/markdown.html" 
+    wid-th="100%" 
+    class="
+      hidden
+      absolute
+      top-0
+      right-0
+      min-w-[42vw]
+      min-h-[100vh]
+      overflow-scroll
+      bg-black
+      outline
+      outline-1
+      outline-zinc-700
+      --mix-blend-screen
+    " 
+    src="$2" 
+    frameborder="0" 
+    scrolling="no">
+  </iframe>
 </body>
   <script type="module" src="src/pure-ccg-view.js"></script>
 </html>
