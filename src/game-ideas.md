@@ -14,6 +14,8 @@ Let's moving forward to `board editor` which is a online 3D tabletop game editor
 
 {% .. %}
 
+![](https://cdn.midjourney.com/e623e74a-196c-4df6-9566-a61a7b9a49a6/0_2.png)
+
 ## `+` inline coding to `marker` or `vim-bledon` ??
 ```
 // After triple ` insert a "..." to make 

@@ -214,17 +214,17 @@ const fly = () => {
 globalThis.fly = fly;
 
 
-/** @type {(aZ?:number, aX?:number) => void} */
-const board = (angleZ = 0, angleX = 30) => {
+/** @type {(aZ?:number, aX?:number, scale?:number) => void} */
+const board = (angleZ = 0, angleX = 30, scale = 64) => {
     // @ts-ignore
     document.querySelector("main#desk").style  = `
         transform-style: preserve-3d;
         transform:
-          perspective(70vh)
+          perspective(${70 / scale * 64}vh)
           rotateX(${angleX}deg)
           rotateY(0deg)
           rotateZ(${angleZ}deg)
-          scale(.64)
+          scale(${scale / 100})
           translateZ(75px);
         pointer-events: none;
 `
@@ -273,10 +273,11 @@ const gimbalRotate = (id, setFunc = () => {}) => {
 };
 
 // @ts-ignore
-gimbalRotate('#rotateX', v => board(v, + document.querySelector('#rotateY').value));
+gimbalRotate('#rotateX', v => board(v, + document.querySelector('#rotateY').value,  + document.querySelector('#rotateZ').value));
 // @ts-ignore
-gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v));
-gimbalRotate('#rotateZ');
+gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v, + document.querySelector('#rotateZ').value));
+// @ts-ignore
+gimbalRotate('#rotateZ', v => board(+ document.querySelector('#rotateX').value, + document.querySelector('#rotateY').value, v));
 
 // ------ [ begin the game setup ]
 
