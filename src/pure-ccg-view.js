@@ -230,7 +230,7 @@ const board = (angleZ = 0, angleX = 30, scale = 0) => {
     `
 }
 
-board(0, 30);
+board(-11, 70, -28);
 
 globalThis.board = board;
 
