@@ -288,6 +288,8 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
   const move = (x, y) => frg.style.transform = `translate3D(${x}rem, ${y}rem, 2rem) scale(1)`;
   move(x, y);
   let isDrag = false;
+  const rndSheet = () => [0,50,100][rnd(3)];
+  
   frg.onmousedown = ({layerX, layerY}) => {
     u = layerX;
     v = layerY;
@@ -303,7 +305,7 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
     console.log(x, y)
     move(x, y)
   }
-  frg.style.backgroundPosition = '0% 50%'
+  frg.style.backgroundPosition = `${rndSheet()}% ${rndSheet()}%`;
   return frg;
 }
 addFloor()

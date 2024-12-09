@@ -1,20 +1,24 @@
 # `<\>` M A R K E R `<\>`
-_`vim-bledon` edition_
-![](https://cdn.midjourney.com/9fcd4716-231e-4dc4-99f4-ca5bb4c83a52/0_3.png)
-
-
-[current development state](..)
-## Reddit Hackhathon are closing
-[redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
 ```
 "Due date is Dec 18 :: left --> " +
 Math.ceil((new Date((new Date()).getFullYear()+(((new Date())>new Date((new Date()).getFullYear(),11,18))?1:0),11,18)-new Date())/(1000*60*60*24))
 ```...
 
+_`vim-bledon` edition_
+![](https://cdn.midjourney.com/88569a60-7e4a-4931-9904-d8da2e44dc15/0_0.png)
+[current development state](..)
+## Reddit Hackhathon are closing
+[redit :: deadline :: dec 18!](https://redditgamesandpuzzles.devpost.com/?ref_content=default&ref_feature=challenge&ref_medium=portfolio)
+
 ## `<\>` Board Editor 
 Let's moving forward to `board editor` which is a online 3D tabletop game editor, capable to handle a different `spritesheets` setup the whole environmet, handle cards, syntax highlight the generated code. Store asset valuse in JS object.
 
 {% .. %}
+
+> when the card solve the puzzle then hero go upper, but when fail he will drop down.
+![](https://cdn.midjourney.com/7b71dc4f-6256-44c3-8903-c9494ad3a19a/0_2.png)
+
+![](https://cdn.midjourney.com/e4d79e3d-a8fb-4e1a-bf18-b6111d20c42d/0_3.png)
 
 ![](https://cdn.midjourney.com/e623e74a-196c-4df6-9566-a61a7b9a49a6/0_2.png)
 
@@ -244,6 +248,9 @@ One image can be describe somethin better, than 1000 word.
     [&::-webkit-slider-thumb]:bg-purple-500" 
   />
 ```
+![](https://cdn.midjourney.com/9fcd4716-231e-4dc4-99f4-ca5bb4c83a52/0_3.png)
+
+![](https://cdn.midjourney.com/bb2ca582-2e5b-470a-a8cd-4594a34f9c2e/0_3.png)
 
 
 
