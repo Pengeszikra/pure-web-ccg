@@ -1,5 +1,7 @@
 # `<\>` M A R K E R `<\>`
 _`vim-bledon` edition_
+![](https://cdn.midjourney.com/9fcd4716-231e-4dc4-99f4-ca5bb4c83a52/0_3.png)
+
 
 [current development state](..)
 ## Reddit Hackhathon are closing

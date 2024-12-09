@@ -279,13 +279,13 @@ gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, 
 // @ts-ignore
 gimbalRotate('#rotateZ', v => board(+ document.querySelector('#rotateX').value, + document.querySelector('#rotateY').value, v));
 
-const addFloor = (id = Math.random().toString(36)) => {
+const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) => {
   /** @type {HTMLElement} */
   const frg = fragment("#floor", "#desk", id);
-  let [x, y] = [20, -10];
   let u = 0
   let v = 0;
-  const move = (x, y) => frg.style.transform = `translate3D(${x}rem, ${y}rem, -.2rem) scale(1)`;
+  /** @type {(x:number, y:number) => string} */
+  const move = (x, y) => frg.style.transform = `translate3D(${x}rem, ${y}rem, 2rem) scale(1)`;
   move(x, y);
   let isDrag = false;
   frg.onmousedown = ({layerX, layerY}) => {
@@ -307,6 +307,12 @@ const addFloor = (id = Math.random().toString(36)) => {
   return frg;
 }
 addFloor()
+addFloor(rnd(50),rnd(50))
+addFloor(rnd(50),rnd(50))
+addFloor(rnd(50),rnd(50))
+addFloor(rnd(50),rnd(50))
+addFloor(rnd(50),rnd(50))
+addFloor(rnd(50),rnd(50))
 globalThis.addFloor = addFloor;
 globalThis.fragment = fragment;
 
