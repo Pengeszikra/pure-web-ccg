@@ -250,8 +250,6 @@ const playWithTable = () => {
 
 globalThis.playWithTable = playWithTable;
 
-document.getElementById("show-set").onclick = playWithTable;
-
 
 // gimbRotateX.oninput = (e) => {
 //   // @ts-ignore
@@ -284,8 +282,16 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
   const frg = fragment("#floor", "#desk", id);
   let u = 0
   let v = 0;
-  /** @type {(x:number, y:number) => string} */
-  const move = (x, y) => frg.style.transform = `translate3D(${x}rem, ${y}rem, 2rem) scale(1)`;
+  /** @type {HTMLElement} */
+  const girl = document.querySelector(".duck-girl")
+  let mx = x;
+  let my = y;
+  /** @type {(x:number, y:number) => void} */
+  const move = (x, y) => {
+    mx = x;
+    my = y;
+    frg.style.transform = `translate3D(${x}rem, ${y}rem, 2rem) scale(1)`
+  };
   move(x, y);
   let isDrag = false;
   const rndSheet = () => [0,50,100][rnd(3)];
@@ -294,30 +300,30 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
     u = layerX;
     v = layerY;
     isDrag = true;
+    girl.style.top = `${my + 7}rem`;
+    girl.style.left = `${mx + 42}rem`;
+
   };
   frg.onmouseup = () => isDrag = false;
   frg.onmouseleave = () => isDrag = false;
   frg.onmousemove = ({layerX, layerY}) => {
     if (!isDrag) return;
-    console.log(layerX - u, layerY - v)
+    // console.log(layerX - u, layerY - v)
     x += (layerX - u) / 100;
     y += (layerY - v) / 100;
-    console.log(x, y)
+    // console.log(x, y)
     move(x, y)
+    girl.style.top = `${my + 7}rem`;
+    girl.style.left = `${mx + 42}rem`;
+
   }
   frg.style.backgroundPosition = `${rndSheet()}% ${rndSheet()}%`;
   return frg;
 }
-addFloor()
-addFloor(rnd(50),rnd(50))
-addFloor(rnd(50),rnd(50))
-addFloor(rnd(50),rnd(50))
-addFloor(rnd(50),rnd(50))
-addFloor(rnd(50),rnd(50))
-addFloor(rnd(50),rnd(50))
-globalThis.addFloor = addFloor;
-globalThis.fragment = fragment;
+// addFloor()
 
+const putDownANewFloor = () => addFloor(rnd(50),rnd(50))
+document.getElementById("show-set").onclick = putDownANewFloor;
 
 // ------ [ begin the game setup ]
 
