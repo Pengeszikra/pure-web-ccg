@@ -277,7 +277,7 @@ gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, 
 // @ts-ignore
 gimbalRotate('#rotateZ', v => board(+ document.querySelector('#rotateX').value, + document.querySelector('#rotateY').value, v));
 
-const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) => {
+const addFloor = (x = 0, y = 0, id = Math.random().toString(36).slice(-7)) => {
   /** @type {HTMLElement} */
   const frg = fragment("#floor", "#desk", id);
   let u = 0
@@ -290,7 +290,7 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
   const move = (x, y) => {
     mx = x;
     my = y;
-    frg.style.transform = `translate3D(${x}rem, ${y}rem, 2rem) scale(1)`
+    frg.style.transform = `translate3D(${x}rem, ${y}rem, -.2rem) scale(1)`
   };
   move(x, y);
   let isDrag = false;
@@ -302,7 +302,6 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
     isDrag = true;
     girl.style.top = `${my + 7}rem`;
     girl.style.left = `${mx + 42}rem`;
-
   };
   frg.onmouseup = () => isDrag = false;
   frg.onmouseleave = () => isDrag = false;
@@ -320,9 +319,21 @@ const addFloor = (x = 20, y = -10, id = Math.random().toString(36).slice(-7)) =>
   frg.style.backgroundPosition = `${rndSheet()}% ${rndSheet()}%`;
   return frg;
 }
-// addFloor()
 
-const putDownANewFloor = () => addFloor(rnd(50),rnd(50))
+globalThis.addFloor = addFloor;
+
+const floorSet = new Set();
+const putDownANewFloor = () => {
+  const pos = [
+    (rnd(6) - 3) * 30,
+    (rnd(7) - 2) * 30
+  ];
+  // const key = 
+  if (!floorSet.has(pos.join())) {
+    addFloor(...pos);
+    floorSet.add(pos.join());
+  }
+}  
 document.getElementById("show-set").onclick = putDownANewFloor;
 
 // ------ [ begin the game setup ]

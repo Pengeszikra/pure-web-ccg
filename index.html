@@ -34,7 +34,7 @@
     }
   </style>
 </head>
-<body class="bg-zinc-800 text-zinc-400 min-h-screen min-w-screen">
+<body class="bg-black text-zinc-400 min-h-screen min-w-screen">
   <template id="slot">
     <section class="
       pointer-events-auto
@@ -91,27 +91,14 @@
       h-[30rem]
       w-[30rem]
       bg-[position:100%_50%]
-      bg-[url(sprites/floor-galaxy.png)]
+      --bg-[url(sprites/floor-galaxy.png)]
+      bg-[url(sprites/dark-floor.png)]
       bg-[length:280%]
       bg-no-repeat
       transform-style:preserve-3d
       pointer-events-auto
     "
     ></section>
-  </template>
-  <template id="test-dialog">
-    <section>
-      <dialog class="
-      top-0 left-0
-    absolute z-[10000] bg-neutral-900 text-zinc-400 p-8 text-3xl
-    rounded-2xl min-w-[40rem] min-h-[20rem] mt-[20rem]
-    grid outline-dashed outline-gray-600 -outline-offset-8
-  ">
-        <p>Try this really interesting pure web development with this complec game.</p>
-        <p>So this is need to be work as perfect modal window</p>
-        <button class="bg-sky-900 p-8 rounded-3xl w-min h-min self-end justify-self-end" onclick="document.querySelector('dialog').close()">close</button>
-      </dialog>
-    </section>
   </template>
   <code class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]"></code>
   <code id="show-set" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]"></code>
@@ -128,7 +115,26 @@
   ">
     <!-- board elements -->
     
+    <!-- <section class="
+      grass-floor
+      absolute
+      -top-[200rem]
+      -left-[200rem]
+      min-h-[400rem]
+      min-w-[400rem]
+      origin-center
+      --bg-[url(https://cdn.midjourney.com/fd34514c-3413-4e80-9225-0eecd89107f7/0_1.png)]
+      bg-[url(https://cdn.midjourney.com/4151a128-a790-4b9f-8586-812300685fca/0_1.png)]
+      bg-[length:30%]
+      rounded-full
+      pointer-events-none
+      opacity-25
+    "
+    style="transform: translateZ(-2rem);"
+    ></section> -->
+
     <section class="
+      hidden
       absolute
       top-[2rem]
       left[-20rem]
@@ -139,7 +145,10 @@
       outline-emerald-900
       rounded-full
       pointer-events-none
-    "></section>
+      transform-style:preserve-3d
+    "
+      
+    ></section>
 
     <section class="
       pointer-events-none
