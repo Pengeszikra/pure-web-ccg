@@ -17,6 +17,7 @@
       --background-size: 70vh;
       --background-blend-mode: hard-light;
       --mix-blend-mode: screen;
+      overflow: clip;
     }
     main#desk-off {
         transform-style: preserve-3d;
@@ -34,85 +35,89 @@
     }
   </style>
 </head>
+
+<!-- templates can out ouf the body -->
+
+<template id="slot">
+  <section class="
+    pointer-events-auto
+    w-[11rem] rounded-2xl aspect-[4/6]
+    relative
+    p-4
+    md:outline-2
+    lg:outline-4
+    outline-zinc-700 outline-dashed outline-offset-0
+    hover:outline-sky-600 hover:outline-offset-4  hover:outline-4
+    [&[data-possible]]:outline-emerald-600
+      [&[data-possible]]:outline-offset-4
+      [&[data-possible]]:outline-4
+      [&[data-possible]]:duration-1000
+    transition-all duration-500
+  ">
+    <span id="name" class="select-none">Deck</span>
+  </section>
+</template>
+<template id="card">
+  <section class="
+    card-front
+    w-[11rem] rounded-2xl aspect-[4/6] lg
+    px-1 py-3 bg-neutral-800 absolute top-0 left-0
+    transition-all duration-500
+    --pointer-events-none
+
+    bg-[url(sprites/many-card-002.jpeg)]
+    --bg-[url(sprites/elf-cardset.jpg)]
+    --bg-[url(sprites/cat-cardset.jpg)]
+    --bg-[url(sprites/gremlins.png)]
+    bg-[length:570%]
+    bg-[position:4%_4%] 4 28 50 74 96, 4 36 69 103
+    bg-no-repeat
+    transform-style:preserve-3d 
+    --hover:[transform:rotateY(180deg)]
+  ">
+    <span id="work"
+      class="select-none absolute bg-black/40 text-orange-200 text-[1.5rem] text-center right-4 rounded">Guard</span>
+    <span id="power"
+      class="select-none absolute bg-black/40 text-orange-200 text-[2rem] text-center rounded-xl w-[3rem]">9</span>
+    <span id="name"
+      class="select-none absolute bottom-0 -left-[.2rem] w-full bg-black text-zinc-400 px-2 py-2 rounded-xl self-end text-center">Card</span>
+  </section>
+</template>
+<template id="empty">
+  <section></section>
+</template>
+<template id="coin">
+  <section class="
+    absolute top-0 left-0
+    h-[5rem]
+    w-[5rem]
+    bg-rose-500
+    rounded-full
+    transform-style:preserve-3d
+    pointer-events-auto
+  ">
+  </section>
+</template>
+
+<template id="floor">
+  <section class="
+    absolute
+    top-[0rem]
+    left-[38rem]
+    h-[30rem]
+    w-[30rem]
+    bg-[position:100%_50%]
+    --bg-[url(sprites/floor-galaxy.png)]
+    bg-[url(sprites/dark-floor.png)]
+    bg-[length:280%]
+    bg-no-repeat
+    transform-style:preserve-3d
+    pointer-events-auto
+  "
+  ></section>
+</template>
+
 <body class="bg-black text-zinc-400 min-h-screen min-w-screen">
-  <template id="slot">
-    <section class="
-      pointer-events-auto
-      w-[11rem] rounded-2xl aspect-[4/6]
-      relative
-      p-4
-      md:outline-2
-      lg:outline-4
-      outline-zinc-700 outline-dashed outline-offset-0
-      hover:outline-sky-600 hover:outline-offset-4  hover:outline-4
-      [&[data-possible]]:outline-emerald-600
-        [&[data-possible]]:outline-offset-4
-        [&[data-possible]]:outline-4
-        [&[data-possible]]:duration-1000
-      transition-all duration-500
-    ">
-      <span id="name" class="select-none">Deck</span>
-    </section>
-  </template>
-  <template id="card">
-    <section class="
-      card-front
-      w-[11rem] rounded-2xl aspect-[4/6] lg
-      px-1 py-3 bg-neutral-800 absolute top-0 left-0
-      transition-all duration-500
-      --pointer-events-none
-
-      bg-[url(sprites/many-card-002.jpeg)]
-      --bg-[url(sprites/elf-cardset.jpg)]
-      --bg-[url(sprites/cat-cardset.jpg)]
-      --bg-[url(sprites/gremlins.png)]
-      bg-[length:570%]
-      bg-[position:4%_4%] 4 28 50 74 96, 4 36 69 103
-      bg-no-repeat
-      transform-style:preserve-3d 
-      --hover:[transform:rotateY(180deg)]
-    ">
-      <span id="work"
-        class="select-none absolute bg-black/40 text-orange-200 text-[1.5rem] text-center right-4 rounded">Guard</span>
-      <span id="power"
-        class="select-none absolute bg-black/40 text-orange-200 text-[2rem] text-center rounded-xl w-[3rem]">9</span>
-      <span id="name"
-        class="select-none absolute bottom-0 -left-[.2rem] w-full bg-black text-zinc-400 px-2 py-2 rounded-xl self-end text-center">Card</span>
-    </section>
-  </template>
-  <template id="empty">
-    <section></section>
-  </template>
-  <template id="coin">
-    <section class="
-      absolute top-0 left-0
-      h-[5rem]
-      w-[5rem]
-      bg-rose-500
-      rounded-full
-      transform-style:preserve-3d
-      pointer-events-auto
-    ">
-    </section>
-  </template>
-
-  <template id="floor">
-    <section class="
-      absolute
-      top-[0rem]
-      left-[38rem]
-      h-[30rem]
-      w-[30rem]
-      bg-[position:100%_50%]
-      --bg-[url(sprites/floor-galaxy.png)]
-      bg-[url(sprites/dark-floor.png)]
-      bg-[length:280%]
-      bg-no-repeat
-      transform-style:preserve-3d
-      pointer-events-auto
-    "
-    ></section>
-  </template>
   <code class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]"></code>
   <code id="show-set" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]"></code>
   <!-- <a href="src/markdown.html" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-[3.5rem] right-0 z-[20000]"></a> -->
@@ -123,8 +128,6 @@
     max-h-screen
     aspect-[4/4]
     mx-auto
-    --transition-all
-    --duration-500
     transform-style:preserve-3d
   ">
     <!-- board elements -->
@@ -207,7 +210,6 @@
     class="
       absolute
       top-0
-      -right-0
       -right-[42rem]
       min-w-[42rem]
       min-h-[100vh]
