@@ -2,15 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="manifest" href="manifest.json" />
   <script src="https://cdn.tailwindcss.com"></script>
   <title>Pure Web CCG</title>
   <style>
     html {
       font-size: 1.8vmin;
+      touch-action: manipulation; /* Disables gestures like pinch-to-zoom */
     }
     body {
+      overscroll-behavior: none; /* Prevents scrolling beyond the viewport limits */
       --background-image: url(https://cdn.midjourney.com/95a99e4f-9c5f-4ea0-8f0b-da17288fc39d/0_2.png);
       --background-image: url(https://cdn.midjourney.com/2f08df50-4acc-4677-89a9-0b9a8ce04163/0_0.png);
       --background-image: url(https://cdn.midjourney.com/792d4c77-ce66-48c9-b666-af06b4c5631d/0_2.png);
