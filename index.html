@@ -83,6 +83,19 @@
   <template id="empty">
     <section></section>
   </template>
+  <template id="coin">
+    <section class="
+      absolute top-0 left-0
+      h-[5rem]
+      w-[5rem]
+      bg-rose-500
+      rounded-full
+      transform-style:preserve-3d
+      pointer-events-auto
+    ">
+    </section>
+  </template>
+
   <template id="floor">
     <section class="
       absolute
@@ -102,7 +115,8 @@
   </template>
   <code class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 left-0 z-[20000]"></code>
   <code id="show-set" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-0 right-0 z-[20000]"></code>
-  <a href="src/markdown.html" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-[3.5rem] right-0 z-[20000]"></a>
+  <!-- <a href="src/markdown.html" class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-[3.5rem] right-0 z-[20000]"></a> -->
+  <code class="bg-emerald-900/70 text-black p-6 grid place-items-center w-8 text-2xl select-none absolute top-[3.5rem] right-0 z-[20000]" onclick="markerSwitch()"></code>
   <pre id="monitor" class="select-none pointer-events-none z-[10000] p-4 absolute text-emerald-300 text-[1rem]"></pre>
   <main id="desk" class="
     relative
@@ -178,26 +192,32 @@
     <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="0" max="70" id="rotateY" value="30" /><label></label>
     <input type="range" class="accent-emerald-600 appearance-none bg-zinc-700/50" min="-30" max="10" id="rotateZ" value="0" /><label></label>
   </section>
+  <!-- <img src="https://cdn.midjourney.com/4505833b-e4b4-4e7e-bb8d-be98776d912d/0_2.png" 
+    class="absolute top-0 left-0 pointer-events-none mix-blend-difference"
+  /> -->
+  <script>const markerSwitch = () => {
+    const markerStyle = document.querySelector('iframe').style;
+    markerStyle.right = markerStyle.right === '0px'
+      ? '-42rem'
+      : '0'
+  }</script>
   <iframe 
     src="src/markdown.html" 
     wid-th="100%" 
     class="
-      hidden
       absolute
       top-0
-      right-0
-      min-w-[42vw]
+      -right-0
+      -right-[42rem]
+      min-w-[42rem]
       min-h-[100vh]
       overflow-scroll
       bg-black
-      outline
-      outline-1
-      outline-zinc-700
-      --mix-blend-screen
+      transition-all duration-500
     " 
     src="$2" 
     frameborder="0" 
-    scrolling="no">
+    scrolling="yes">
   </iframe>
 </body>
   <script type="module" src="src/pure-ccg-view.js"></script>

@@ -149,6 +149,7 @@ globalThis.cardCollection = cardCollection; // TODO remove
 globalThis.monitor = monitor; // TODO remove
 globalThis.ts = tableOfSlots; // TODO remove
 globalThis.render = alien.render; // TODO remove
+globalThis.fragment = fragment;
 
 const debugSwitch = document.querySelector('code');
 debugSwitch.onclick = () => monitorView.style.visibility
@@ -335,6 +336,14 @@ const putDownANewFloor = () => {
   }
 }  
 document.getElementById("show-set").onclick = putDownANewFloor;
+
+Array(20).fill().map(putDownANewFloor)
+
+const [c1,c2] = [fragment("#coin","#desk", 'coin-001'), fragment("#coin","#desk", 'coin-002')];
+c2.style.backgroundColor = "#678"
+c1.style.backgroundColor = "#456"
+c1.style.transform = 'translateZ(1rem)';
+c2.style.transform = 'translateZ(2rem)';
 
 // ------ [ begin the game setup ]
 
