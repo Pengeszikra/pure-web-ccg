@@ -212,14 +212,28 @@ globalThis.fly = fly;
 
 // -----------------------------------------------[ B O A R D ]
 
+/** @type {HTMLElement} */
+const duckGirl = document.querySelector(".duck-girl");
 /** @type {import("./old-bird-soft.js").Watcher} */
 const useOrigo = (o, p, v) => {
   o[p] = v;
   board(o.z, o.x, o.y);
+  // @ts-ignore
+  duckGirl.style = `
+    transform: 
+      translateZ(10rem)
+      rotateX(-90deg)
+      rotateY(${o.z}deg)
+    ;
+    top: ${o.top}rem;
+    left: ${o.left}rem;
+  `
+  // duckGirl.animate({transform: `rotateX(-90deg) translateY(-10rem) rotateY(${o.z}deg)`} , 10);
+
   return o;
 };
 
-const origo = signal(useOrigo)({x: -10, y: 40, z: 0});
+const origo = signal(useOrigo)({x: -10, y: 40, z: 0, top:0, left:0});
 
 globalThis.origo = origo;
 
@@ -228,8 +242,6 @@ const controllOrigo = (z, x, y) => {
   origo.x = x;
   origo.y = y;
   origo.z = z;
-
-  // board(z, x, y);
 }
 
 /** @type {(aZ?:number, aX?:number, scale?:number) => void} */
@@ -295,8 +307,8 @@ const addFloor = (x = 0, y = 0, id = Math.random().toString(36).slice(-7)) => {
   const frg = fragment("#floor", "#desk", id);
   let u = 0
   let v = 0;
-  /** @type {HTMLElement} */
-  const girl = document.querySelector(".duck-girl")
+
+  // const girl = document.querySelector(".duck-girl")
   let mx = x;
   let my = y;
   /** @type {(x:number, y:number) => void} */
@@ -313,20 +325,22 @@ const addFloor = (x = 0, y = 0, id = Math.random().toString(36).slice(-7)) => {
     u = layerX;
     v = layerY;
     isDrag = true;
-    girl.style.top = `${my + 7}rem`;
-    girl.style.left = `${mx + 42}rem`;
+    origo.top = my + 7;
+    origo.left = mx + 42;
+    // girl.style.top = `${my + 7}rem`;
+    // girl.style.left = `${mx + 42}rem`;
   };
   frg.onmouseup = () => isDrag = false;
   frg.onmouseleave = () => isDrag = false;
   frg.onmousemove = ({layerX, layerY}) => {
     if (!isDrag) return;
-    // console.log(layerX - u, layerY - v)
     x += (layerX - u) / 100;
     y += (layerY - v) / 100;
-    // console.log(x, y)
     move(x, y)
-    girl.style.top = `${my + 7}rem`;
-    girl.style.left = `${mx + 42}rem`;
+    origo.top = my + 7;
+    origo.left = mx + 42;
+    // girl.style.top = `${my + 7}rem`;
+    // girl.style.left = `${mx + 42}rem`;
 
   }
   frg.style.backgroundPosition = `${rndSheet()}% ${rndSheet()}%`;
