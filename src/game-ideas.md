@@ -264,6 +264,8 @@ If technically you would like to modify a long markdown then need to be a use th
 Because our exsiting state this editor a really helpful to make a content without any great pain, just enough to put everithing to it. And will be colorize, maybe need to found a way to include a incon to it.
 🐨 emoji is working fine, but 🚗 🧌 😆 this is so system dependent.
 
+> make some change instantly on the right position: problem solved
+
 ```
 // a possible format for ICON
 !(icon)!
@@ -273,15 +275,16 @@ Because our exsiting state this editor a really helpful to make a content withou
 The problem first solution is:
 
 ```
-<markdown-view source="#the-editor" />
+<markdown-view source="#the-editor"></markdown-view>
 
-// - editor attach to a top and have a small part to will be open or close.
+// <+> editor attach to a top and have a small part to will be open or close.
+//     "sticky" is the key
 // - if not the paralell solution is the best.
 // - also fine if have a identification view if two is opened paralell
 // - drag and drop image from web to insert to code
 // - even with this I can solve a JSDoc included image in code! Great!
 
-<input id="the-editor" type="text-box"  class="fixed ..." />
+<textarea id="the-editor" class="fixed ..."></textarea>
 ```
 
 ## JSDoc with a hidden `/* * */` parts
