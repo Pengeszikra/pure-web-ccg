@@ -111,7 +111,7 @@ const cardMiddleware = async (obj, prop, value) => {
   //  console.log(obj, prop, value)
   if (prop === 'mov') {
     /** @type {{card:HTMLElement}} */
-    const {card}= obj;
+    const {card} = obj;
     // await delay(7)
     card.parentElement.appendChild(card);
     await delay(7)
@@ -210,9 +210,31 @@ const fly = () => {
 
 globalThis.fly = fly;
 
+// -----------------------------------------------[ B O A R D ]
+
+/** @type {import("./old-bird-soft.js").Watcher} */
+const useOrigo = (o, p, v) => {
+  o[p] = v;
+  board(o.z, o.x, o.y);
+  return o;
+};
+
+const origo = signal(useOrigo)({x: -10, y: 40, z: 0});
+
+globalThis.origo = origo;
+
+/** @type {(aZ?:number, aX?:number, scale?:number) => void} */
+const controllOrigo = (z, x, y) => {
+  origo.x = x;
+  origo.y = y;
+  origo.z = z;
+
+  // board(z, x, y);
+}
 
 /** @type {(aZ?:number, aX?:number, scale?:number) => void} */
 const board = (angleZ = 0, angleX = 30, scale = 0) => {
+    
     // @ts-ignore
     document.querySelector("main#desk").style  = `
         transform-style: preserve-3d;
@@ -225,15 +247,7 @@ const board = (angleZ = 0, angleX = 30, scale = 0) => {
           translateZ(${scale}rem);
         pointer-events: none;
     `;
-    //@ts-ignore
-    document.querySelector(".duck-girl").style = `
-      transform: rotateX(-90deg) translateY(-10rem) rotateY(${angleZ}deg);
-    `
 }
-
-board(-11, 70, -28);
-
-globalThis.board = board;
 
 const playWithTable = () => {
   alien.deck.map((id, idx) => render[id.split('|')[2]].card.style.transform = `
@@ -242,23 +256,16 @@ const playWithTable = () => {
     rotateY(${(alien.deck.length - idx) * 2}deg)
   `);
   let aZ = 0;
-  let ss = setInterval( () => board(aZ += 1.3, 50), 15);
+  let ss = setInterval( () => origo.z += 1.3, 15);
   setTimeout(() => {
     clearTimeout(ss)
   }, 3500);
   return ss;
 }
 
-globalThis.playWithTable = playWithTable;
+globalThis.playWithTable = playWithTable
 
-
-// gimbRotateX.oninput = (e) => {
-//   // @ts-ignore
-//   document.querySelector('#rotateX + label').innerText = gimbRotateX.value;
-//   board(+ gimbRotateX.value);
-// }
-
-/** @type {(id:string, setFunc?: function) => void} */
+/** @type {(id:string, setFunc?: function ) => void} */
 const gimbalRotate = (id, setFunc = () => {}) => {
   /** @type {HTMLInputElement} */
   const el = document.querySelector(id);
@@ -267,16 +274,21 @@ const gimbalRotate = (id, setFunc = () => {}) => {
   el.oninput = _ => {
     // @ts-ignore
     document.querySelector(`${id} + label`).innerText = el.value;
-    setFunc(el.value);
+    setFunc(+el.value);
   }
 };
 
 // @ts-ignore
-gimbalRotate('#rotateX', v => board(v, + document.querySelector('#rotateY').value,  + document.querySelector('#rotateZ').value));
+gimbalRotate('#rotateX', v => controllOrigo(v, origo.x, origo.y ));
 // @ts-ignore
-gimbalRotate('#rotateY', v => board(+ document.querySelector('#rotateX').value, v, + document.querySelector('#rotateZ').value));
+gimbalRotate('#rotateY', v => controllOrigo(origo.z, v, origo.y ));
 // @ts-ignore
-gimbalRotate('#rotateZ', v => board(+ document.querySelector('#rotateX').value, + document.querySelector('#rotateY').value, v));
+gimbalRotate('#rotateZ', v => controllOrigo(origo.z, origo.x, v));
+
+
+controllOrigo(0, 40, -10);
+
+// -----------------------------------------------[ F L O O R ]
 
 const addFloor = (x = 0, y = 0, id = Math.random().toString(36).slice(-7)) => {
   /** @type {HTMLElement} */
