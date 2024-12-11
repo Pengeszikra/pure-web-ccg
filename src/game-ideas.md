@@ -1,4 +1,4 @@
-# `<\>` M A R K E R `<\>`
+# `<\>` M A R K - E D I T O R `<\>`
 ```
 "Due date is Dec 18 :: left --> " +
 Math.ceil((new Date((new Date()).getFullYear()+(((new Date())>new Date((new Date()).getFullYear(),11,18))?1:0),11,18)-new Date())/(1000*60*60*24))
@@ -251,6 +251,50 @@ One image can be describe somethin better, than 1000 word.
 ![](https://cdn.midjourney.com/9fcd4716-231e-4dc4-99f4-ca5bb4c83a52/0_3.png)
 
 ![](https://cdn.midjourney.com/bb2ca582-2e5b-470a-a8cd-4594a34f9c2e/0_3.png)
+
+
+## Why I like this editor so much
+An how can be better? That is the real question.
+If technically you would like to modify a long markdown then need to be a use this editor just partially, which is means  Editor maybe floating over the parts which is editing.
+
+```
+<mark-editor source = "./Readme.md" />
+```
+![](https://cdn.midjourney.com/e0aebfd3-8a71-4954-ab4c-2af27c878df6/0_2.png)
+Because our exsiting state this editor a really helpful to make a content without any great pain, just enough to put everithing to it. And will be colorize, maybe need to found a way to include a incon to it.
+🐨 emoji is working fine, but 🚗 🧌 😆 this is so system dependent.
+
+```
+// a possible format for ICON
+!(icon)!
+```
+
+## Editor over markdown 
+The problem first solution is:
+
+```
+<markdown-view source="#the-editor" />
+
+// - editor attach to a top and have a small part to will be open or close.
+// - if not the paralell solution is the best.
+// - also fine if have a identification view if two is opened paralell
+// - drag and drop image from web to insert to code
+// - even with this I can solve a JSDoc included image in code! Great!
+
+<input id="the-editor" type="text-box"  class="fixed ..." />
+```
+
+## JSDoc with a hidden `/* * */` parts
+So developer can turn on or off that capabilit.
+Also great feature if in place can a open a much detailed information 
+about type. So the main problem why the programmer to hate JSDoc vs TS is
+they do not understund the greater perspective, if I can show a better solution
+to represent JSDoc in code then I can show how more easier can be found the 
+documentation because the JSDoc don't mixed with code ad the TS is.
+
+> this will be a great achivement for 'JSDoc'
+
+
 
 
 

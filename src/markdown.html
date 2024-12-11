@@ -46,7 +46,7 @@
   jd { color: #9ea77d}
   wt { color: #618be3}
 </style>
-<script src="old-bird-soft.js" type="module"></script>
+<!-- <script src="old-bird-soft.js" type="module"></script> -->
 <main class="min-h-screen bg-zinc-950 text-zinc-400">
   <section class="max-w-screen-2xl m-auto grid grid-cols-1 gap-2 lg:grid-cols-2">
     <textarea class="bg-zinc-800 text-zinc-400 focus:outline-none p-8 placeholder-zinc-600"
@@ -218,6 +218,8 @@
 
   const markdownView = document.querySelector('markdown-view');
   const markdownEditor = document.querySelector('textarea');
+
+  globalThis.marker = markdownView.changeContent
 
   fetch('./game-ideas.md').then(r => r.text()).then(md => markdownView.changeContent(md))
 
