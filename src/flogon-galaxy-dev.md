@@ -22,6 +22,12 @@ That is the question.
 
 {% https://www.youtube.com/embed/DpiOSJe_N30?si=YE9mQegUGsB0dt23 %}
 
+## MARKER as my `hyperspeed` game development
+Because it is capable to combine a different HTML program
+and assets as `easy` as possible.
 
-
-
+```
+// need to be a loader function to a MARKER
+// to improve this editor maybe help to achive 
+// a new hyper speed development process
+```
